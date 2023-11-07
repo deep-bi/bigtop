@@ -213,6 +213,23 @@ bigtop {
                 site = "${apache.APACHE_MIRROR}/${download_path}"
                 archive = "${apache.APACHE_ARCHIVE}/${download_path}" }
     }
+    'spark2' {
+      name    = 'spark2'
+      pkg     = 'spark-core'
+      rpm_pkg_suffix = "_" + bigtop.base_version.replace(".", "_")
+      relNotes = 'Apache Spark 2'
+      /*
+       * Remember to fetch the new LICENSE-binary and licenses-binary files
+       * when upgrading spark version.
+       * See comments in [bigtop-packages/src/common/spark/install_spark.sh] for details.
+       */
+      version { base = '2.4.8'; pkg = base; release = 1 }
+      tarball { destination = "spark-${version.base}.tar.gz"
+                source      = "spark-${version.base}.tgz" }
+      url     { download_path = "/spark/spark-${version.base}"
+                site = "${apache.APACHE_MIRROR}/${download_path}"
+                archive = "${apache.APACHE_ARCHIVE}/${download_path}" }
+    }
     'spark' {
       name    = 'spark'
       pkg     = 'spark'

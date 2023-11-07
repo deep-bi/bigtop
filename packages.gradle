@@ -579,30 +579,37 @@ def genTasks = { target ->
     ['INSTALL','SOURCES','BUILD','SRPMS','RPMS'].each { rpmdir ->
       mkdir("$PKG_BUILD_DIR/rpm/$rpmdir")
     }
+
+    println "Copy ${BASE_DIR}/bigtop-packages/src/rpm/$NAME to $PKG_BUILD_DIR/rpm"
     copy {
       from fileTree("${BASE_DIR}/bigtop-packages/src/rpm/$NAME") {
         include '**/*'
       }
       into "$PKG_BUILD_DIR/rpm"
     }
+    println "Copy $SEED_TAR to $PKG_BUILD_DIR/rpm/SOURCES"
     copy {
       from SEED_TAR
       into "$PKG_BUILD_DIR/rpm/SOURCES"
     }
+    println "Copy ${BASE_DIR}/bigtop-packages/src/templates/init.d.tmpl to $PKG_BUILD_DIR/rpm/SOURCES"
     copy {
       from "${BASE_DIR}/bigtop-packages/src/templates/init.d.tmpl"
       into "$PKG_BUILD_DIR/rpm/SOURCES"
     }
+    println "Copy ${BASE_DIR}/bigtop-packages/src/extensions to $PKG_BUILD_DIR/rpm/SOURCES"
     copy {
       from "${BASE_DIR}/bigtop-packages/src/extensions"
       into "$PKG_BUILD_DIR/rpm/SOURCES"
       include "*"
     }
+    println "Copy ${BASE_DIR}/bigtop-packages/src/scripts to $PKG_BUILD_DIR/rpm/SOURCES"
     copy {
       from "${BASE_DIR}/bigtop-packages/src/scripts"
       into "$PKG_BUILD_DIR/rpm/SOURCES"
       include "*"
     }
+    println "Copy ${BASE_DIR}/bigtop-packages/src/common/$NAME to $PKG_BUILD_DIR/rpm/SOURCES"
     copy {
       from fileTree("$BASE_DIR/bigtop-packages/src/common/$NAME") {
         include '**/*'
@@ -651,6 +658,8 @@ def genTasks = { target ->
         specFileName,
         '--define', "pkg_name_suffix ${RPM_PKG_NAME_SUFFIX}",
     ]
+
+    println command
     exec {
       workingDir BASE_DIR
       executable 'rpmbuild'
@@ -658,6 +667,8 @@ def genTasks = { target ->
     }
     mkdir(PKG_OUTPUT_DIR)
     def RELEASE_DIST = "rpmbuild --eval '%{?dist}' 2>/dev/null".execute().text.trim().replaceAll("'",'')
+    println "----------"
+    println "Copy $PKG_BUILD_DIR/rpm/SRPMS/${PKG_NAME}${GRADLE_PKG_NAME_SUFFIX}-${PKG_VERSION}-${BIGTOP_BUILD_STAMP}${RELEASE_DIST}.src.rpm to $PKG_OUTPUT_DIR"
     copy {
       from "$PKG_BUILD_DIR/rpm/SRPMS/${PKG_NAME}${GRADLE_PKG_NAME_SUFFIX}-${PKG_VERSION}-${BIGTOP_BUILD_STAMP}${RELEASE_DIST}.src.rpm"
       into PKG_OUTPUT_DIR
