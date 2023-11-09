@@ -1,6 +1,6 @@
-From 838a44b331b050e5dcd47527310eec984f348792 Mon Sep 17 00:00:00 2001
+From 290df353aae04a0e9de96682b01a0ff40ea81305 Mon Sep 17 00:00:00 2001
 From: Bartosz Mikulski <bartmiki97@gmail.com>
-Date: Thu, 9 Nov 2023 13:15:23 +0100
+Date: Thu, 9 Nov 2023 13:51:29 +0100
 Subject: [PATCH] Update to Hadoop 3.3.5
 
 ---
@@ -59,7 +59,7 @@ index e2a497591e9..7c3a63c9eb3 100644
      <dependency>
        <groupId>org.apache.thrift</groupId>
 diff --git a/pom.xml b/pom.xml
-index 6fe0a16900a..d0481f27de7 100644
+index 6fe0a16900a..35199361ff4 100644
 --- a/pom.xml
 +++ b/pom.xml
 @@ -1335,6 +1335,10 @@
@@ -106,13 +106,13 @@ index 6fe0a16900a..d0481f27de7 100644
 +        <curator.version>2.13.0</curator.version>
 +        <zookeeper.version>3.6.2</zookeeper.version>
 +
-+        <hive.group>org.apache.hive</hive.group>
-+        <hive.classifier>core</hive.classifier>
++        <!-- <hive.group>org.apache.hive</hive.group> -->
++        <!-- <hive.classifier>core</hive.classifier> -->
 +        <!-- Version used in Maven Hive dependency -->
-+        <hive.version>2.3.9</hive.version>
-+        <hive23.version>2.3.9</hive23.version>
++        <!-- <hive.version>2.3.9</hive.version> -->
++        <!-- <hive23.version>2.3.9</hive23.version> -->
 +        <!-- Version used for internal directory structure -->
-+        <hive.version.short>2.3</hive.version.short>
++        <!-- <hive.version.short>2.3</hive.version.short> -->
 +      </properties>
 +    </profile>
 +
