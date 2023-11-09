@@ -1,0 +1,247 @@
+From 838a44b331b050e5dcd47527310eec984f348792 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Thu, 9 Nov 2023 13:15:23 +0100
+Subject: [PATCH] Update to Hadoop 3.3.5
+
+---
+ assembly/pom.xml                |  6 ++++++
+ core/pom.xml                    | 12 ++++++++++++
+ pom.xml                         | 29 +++++++++++++++++++++++++++++
+ resource-managers/mesos/pom.xml | 12 ++++++++++++
+ resource-managers/yarn/pom.xml  | 12 ++++++++++++
+ sql/hive-thriftserver/pom.xml   | 18 ++++++++++++++++++
+ sql/hive/pom.xml                | 12 ++++++++++++
+ 7 files changed, 101 insertions(+)
+
+diff --git a/assembly/pom.xml b/assembly/pom.xml
+index 1b534d11e82..f7bb752a125 100644
+--- a/assembly/pom.xml
++++ b/assembly/pom.xml
+@@ -175,6 +175,12 @@
+           <groupId>org.apache.spark</groupId>
+           <artifactId>spark-hive-thriftserver_${scala.binary.version}</artifactId>
+           <version>${project.version}</version>
++          <exclusions>
++            <exclusion>
++              <groupId>org.pentaho</groupId>
++              <artifactId>*</artifactId>
++            </exclusion>
++          </exclusions>
+         </dependency>
+       </dependencies>
+     </profile>
+diff --git a/core/pom.xml b/core/pom.xml
+index e2a497591e9..7c3a63c9eb3 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -395,11 +395,23 @@
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-exec</artifactId>
+       <scope>provided</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-metastore</artifactId>
+       <scope>provided</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.thrift</groupId>
+diff --git a/pom.xml b/pom.xml
+index 6fe0a16900a..d0481f27de7 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -1335,6 +1335,10 @@
+             <groupId>commons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>org.pentaho</groupId>
++            <artifactId>*</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+@@ -1543,6 +1547,10 @@
+             <groupId>org.json</groupId>
+             <artifactId>json</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>org.pentaho</groupId>
++            <artifactId>*</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+@@ -1651,6 +1659,10 @@
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-log4j12</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>org.pentaho</groupId>
++            <artifactId>*</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+ 
+@@ -2795,6 +2807,23 @@
+       </properties>
+     </profile>
+ 
++    <profile>
++      <id>hadoop-3.3</id>
++      <properties>
++        <hadoop.version>3.3.5</hadoop.version>
++        <curator.version>2.13.0</curator.version>
++        <zookeeper.version>3.6.2</zookeeper.version>
++
++        <hive.group>org.apache.hive</hive.group>
++        <hive.classifier>core</hive.classifier>
++        <!-- Version used in Maven Hive dependency -->
++        <hive.version>2.3.9</hive.version>
++        <hive23.version>2.3.9</hive23.version>
++        <!-- Version used for internal directory structure -->
++        <hive.version.short>2.3</hive.version.short>
++      </properties>
++    </profile>
++
+     <profile>
+       <id>yarn</id>
+       <modules>
+diff --git a/resource-managers/mesos/pom.xml b/resource-managers/mesos/pom.xml
+index 9fa4370a8b8..d1376274c7d 100644
+--- a/resource-managers/mesos/pom.xml
++++ b/resource-managers/mesos/pom.xml
+@@ -78,11 +78,23 @@
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-exec</artifactId>
+       <scope>provided</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-metastore</artifactId>
+       <scope>provided</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+ 
+     <!-- Explicitly depend on shaded dependencies from the parent, since shaded deps aren't transitive -->
+diff --git a/resource-managers/yarn/pom.xml b/resource-managers/yarn/pom.xml
+index fe45d8bed08..cb60f38e6cd 100644
+--- a/resource-managers/yarn/pom.xml
++++ b/resource-managers/yarn/pom.xml
+@@ -173,11 +173,23 @@
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-exec</artifactId>
+       <scope>provided</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-metastore</artifactId>
+       <scope>provided</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.thrift</groupId>
+diff --git a/sql/hive-thriftserver/pom.xml b/sql/hive-thriftserver/pom.xml
+index 4b564be492e..ef4cf5b0e78 100644
+--- a/sql/hive-thriftserver/pom.xml
++++ b/sql/hive-thriftserver/pom.xml
+@@ -54,14 +54,32 @@
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-cli</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-jdbc</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-beeline</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.eclipse.jetty</groupId>
+diff --git a/sql/hive/pom.xml b/sql/hive/pom.xml
+index 96ba606a4f7..31beb0bed60 100644
+--- a/sql/hive/pom.xml
++++ b/sql/hive/pom.xml
+@@ -97,6 +97,12 @@
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-exec</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+ <!--
+       <classifier>core</classifier>
+ -->
+@@ -104,6 +110,12 @@
+     <dependency>
+       <groupId>${hive.group}</groupId>
+       <artifactId>hive-metastore</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>org.pentaho</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <!--
+         <dependency>
+-- 
+2.34.1
+

@@ -16,6 +16,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
+Building Spark 2.4.8
+====================
+
+To build the Spark 2.4.8 RPM for CentOS 7:
+```bash
+docker run --rm -u jenkins:jenkins -v `pwd`:/ws --workdir /ws bigtop/slaves:trunk-centos-7 bash -l -c './gradlew allclean ; ./gradlew spark2-pkg'
+```
+
+You can build for different OS, by replacing the `trunk-centos-7` with the OS you want to build for.  For example, to build for Ubuntu 20.04:
+
+```bash
+docker run --rm -u jenkins:jenkins -v `pwd`:/ws --workdir /ws bigtop/slaves:trunk-ubuntu-20.04 bash -l -c './gradlew allclean ; ./gradlew spark2-pkg'
+```
+
+This will build a DEB package. All built packages will be located in `build` directory.
+
+To make `gradlew` faster we can run:
+```bash
+docker run --rm -u jenkins:jenkins -v `pwd`:/ws -it --workdir /ws bigtop/slaves:trunk-centos-7 bash -l
+```
+to log in into the container.
+
+Adding patches:
+
+Clone repo you want to patch. Then commit your changes and run:
+```bash
+git format-patch HEAD^..HEAD --stdout > patch0-hadoop-3.3.diff
+```
+to generate patch file.
+
+
 [Apache Bigtop](http://bigtop.apache.org/)
 ==========================================
 

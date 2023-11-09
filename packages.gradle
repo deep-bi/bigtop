@@ -816,6 +816,31 @@ def genTasks = { target ->
     println (target + "\n\t[" + tasks.findAll { alltask -> alltask.name.startsWith(target)}*.name.join(", ") + "]")
   }
 
+  task "$target-log4j" (dependsOn: ["${target}_vardefines", "${target}-tar"], 
+                        description: "Scans $target component for log4j.jars", 
+                        group: PACKAGES_GROUP) doLast {
+    println "Scanning $target for log4j jars"
+
+    def command = ["ls", config.bigtop.components[target].outputdir]
+    println config.bigtop.components[target].outputdir
+    println command
+    println new File(config.bigtop.components[target].seedtar).getParent()
+    // println Paths.get(config.bigtop.components[target].seedtar)
+
+    // exec {
+      // workingDir config.bigtop.components[target].seedtar
+      // commandLine "tar --strip-components 1 -xf $DEB_BLD_DIR/../${PKG_NAME}_${PKG_VERSION}.orig.tar.gz".split(' ')
+    // }
+
+    // exec {
+    //   workingDir BASE_DIR
+    //   commandLine command
+    // }
+
+    println "Saving to ${config.bigtop.components[target].outputdir}"
+    mkdir(config.bigtop.components[target].outputdir)
+  }
+
   bomTasks.add(target)
 }
 

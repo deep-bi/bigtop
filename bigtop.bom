@@ -125,6 +125,7 @@ bigtop {
     hbase:['phoenix', 'ycsb', 'hive'],
     hive:['oozie', 'zeppelin'],
     spark:['livy', 'oozie', 'zeppelin'],
+    spark2:['livy', 'oozie', 'zeppelin'],
   ]
 
   components {
