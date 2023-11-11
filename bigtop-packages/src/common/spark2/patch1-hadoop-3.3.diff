@@ -1,0 +1,1033 @@
+From 95c1e0077f2740c1c2742b6431e42410a8119f96 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Fri, 10 Nov 2023 23:31:41 +0100
+Subject: [PATCH] Support for HDP 3
+
+---
+ pom.xml                                       | 16 ++--
+ .../sql/catalyst/util/DateTimeUtils.scala     | 49 +++++++----
+ .../service/cli/thrift/TArrayTypeEntry.java   | 10 ++-
+ .../hive/service/cli/thrift/TCLIService.java  |  9 +-
+ .../hive/service/auth/HiveAuthFactory.java    | 23 ++---
+ .../cli/operation/LogDivertAppender.java      |  6 +-
+ .../service/cli/operation/SQLOperation.java   | 44 +++++++++-
+ .../service/cli/session/HiveSessionImpl.java  | 33 +++----
+ .../cli/session/HiveSessionImplwithUGI.java   |  2 +-
+ .../cli/thrift/ThriftHttpCLIService.java      |  7 +-
+ .../hive/service/server/HiveServer2.java      | 10 ++-
+ .../hive/thriftserver/SparkSQLCLIDriver.scala |  9 +-
+ .../ql/io/orc/SparkOrcNewRecordReader.java    |  1 +
+ .../org/apache/spark/sql/hive/HiveShim.scala  |  9 +-
+ .../org/apache/spark/sql/hive/HiveUtils.scala |  2 -
+ .../sql/hive/execution/SaveAsHiveFile.scala   |  2 +-
+ .../org/apache/spark/sql/hive/hiveUDFs.scala  |  2 +-
+ .../spark/sql/hive/orc/OrcFileFormat.scala    | 22 +++--
+ .../spark/sql/hive/orc/OrcFilters.scala       | 86 ++++++++++++++++---
+ 19 files changed, 234 insertions(+), 108 deletions(-)
+
+diff --git a/pom.xml b/pom.xml
+index 35199361ff4..46fb1c5360f 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -2190,7 +2190,7 @@
+             <recompileMode>incremental</recompileMode>
+             <useZincServer>true</useZincServer>
+             <args>
+-              <arg>-unchecked</arg>
++<!--              <arg>-unchecked</arg>-->
+               <arg>-deprecation</arg>
+               <arg>-feature</arg>
+               <arg>-explaintypes</arg>
+@@ -2814,13 +2814,13 @@
+         <curator.version>2.13.0</curator.version>
+         <zookeeper.version>3.6.2</zookeeper.version>
+ 
+-        <!-- <hive.group>org.apache.hive</hive.group> -->
+-        <!-- <hive.classifier>core</hive.classifier> -->
+-        <!-- Version used in Maven Hive dependency -->
+-        <!-- <hive.version>2.3.9</hive.version> -->
+-        <!-- <hive23.version>2.3.9</hive23.version> -->
+-        <!-- Version used for internal directory structure -->
+-        <!-- <hive.version.short>2.3</hive.version.short> -->
++         <hive.group>org.apache.hive</hive.group>
++         <hive.classifier>core</hive.classifier>
++<!--         Version used in Maven Hive dependency -->
++         <hive.version>2.3.9</hive.version>
++         <hive23.version>2.3.9</hive23.version>
++<!--         Version used for internal directory structure -->
++         <hive.version.short>2.3</hive.version.short>
+       </properties>
+     </profile>
+ 
+diff --git a/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala b/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala
+index 1c9b6616d5b..a4a1a5699bf 100644
+--- a/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala
++++ b/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala
+@@ -19,17 +19,15 @@ package org.apache.spark.sql.catalyst.util
+ 
+ import java.sql.{Date, Timestamp}
+ import java.text.{DateFormat, ParsePosition, SimpleDateFormat}
+-import java.time.Instant
++import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
+ import java.util.{Calendar, GregorianCalendar, Locale, TimeZone}
+ import java.util.concurrent.ConcurrentHashMap
+ import java.util.function.{Function => JFunction}
+ import javax.xml.bind.DatatypeConverter
+-
+ import scala.annotation.tailrec
+-
+ import org.apache.commons.lang3.time.FastDateFormat
++import org.apache.commons.math3.util.MathUtils
+ import sun.util.calendar.ZoneInfo
+-
+ import org.apache.spark.sql.types.Decimal
+ import org.apache.spark.unsafe.types.UTF8String
+ 
+@@ -74,6 +72,18 @@ object DateTimeUtils {
+ 
+   def defaultTimeZone(): TimeZone = TimeZone.getDefault()
+ 
++  def localDateTimeToMicros(localDateTime: LocalDateTime): Long = {
++    instantToMicros(localDateTime.toInstant(ZoneOffset.UTC))
++  }
++
++  // https://github.com/apache/spark/blob/master/sql/api/src/main/scala/org/apache/spark/sql/catalyst/util/MathUtils.scala
++  private def toIntExact(a: Long): Int = Math.toIntExact(a)
++
++  /**
++   * Converts the local date to the number of days since 1970-01-01.
++   */
++  def localDateToDays(localDate: LocalDate): Int = toIntExact(localDate.toEpochDay)
++
+   // Reuse the Calendar object in each thread as it is expensive to create in each method call.
+   private val threadLocalGmtCalendar = new ThreadLocal[Calendar] {
+     override protected def initialValue: Calendar = {
+@@ -378,7 +388,7 @@ object DateTimeUtils {
+           } else {
+             return None
+           }
+-          if (i == 6  && b != '.') {
++          if (i == 6 && b != '.') {
+             i += 1
+           }
+         } else {
+@@ -421,8 +431,8 @@ object DateTimeUtils {
+     }
+ 
+     if (segments(3) < 0 || segments(3) > 23 || segments(4) < 0 || segments(4) > 59 ||
+-        segments(5) < 0 || segments(5) > 59 || segments(6) < 0 || segments(6) > 999999 ||
+-        segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(8) > 59) {
++      segments(5) < 0 || segments(5) > 59 || segments(6) < 0 || segments(6) > 999999 ||
++      segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(8) > 59) {
+       return None
+     }
+ 
+@@ -607,12 +617,13 @@ object DateTimeUtils {
+    * The second year of a 400 year period (year 1) starts on day 365.
+    */
+   private[this] def yearBoundary(year: Int): Int = {
+-    year * 365 + ((year / 4 ) - (year / 100) + (year / 400))
++    year * 365 + ((year / 4) - (year / 100) + (year / 400))
+   }
+ 
+   /**
+    * Calculates the number of years for the given number of days. This depends
+    * on a 400 year period.
++   *
+    * @param days days since the beginning of the 400 year period
+    * @return (number of year, days in year)
+    */
+@@ -631,7 +642,7 @@ object DateTimeUtils {
+    */
+   private[this] def getYearAndDayInYear(daysSince1970: SQLDate): (Int, Int) = {
+     // add the difference (in days) between 1.1.1970 and the artificial year 0 (-17999)
+-    var  daysSince1970Tmp = daysSince1970
++    var daysSince1970Tmp = daysSince1970
+     // Since Julian calendar was replaced with the Gregorian calendar,
+     // the 10 days after Oct. 4 were skipped.
+     // (1582-10-04) -141428 days since 1970-01-01
+@@ -877,10 +888,10 @@ object DateTimeUtils {
+    * Returns a timestamp value, expressed in microseconds since 1.1.1970 00:00:00.
+    */
+   def timestampAddInterval(
+-      start: SQLTimestamp,
+-      months: Int,
+-      microseconds: Long,
+-      timeZone: TimeZone): SQLTimestamp = {
++                            start: SQLTimestamp,
++                            months: Int,
++                            microseconds: Long,
++                            timeZone: TimeZone): SQLTimestamp = {
+     val days = millisToDays(start / 1000L, timeZone)
+     val newDays = dateAddMonths(days, months)
+     start +
+@@ -899,10 +910,10 @@ object DateTimeUtils {
+    * The result is rounded to 8 decimal places if `roundOff` is set to true.
+    */
+   def monthsBetween(
+-      time1: SQLTimestamp,
+-      time2: SQLTimestamp,
+-      roundOff: Boolean,
+-      timeZone: TimeZone): Double = {
++                     time1: SQLTimestamp,
++                     time2: SQLTimestamp,
++                     roundOff: Boolean,
++                     timeZone: TimeZone): Double = {
+     val millis1 = time1 / 1000L
+     val millis2 = time2 / 1000L
+     val date1 = millisToDays(millis1, timeZone)
+@@ -1103,13 +1114,13 @@ object DateTimeUtils {
+       ts
+     } else {
+       // get the human time using local time zone, that actually is in fromZone.
+-      val localTs = ts + localZone.getOffset(ts / 1000L) * 1000L  // in fromZone
++      val localTs = ts + localZone.getOffset(ts / 1000L) * 1000L // in fromZone
+       localTs - getOffsetFromLocalMillis(localTs / 1000L, fromZone) * 1000L
+     }
+     if (toZone.getID == localZone.getID) {
+       utcTs
+     } else {
+-      val localTs = utcTs + toZone.getOffset(utcTs / 1000L) * 1000L  // in toZone
++      val localTs = utcTs + toZone.getOffset(utcTs / 1000L) * 1000L // in toZone
+       // treat it as local timezone, convert to UTC (we could get the expected human time back)
+       localTs - getOffsetFromLocalMillis(localTs / 1000L, localZone) * 1000L
+     }
+diff --git a/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TArrayTypeEntry.java b/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TArrayTypeEntry.java
+index 6323d34eac7..29378937bdf 100644
+--- a/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TArrayTypeEntry.java
++++ b/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TArrayTypeEntry.java
+@@ -36,7 +36,8 @@ public class TArrayTypeEntry implements org.apache.thrift.TBase<TArrayTypeEntry,
+ 
+   private static final org.apache.thrift.protocol.TField OBJECT_TYPE_PTR_FIELD_DESC = new org.apache.thrift.protocol.TField("objectTypePtr", org.apache.thrift.protocol.TType.I32, (short)1);
+ 
+-  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
++  @SuppressWarnings("rawtypes")
++  private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<>();
+   static {
+     schemes.put(StandardScheme.class, new TArrayTypeEntryStandardSchemeFactory());
+     schemes.put(TupleScheme.class, new TArrayTypeEntryTupleSchemeFactory());
+@@ -243,14 +244,13 @@ public class TArrayTypeEntry implements org.apache.thrift.TBase<TArrayTypeEntry,
+     }
+ 
+     int lastComparison = 0;
+-    TArrayTypeEntry typedOther = (TArrayTypeEntry)other;
+ 
+-    lastComparison = Boolean.valueOf(isSetObjectTypePtr()).compareTo(typedOther.isSetObjectTypePtr());
++      lastComparison = Boolean.compare(isSetObjectTypePtr(), other.isSetObjectTypePtr());
+     if (lastComparison != 0) {
+       return lastComparison;
+     }
+     if (isSetObjectTypePtr()) {
+-      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.objectTypePtr, typedOther.objectTypePtr);
++      lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.objectTypePtr, ((TArrayTypeEntry)other).objectTypePtr);
+       if (lastComparison != 0) {
+         return lastComparison;
+       }
+@@ -262,10 +262,12 @@ public class TArrayTypeEntry implements org.apache.thrift.TBase<TArrayTypeEntry,
+     return _Fields.findByThriftId(fieldId);
+   }
+ 
++  @SuppressWarnings("unchecked")
+   public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+     schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+   }
+ 
++  @SuppressWarnings("unchecked")
+   public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+     schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+   }
+diff --git a/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TCLIService.java b/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TCLIService.java
+index 54851b8d513..2e426e52bec 100644
+--- a/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TCLIService.java
++++ b/sql/hive-thriftserver/src/gen/java/org/apache/hive/service/cli/thrift/TCLIService.java
+@@ -10,6 +10,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
+ import org.apache.thrift.scheme.IScheme;
+ import org.apache.thrift.scheme.SchemeFactory;
+ import org.apache.thrift.scheme.StandardScheme;
++import org.apache.hive.service.cli.thrift.TRenewDelegationTokenReq;
++
+ 
+ import org.apache.thrift.scheme.TupleScheme;
+ import org.apache.thrift.protocol.TTupleProtocol;
+@@ -1190,7 +1192,7 @@ public class TCLIService {
+         prot.writeMessageEnd();
+       }
+ 
+-      public TRenewDelegationTokenResp getResult() throws org.apache.thrift.TException {
++      public org.apache.hive.service.cli.thrift.TRenewDelegationTokenResp getResult() throws org.apache.thrift.TException {
+         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+           throw new IllegalStateException("Method call not finished!");
+         }
+@@ -1204,14 +1206,17 @@ public class TCLIService {
+ 
+   public static class Processor<I extends Iface> extends org.apache.thrift.TBaseProcessor<I> implements org.apache.thrift.TProcessor {
+     private static final Logger LOGGER = LoggerFactory.getLogger(Processor.class.getName());
++    @SuppressWarnings("rawtypes")
+     public Processor(I iface) {
+-      super(iface, getProcessMap(new HashMap<String, org.apache.thrift.ProcessFunction<I, ? extends org.apache.thrift.TBase>>()));
++      super(iface, getProcessMap(new HashMap<>()));
+     }
+ 
++    @SuppressWarnings("rawtypes")
+     protected Processor(I iface, Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+       super(iface, getProcessMap(processMap));
+     }
+ 
++    @SuppressWarnings({"unchecked", "rawtypes"})
+     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
+       processMap.put("OpenSession", new OpenSession());
+       processMap.put("CloseSession", new CloseSession());
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/auth/HiveAuthFactory.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/auth/HiveAuthFactory.java
+index 10000f12ab3..b7ec6e06e8f 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/auth/HiveAuthFactory.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/auth/HiveAuthFactory.java
+@@ -44,6 +44,7 @@ import org.apache.hadoop.hive.shims.ShimLoader;
+ import org.apache.hadoop.hive.thrift.DBTokenStore;
+ import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge;
+ import org.apache.hadoop.hive.thrift.HadoopThriftAuthBridge.Server.ServerMode;
++import org.apache.hadoop.hive.thrift.HiveDelegationTokenManager;
+ import org.apache.hadoop.security.SecurityUtil;
+ import org.apache.hadoop.security.UserGroupInformation;
+ import org.apache.hadoop.security.authorize.ProxyUsers;
+@@ -91,6 +92,7 @@ public class HiveAuthFactory {
+   private String authTypeStr;
+   private final String transportMode;
+   private final HiveConf conf;
++  private HiveDelegationTokenManager delegationTokenManager = null;
+ 
+   public static final String HS2_PROXY_USER = "hive.server2.proxy.user";
+   public static final String HS2_CLIENT_TOKEN = "hiveserver2ClientToken";
+@@ -144,6 +146,7 @@ public class HiveAuthFactory {
+         }
+ 
+         // start delegation token manager
++        delegationTokenManager = new HiveDelegationTokenManager();
+         try {
+           // rawStore is only necessary for DBTokenStore
+           Object rawStore = null;
+@@ -155,7 +158,7 @@ public class HiveAuthFactory {
+             rawStore = baseHandler.getMS();
+           }
+ 
+-          saslServer.startDelegationTokenSecretManager(conf, rawStore, ServerMode.HIVESERVER2);
++          delegationTokenManager.startDelegationTokenSecretManager(conf, rawStore, ServerMode.HIVESERVER2);
+         }
+         catch (MetaException|IOException e) {
+           throw new TTransportException("Failed to start token manager", e);
+@@ -312,14 +315,14 @@ public class HiveAuthFactory {
+   }
+ 
+   // retrieve delegation token for the given user
+-  public String getDelegationToken(String owner, String renewer) throws HiveSQLException {
+-    if (saslServer == null) {
++  public String getDelegationToken(String owner, String renewer, String remoteAddr) throws HiveSQLException {
++    if (delegationTokenManager == null) {
+       throw new HiveSQLException(
+           "Delegation token only supported over kerberos authentication", "08S01");
+     }
+ 
+     try {
+-      String tokenStr = saslServer.getDelegationTokenWithService(owner, renewer, HS2_CLIENT_TOKEN);
++      String tokenStr = delegationTokenManager.getDelegationTokenWithService(owner, renewer, HS2_CLIENT_TOKEN, remoteAddr);
+       if (tokenStr == null || tokenStr.isEmpty()) {
+         throw new HiveSQLException(
+             "Received empty retrieving delegation token for user " + owner, "08S01");
+@@ -335,12 +338,12 @@ public class HiveAuthFactory {
+ 
+   // cancel given delegation token
+   public void cancelDelegationToken(String delegationToken) throws HiveSQLException {
+-    if (saslServer == null) {
++    if (delegationTokenManager == null) {
+       throw new HiveSQLException(
+           "Delegation token only supported over kerberos authentication", "08S01");
+     }
+     try {
+-      saslServer.cancelDelegationToken(delegationToken);
++      delegationTokenManager.cancelDelegationToken(delegationToken);
+     } catch (IOException e) {
+       throw new HiveSQLException(
+           "Error canceling delegation token " + delegationToken, "08S01", e);
+@@ -348,12 +351,12 @@ public class HiveAuthFactory {
+   }
+ 
+   public void renewDelegationToken(String delegationToken) throws HiveSQLException {
+-    if (saslServer == null) {
++    if (delegationTokenManager == null) {
+       throw new HiveSQLException(
+           "Delegation token only supported over kerberos authentication", "08S01");
+     }
+     try {
+-      saslServer.renewDelegationToken(delegationToken);
++      delegationTokenManager.renewDelegationToken(delegationToken);
+     } catch (IOException e) {
+       throw new HiveSQLException(
+           "Error renewing delegation token " + delegationToken, "08S01", e);
+@@ -361,12 +364,12 @@ public class HiveAuthFactory {
+   }
+ 
+   public String getUserFromToken(String delegationToken) throws HiveSQLException {
+-    if (saslServer == null) {
++    if (delegationTokenManager == null) {
+       throw new HiveSQLException(
+           "Delegation token only supported over kerberos authentication", "08S01");
+     }
+     try {
+-      return saslServer.getUserFromToken(delegationToken);
++      return delegationTokenManager.getUserFromToken(delegationToken);
+     } catch (IOException e) {
+       throw new HiveSQLException(
+           "Error extracting user from delegation token " + delegationToken, "08S01", e);
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/LogDivertAppender.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/LogDivertAppender.java
+index cb804318ace..0e74c0494de 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/LogDivertAppender.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/LogDivertAppender.java
+@@ -116,7 +116,9 @@ public class LogDivertAppender extends WriterAppender {
+         setCurrentNamePattern(loggingMode);
+       }
+ 
+-      boolean isMatch = namePattern.matcher(ev.getLoggerName()).matches();
++      // TODO fix this
++      //      boolean isMatch = namePattern.matcher(ev.getLoggerName()).matches();
++      boolean isMatch = namePattern.matcher(ev.toString()).matches();
+ 
+       if (excludeMatches == isMatch) {
+         // Deny if this is black-list filter (excludeMatches = true) and it
+@@ -201,7 +203,7 @@ public class LogDivertAppender extends WriterAppender {
+ 
+     OperationLog log = operationManager.getOperationLogByThread();
+     if (log == null) {
+-      LOG.debug(" ---+++=== Dropped log event from thread " + event.getThreadName());
++      LOG.debug(" ---+++=== Dropped log event from thread " + event);
+       return;
+     }
+     log.writeOperationLog(logOutput);
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/SQLOperation.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/SQLOperation.java
+index 70c27948de6..dda4703b61f 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/SQLOperation.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/operation/SQLOperation.java
+@@ -31,7 +31,10 @@ import java.util.concurrent.Future;
+ import java.util.concurrent.RejectedExecutionException;
+ 
+ import org.apache.commons.codec.binary.Base64;
++import org.apache.hadoop.conf.Configuration;
+ import org.apache.hadoop.hive.conf.HiveConf;
++import org.apache.hadoop.hive.conf.SystemVariables;
++import org.apache.hadoop.hive.conf.VariableSubstitution;
+ import org.apache.hadoop.hive.metastore.api.FieldSchema;
+ import org.apache.hadoop.hive.metastore.api.Schema;
+ import org.apache.hadoop.hive.ql.CommandNeedRetryException;
+@@ -40,11 +43,10 @@ import org.apache.hadoop.hive.ql.exec.ExplainTask;
+ import org.apache.hadoop.hive.ql.exec.Task;
+ import org.apache.hadoop.hive.ql.metadata.Hive;
+ import org.apache.hadoop.hive.ql.metadata.HiveException;
+-import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
+ import org.apache.hadoop.hive.ql.processors.CommandProcessorResponse;
+ import org.apache.hadoop.hive.ql.session.SessionState;
+ import org.apache.hadoop.hive.serde.serdeConstants;
+-import org.apache.hadoop.hive.serde2.SerDe;
++import org.apache.hadoop.hive.serde2.AbstractSerDe;
+ import org.apache.hadoop.hive.serde2.SerDeException;
+ import org.apache.hadoop.hive.serde2.SerDeUtils;
+ import org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe;
+@@ -62,6 +64,8 @@ import org.apache.hive.service.cli.RowSetFactory;
+ import org.apache.hive.service.cli.TableSchema;
+ import org.apache.hive.service.cli.session.HiveSession;
+ import org.apache.hive.service.server.ThreadWithGarbageCleanup;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ 
+ /**
+  * SQLOperation.
+@@ -69,11 +73,43 @@ import org.apache.hive.service.server.ThreadWithGarbageCleanup;
+  */
+ public class SQLOperation extends ExecuteStatementOperation {
+ 
++  public static class VariableSubstitution extends SystemVariables {
++
++    private static final Logger l4j = LoggerFactory.getLogger(VariableSubstitution.class);
++
++    protected String getSubstitute(Configuration conf, String var) {
++      String val = super.getSubstitute(conf, var);
++      if (val == null && SessionState.get() != null) {
++        Map<String,String> vars = SessionState.get().getHiveVariables();
++        if (var.startsWith(HIVEVAR_PREFIX)) {
++          val =  vars.get(var.substring(HIVEVAR_PREFIX.length()));
++        } else {
++          val = vars.get(var);
++        }
++      }
++      return val;
++    }
++
++    public String substitute(HiveConf conf, String expr) {
++      if (expr == null) {
++        return expr;
++      }
++      if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.HIVEVARIABLESUBSTITUTE)) {
++        l4j.debug("Substitution is on: " + expr);
++      } else {
++        return expr;
++      }
++      int depth = HiveConf.getIntVar(conf, HiveConf.ConfVars.HIVEVARIABLESUBSTITUTEDEPTH);
++      return substitute(conf, expr, depth);
++    }
++  }
++
++
+   private Driver driver = null;
+   private CommandProcessorResponse response;
+   private TableSchema resultSchema = null;
+   private Schema mResultSchema = null;
+-  private SerDe serde = null;
++  private AbstractSerDe serde = null;
+   private boolean fetchStarted = false;
+ 
+   public SQLOperation(HiveSession parentSession, String statement, Map<String,
+@@ -389,7 +425,7 @@ public class SQLOperation extends ExecuteStatementOperation {
+     return rowSet;
+   }
+ 
+-  private SerDe getSerDe() throws SQLException {
++  private AbstractSerDe getSerDe() throws SQLException {
+     if (serde != null) {
+       return serde;
+     }
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImpl.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImpl.java
+index 745f385e87f..e65d571e347 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImpl.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImpl.java
+@@ -38,14 +38,13 @@ import org.apache.hadoop.hive.conf.HiveConf;
+ import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
+ import org.apache.hadoop.hive.metastore.IMetaStoreClient;
+ import org.apache.hadoop.hive.metastore.api.MetaException;
+-import org.apache.hadoop.hive.ql.exec.FetchFormatter;
+-import org.apache.hadoop.hive.ql.exec.ListSinkOperator;
+ import org.apache.hadoop.hive.ql.exec.Utilities;
+ import org.apache.hadoop.hive.ql.history.HiveHistory;
+ import org.apache.hadoop.hive.ql.metadata.Hive;
+ import org.apache.hadoop.hive.ql.metadata.HiveException;
+-import org.apache.hadoop.hive.ql.parse.VariableSubstitution;
+ import org.apache.hadoop.hive.ql.session.SessionState;
++import org.apache.hadoop.hive.serde2.SerDeUtils;
++import org.apache.hadoop.hive.serde2.thrift.ThriftFormatter;
+ import org.apache.hadoop.hive.shims.ShimLoader;
+ import org.apache.hive.common.util.HiveVersionInfo;
+ import org.apache.hive.service.auth.HiveAuthFactory;
+@@ -58,16 +57,7 @@ import org.apache.hive.service.cli.OperationHandle;
+ import org.apache.hive.service.cli.RowSet;
+ import org.apache.hive.service.cli.SessionHandle;
+ import org.apache.hive.service.cli.TableSchema;
+-import org.apache.hive.service.cli.operation.ExecuteStatementOperation;
+-import org.apache.hive.service.cli.operation.GetCatalogsOperation;
+-import org.apache.hive.service.cli.operation.GetColumnsOperation;
+-import org.apache.hive.service.cli.operation.GetFunctionsOperation;
+-import org.apache.hive.service.cli.operation.GetSchemasOperation;
+-import org.apache.hive.service.cli.operation.GetTableTypesOperation;
+-import org.apache.hive.service.cli.operation.GetTypeInfoOperation;
+-import org.apache.hive.service.cli.operation.MetadataOperation;
+-import org.apache.hive.service.cli.operation.Operation;
+-import org.apache.hive.service.cli.operation.OperationManager;
++import org.apache.hive.service.cli.operation.*;
+ import org.apache.hive.service.cli.thrift.TProtocolVersion;
+ import org.apache.hive.service.server.ThreadWithGarbageCleanup;
+ 
+@@ -121,9 +111,8 @@ public class HiveSessionImpl implements HiveSession {
+     hiveConf.set(ConfVars.HIVESESSIONID.varname,
+         sessionHandle.getHandleIdentifier().toString());
+     // Use thrift transportable formatter
+-    hiveConf.set(ListSinkOperator.OUTPUT_FORMATTER,
+-        FetchFormatter.ThriftFormatter.class.getName());
+-    hiveConf.setInt(ListSinkOperator.OUTPUT_PROTOCOL, protocol.getValue());
++    hiveConf.set(SerDeUtils.LIST_SINK_OUTPUT_FORMATTER , ThriftFormatter.class.getName());
++    hiveConf.setInt(SerDeUtils.LIST_SINK_OUTPUT_PROTOCOL, protocol.getValue());
+   }
+ 
+   @Override
+@@ -142,7 +131,7 @@ public class HiveSessionImpl implements HiveSession {
+     sessionState.setIsHiveServerQuery(true);
+     SessionState.start(sessionState);
+     try {
+-      sessionState.reloadAuxJars();
++      sessionState.loadReloadableAuxJars();
+     } catch (IOException e) {
+       String msg = "Failed to load reloadable jar file path: " + e;
+       LOG.error(msg, e);
+@@ -241,18 +230,18 @@ public class HiveSessionImpl implements HiveSession {
+     } else if (varname.startsWith(SYSTEM_PREFIX)){
+       String propName = varname.substring(SYSTEM_PREFIX.length());
+       System.getProperties().setProperty(propName,
+-              new VariableSubstitution().substitute(ss.getConf(),varvalue));
++              new SQLOperation.VariableSubstitution().substitute(ss.getConf(),varvalue));
+     } else if (varname.startsWith(HIVECONF_PREFIX)){
+       String propName = varname.substring(HIVECONF_PREFIX.length());
+       setConf(varname, propName, varvalue, true);
+     } else if (varname.startsWith(HIVEVAR_PREFIX)) {
+       String propName = varname.substring(HIVEVAR_PREFIX.length());
+       ss.getHiveVariables().put(propName,
+-              new VariableSubstitution().substitute(ss.getConf(),varvalue));
++              new SQLOperation.VariableSubstitution().substitute(ss.getConf(),varvalue));
+     } else if (varname.startsWith(METACONF_PREFIX)) {
+       String propName = varname.substring(METACONF_PREFIX.length());
+       Hive hive = Hive.get(ss.getConf());
+-      hive.setMetaConf(propName, new VariableSubstitution().substitute(ss.getConf(), varvalue));
++      hive.setMetaConf(propName, new SQLOperation.VariableSubstitution().substitute(ss.getConf(), varvalue));
+     } else {
+       setConf(varname, varname, varvalue, true);
+     }
+@@ -263,7 +252,7 @@ public class HiveSessionImpl implements HiveSession {
+   private static void setConf(String varname, String key, String varvalue, boolean register)
+           throws IllegalArgumentException {
+     HiveConf conf = SessionState.get().getConf();
+-    String value = new VariableSubstitution().substitute(conf, varvalue);
++    String value = new SQLOperation.VariableSubstitution().substitute(conf, varvalue);
+     if (conf.getBoolVar(HiveConf.ConfVars.HIVECONFVALIDATION)) {
+       HiveConf.ConfVars confVars = HiveConf.getConfVars(key);
+       if (confVars != null) {
+@@ -808,7 +797,7 @@ public class HiveSessionImpl implements HiveSession {
+   public String getDelegationToken(HiveAuthFactory authFactory, String owner, String renewer)
+       throws HiveSQLException {
+     HiveAuthFactory.verifyProxyAccess(getUsername(), owner, getIpAddress(), getHiveConf());
+-    return authFactory.getDelegationToken(owner, renewer);
++    return authFactory.getDelegationToken(owner, renewer, getIpAddress());
+   }
+ 
+   @Override
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImplwithUGI.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImplwithUGI.java
+index 762dbb2faad..b35b05dd94c 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImplwithUGI.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/session/HiveSessionImplwithUGI.java
+@@ -164,7 +164,7 @@ public class HiveSessionImplwithUGI extends HiveSessionImpl {
+   @Override
+   public String getDelegationToken(HiveAuthFactory authFactory, String owner,
+       String renewer) throws HiveSQLException {
+-    return authFactory.getDelegationToken(owner, renewer);
++    return authFactory.getDelegationToken(owner, renewer, getIpAddress());
+   }
+ 
+   @Override
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/thrift/ThriftHttpCLIService.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/thrift/ThriftHttpCLIService.java
+index a10245b372d..e4d332e0779 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/thrift/ThriftHttpCLIService.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/cli/thrift/ThriftHttpCLIService.java
+@@ -70,7 +70,8 @@ public class ThriftHttpCLIService extends ThriftCLIService {
+       ExecutorThreadPool threadPool = new ExecutorThreadPool(executorService);
+ 
+       // HTTP Server
+-      httpServer = new org.eclipse.jetty.server.Server(threadPool);
++      httpServer = new org.eclipse.jetty.server.Server();
++      httpServer.setThreadPool(threadPool);
+ 
+       // Connector configs
+ 
+@@ -114,13 +115,13 @@ public class ThriftHttpCLIService extends ThriftCLIService {
+       connector.setReuseAddress(!Shell.WINDOWS);
+       int maxIdleTime = (int) hiveConf.getTimeVar(ConfVars.HIVE_SERVER2_THRIFT_HTTP_MAX_IDLE_TIME,
+           TimeUnit.MILLISECONDS);
+-      connector.setIdleTimeout(maxIdleTime);
++      connector.setMaxIdleTime(maxIdleTime);
+ 
+       httpServer.addConnector(connector);
+ 
+       // Thrift configs
+       hiveAuthFactory = new HiveAuthFactory(hiveConf);
+-      TProcessor processor = new TCLIService.Processor<Iface>(this);
++      TProcessor processor = new org.apache.hive.service.cli.thrift.TCLIService.Processor<Iface>(this);
+       TProtocolFactory protocolFactory = new TBinaryProtocol.Factory();
+       // Set during the init phase of HiveServer2 if auth mode is kerberos
+       // UGI for the hive/_HOST (kerberos) principal
+diff --git a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/server/HiveServer2.java b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/server/HiveServer2.java
+index a30be2bc06b..e39f4faf658 100644
+--- a/sql/hive-thriftserver/src/main/java/org/apache/hive/service/server/HiveServer2.java
++++ b/sql/hive-thriftserver/src/main/java/org/apache/hive/service/server/HiveServer2.java
+@@ -20,6 +20,9 @@ package org.apache.hive.service.server;
+ 
+ import java.util.Properties;
+ 
++import org.apache.hadoop.hive.common.JvmPauseMonitor;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ import scala.runtime.AbstractFunction0;
+ import scala.runtime.BoxedUnit;
+ 
+@@ -49,7 +52,7 @@ import org.apache.spark.util.ShutdownHookManager;
+  *
+  */
+ public class HiveServer2 extends CompositeService {
+-  private static final Log LOG = LogFactory.getLog(HiveServer2.class);
++  private static final Logger LOG = LoggerFactory.getLogger(HiveServer2.class);
+ 
+   private CLIService cliService;
+   private ThriftCLIService thriftCLIService;
+@@ -124,7 +127,8 @@ public class HiveServer2 extends CompositeService {
+         server = new HiveServer2();
+         server.init(hiveConf);
+         server.start();
+-        ShimLoader.getHadoopShims().startPauseMonitor(hiveConf);
++        JvmPauseMonitor pauseMonitor = new JvmPauseMonitor(hiveConf);
++        pauseMonitor.start();
+         break;
+       } catch (Throwable throwable) {
+         if (server != null) {
+@@ -283,7 +287,7 @@ public class HiveServer2 extends CompositeService {
+       try {
+         startHiveServer2();
+       } catch (Throwable t) {
+-        LOG.fatal("Error starting HiveServer2", t);
++        LOG.error("Error starting HiveServer2", t);
+         System.exit(-1);
+       }
+     }
+diff --git a/sql/hive-thriftserver/src/main/scala/org/apache/spark/sql/hive/thriftserver/SparkSQLCLIDriver.scala b/sql/hive-thriftserver/src/main/scala/org/apache/spark/sql/hive/thriftserver/SparkSQLCLIDriver.scala
+index bb96cea2b0a..d1a9783855f 100644
+--- a/sql/hive-thriftserver/src/main/scala/org/apache/spark/sql/hive/thriftserver/SparkSQLCLIDriver.scala
++++ b/sql/hive-thriftserver/src/main/scala/org/apache/spark/sql/hive/thriftserver/SparkSQLCLIDriver.scala
+@@ -25,18 +25,17 @@ import scala.collection.JavaConverters._
+ import jline.console.ConsoleReader
+ import jline.console.history.FileHistory
+ import org.apache.commons.lang3.StringUtils
+-import org.apache.commons.logging.LogFactory
+ import org.apache.hadoop.conf.Configuration
+ import org.apache.hadoop.hive.cli.{CliDriver, CliSessionState, OptionsProcessor}
+ import org.apache.hadoop.hive.common.{HiveInterruptCallback, HiveInterruptUtils}
+ import org.apache.hadoop.hive.conf.HiveConf
+ import org.apache.hadoop.hive.ql.Driver
+-import org.apache.hadoop.hive.ql.exec.Utilities
+ import org.apache.hadoop.hive.ql.processors._
+ import org.apache.hadoop.hive.ql.session.SessionState
+ import org.apache.hadoop.security.{Credentials, UserGroupInformation}
+ import org.apache.log4j.Level
+ import org.apache.thrift.transport.TSocket
++import org.slf4j.LoggerFactory
+ 
+ import org.apache.spark.SparkConf
+ import org.apache.spark.deploy.SparkHadoopUtil
+@@ -46,6 +45,7 @@ import org.apache.spark.sql.AnalysisException
+ import org.apache.spark.sql.hive.HiveUtils
+ import org.apache.spark.util.ShutdownHookManager
+ 
++
+ /**
+  * This code doesn't support remote connections in Hive 1.2+, as the underlying CliDriver
+  * has dropped its support.
+@@ -144,7 +144,8 @@ private[hive] object SparkSQLCLIDriver extends Logging {
+       var loader = conf.getClassLoader
+       val auxJars = HiveConf.getVar(conf, HiveConf.ConfVars.HIVEAUXJARS)
+       if (StringUtils.isNotBlank(auxJars)) {
+-        loader = Utilities.addToClassPath(loader, StringUtils.split(auxJars, ","))
++        val resourceLoader = SparkSQLEnv.sqlContext.sessionState.resourceLoader
++        StringUtils.split(auxJars, ",").foreach(resourceLoader.addJar(_))
+       }
+       conf.setClassLoader(loader)
+       Thread.currentThread().setContextClassLoader(loader)
+@@ -298,7 +299,7 @@ private[hive] object SparkSQLCLIDriver extends Logging {
+ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
+   private val sessionState = SessionState.get().asInstanceOf[CliSessionState]
+ 
+-  private val LOG = LogFactory.getLog(classOf[SparkSQLCLIDriver])
++  private val LOG = LoggerFactory.getLogger(classOf[SparkSQLCLIDriver])
+ 
+   private val console = new SessionState.LogHelper(LOG)
+ 
+diff --git a/sql/hive/src/main/java/org/apache/hadoop/hive/ql/io/orc/SparkOrcNewRecordReader.java b/sql/hive/src/main/java/org/apache/hadoop/hive/ql/io/orc/SparkOrcNewRecordReader.java
+index f093637d412..eea388b700b 100644
+--- a/sql/hive/src/main/java/org/apache/hadoop/hive/ql/io/orc/SparkOrcNewRecordReader.java
++++ b/sql/hive/src/main/java/org/apache/hadoop/hive/ql/io/orc/SparkOrcNewRecordReader.java
+@@ -22,6 +22,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
+ import org.apache.hadoop.io.NullWritable;
+ import org.apache.hadoop.mapreduce.InputSplit;
+ import org.apache.hadoop.mapreduce.TaskAttemptContext;
++import org.apache.orc.OrcProto;
+ 
+ import java.io.IOException;
+ import java.util.List;
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala
+index 33622a1cf82..5877f0a994c 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala
+@@ -19,16 +19,15 @@ package org.apache.spark.sql.hive
+ 
+ import java.io.{InputStream, OutputStream}
+ import java.rmi.server.UID
+-
+ import scala.collection.JavaConverters._
+ import scala.language.existentials
+ import scala.language.implicitConversions
+ import scala.reflect.ClassTag
+-
+ import com.google.common.base.Objects
+ import org.apache.avro.Schema
+ import org.apache.hadoop.conf.Configuration
+ import org.apache.hadoop.fs.Path
++import org.apache.hadoop.hive.ql.exec.SerializationUtilities
+ import org.apache.hadoop.hive.ql.exec.{UDF, Utilities}
+ import org.apache.hadoop.hive.ql.plan.{FileSinkDesc, TableDesc}
+ import org.apache.hadoop.hive.ql.udf.generic.GenericUDFMacro
+@@ -38,7 +37,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.HiveDecimalObject
+ import org.apache.hadoop.io.Writable
+ import org.apache.hive.com.esotericsoftware.kryo.Kryo
+ import org.apache.hive.com.esotericsoftware.kryo.io.{Input, Output}
+-
+ import org.apache.spark.internal.Logging
+ import org.apache.spark.sql.types.Decimal
+ import org.apache.spark.util.Utils
+@@ -172,12 +170,11 @@ private[hive] object HiveShim {
+     }
+ 
+     def deserializePlan[UDFType](is: java.io.InputStream, clazz: Class[_]): UDFType = {
+-      deserializeObjectByKryo(Utilities.runtimeSerializationKryo.get(), is, clazz)
+-        .asInstanceOf[UDFType]
++      SerializationUtilities.deserializePlan(is, clazz).asInstanceOf[UDFType]
+     }
+ 
+     def serializePlan(function: AnyRef, out: java.io.OutputStream): Unit = {
+-      serializeObjectByKryo(Utilities.runtimeSerializationKryo.get(), function, out)
++      SerializationUtilities.serializePlan(function, out)
+     }
+ 
+     def writeExternal(out: java.io.ObjectOutput) {
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveUtils.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveUtils.scala
+index 83bc81e9379..2f2447bafd4 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveUtils.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveUtils.scala
+@@ -209,8 +209,6 @@ private[spark] object HiveUtils extends Logging {
+       ConfVars.METASTORE_AGGREGATE_STATS_CACHE_MAX_READER_WAIT -> TimeUnit.MILLISECONDS,
+       ConfVars.HIVES_AUTO_PROGRESS_TIMEOUT -> TimeUnit.SECONDS,
+       ConfVars.HIVE_LOG_INCREMENTAL_PLAN_PROGRESS_INTERVAL -> TimeUnit.MILLISECONDS,
+-      ConfVars.HIVE_STATS_JDBC_TIMEOUT -> TimeUnit.SECONDS,
+-      ConfVars.HIVE_STATS_RETRIES_WAIT -> TimeUnit.MILLISECONDS,
+       ConfVars.HIVE_LOCK_SLEEP_BETWEEN_RETRIES -> TimeUnit.SECONDS,
+       ConfVars.HIVE_ZOOKEEPER_SESSION_TIMEOUT -> TimeUnit.MILLISECONDS,
+       ConfVars.HIVE_ZOOKEEPER_CONNECTION_BASESLEEPTIME -> TimeUnit.MILLISECONDS,
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/SaveAsHiveFile.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/SaveAsHiveFile.scala
+index 078968ed014..1f6e472806e 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/SaveAsHiveFile.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/execution/SaveAsHiveFile.scala
+@@ -227,7 +227,7 @@ private[hive] trait SaveAsHiveFile extends DataWritingCommand {
+     // SPARK-20594: This is a walk-around fix to resolve a Hive bug. Hive requires that the
+     // staging directory needs to avoid being deleted when users set hive.exec.stagingdir
+     // under the table directory.
+-    if (FileUtils.isSubDir(new Path(stagingPathName), inputPath, fs) &&
++    if (FileUtils.isPathWithinSubtree(new Path(stagingPathName), inputPath) &&
+       !stagingPathName.stripPrefix(inputPathName).stripPrefix(File.separator).startsWith(".")) {
+       logDebug(s"The staging dir '$stagingPathName' should be a child directory starts " +
+         "with '.' to avoid being deleted if we set hive.exec.stagingdir under the table " +
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala
+index c85816e1fef..2e223f1db12 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/hiveUDFs.scala
+@@ -343,7 +343,7 @@ private[hive] case class HiveUDAFFunction(
+       funcWrapper.createFunction[AbstractGenericUDAFResolver]()
+     }
+ 
+-    val parameterInfo = new SimpleGenericUDAFParameterInfo(inputInspectors, false, false)
++    val parameterInfo = new SimpleGenericUDAFParameterInfo(inputInspectors, false, false, false)
+     resolver.getEvaluator(parameterInfo)
+   }
+ 
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala
+index b63215ac93c..ad41d9f6b87 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala
+@@ -17,25 +17,26 @@
+ 
+ package org.apache.spark.sql.hive.orc
+ 
++import com.esotericsoftware.kryo.Kryo
++import com.esotericsoftware.kryo.io.Output
++import org.apache.commons.codec.binary.Base64
+ import java.net.URI
+ import java.nio.charset.StandardCharsets.UTF_8
+ import java.util.Properties
+-
+ import scala.collection.JavaConverters._
+ import scala.util.control.NonFatal
+-
+ import org.apache.hadoop.conf.Configuration
+ import org.apache.hadoop.fs.{FileStatus, Path}
+ import org.apache.hadoop.hive.conf.HiveConf.ConfVars
+ import org.apache.hadoop.hive.ql.io.orc._
++import org.apache.hadoop.hive.ql.io.sarg.SearchArgument
+ import org.apache.hadoop.hive.serde2.objectinspector.{SettableStructObjectInspector, StructObjectInspector}
+ import org.apache.hadoop.hive.serde2.typeinfo.{StructTypeInfo, TypeInfoUtils}
+ import org.apache.hadoop.io.{NullWritable, Writable}
+-import org.apache.hadoop.mapred.{JobConf, OutputFormat => MapRedOutputFormat, RecordWriter, Reporter}
++import org.apache.hadoop.mapred.{JobConf, RecordWriter, Reporter, OutputFormat => MapRedOutputFormat}
+ import org.apache.hadoop.mapreduce._
+ import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, FileSplit}
+ import org.apache.orc.OrcConf.COMPRESS
+-
+ import org.apache.spark.{SPARK_VERSION_SHORT, TaskContext}
+ import org.apache.spark.internal.Logging
+ import org.apache.spark.sql.SPARK_VERSION_METADATA_KEY
+@@ -130,7 +131,7 @@ class OrcFileFormat extends FileFormat with DataSourceRegister with Serializable
+     if (sparkSession.sessionState.conf.orcFilterPushDown) {
+       // Sets pushed predicates
+       OrcFilters.createFilter(requiredSchema, filters.toArray).foreach { f =>
+-        hadoopConf.set(OrcFileFormat.SARG_PUSHDOWN, f.toKryo)
++        hadoopConf.set(OrcFileFormat.SARG_PUSHDOWN, toKryo(f))
+         hadoopConf.setBoolean(ConfVars.HIVEOPTINDEXFILTER.varname, true)
+       }
+     }
+@@ -198,6 +199,17 @@ class OrcFileFormat extends FileFormat with DataSourceRegister with Serializable
+ 
+     case _ => false
+   }
++
++  // HIVE-11253 moved `toKryo` from `SearchArgument` to `storage-api` module.
++  // This is copied from Hive 1.2's SearchArgumentImpl.toKryo().
++  private def toKryo(sarg: SearchArgument): String = {
++    val kryo = new Kryo()
++    val out = new Output(4 * 1024, 10 * 1024 * 1024)
++    kryo.writeObject(out, sarg)
++    out.close()
++    Base64.encodeBase64String(out.toBytes)
++  }
++
+ }
+ 
+ private[orc] class OrcSerializer(dataSchema: StructType, conf: Configuration)
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala
+index aee9cb58a03..947afb2fea2 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala
+@@ -17,11 +17,14 @@
+ 
+ package org.apache.spark.sql.hive.orc
+ 
+-import org.apache.hadoop.hive.ql.io.sarg.SearchArgument
++import java.time.{Instant, LocalDate}
++import org.apache.hadoop.hive.common.`type`.HiveDecimal
++import org.apache.hadoop.hive.ql.io.sarg.{PredicateLeaf, SearchArgument}
+ import org.apache.hadoop.hive.ql.io.sarg.SearchArgument.Builder
+ import org.apache.hadoop.hive.ql.io.sarg.SearchArgumentFactory.newBuilder
+-
++import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable
+ import org.apache.spark.internal.Logging
++import org.apache.spark.sql.catalyst.util.DateTimeUtils.{instantToMicros, localDateToDays, toJavaDate, toJavaTimestamp}
+ import org.apache.spark.sql.execution.datasources.orc.OrcFilters.buildTree
+ import org.apache.spark.sql.sources._
+ import org.apache.spark.sql.types._
+@@ -75,6 +78,46 @@ private[orc] object OrcFilters extends Logging {
+     } yield builder.build()
+   }
+ 
++  /**
++   * Cast literal values for filters.
++   *
++   * We need to cast to long because ORC raises exceptions
++   * at 'checkLiteralType' of SearchArgumentImpl.java.
++   */
++  private def castLiteralValue(value: Any, dataType: DataType): Any = dataType match {
++    case ByteType | ShortType | IntegerType | LongType =>
++      value.asInstanceOf[Number].longValue
++    case FloatType | DoubleType =>
++      value.asInstanceOf[Number].doubleValue()
++    case _: DecimalType =>
++      new HiveDecimalWritable(HiveDecimal.create(value.asInstanceOf[java.math.BigDecimal]))
++    case _: DateType if value.isInstanceOf[LocalDate] =>
++      toJavaDate(localDateToDays(value.asInstanceOf[LocalDate]))
++    case _: TimestampType if value.isInstanceOf[Instant] =>
++      toJavaTimestamp(instantToMicros(value.asInstanceOf[Instant]))
++//    case _: TimestampNTZType if value.isInstanceOf[LocalDateTime] =>
++//      localDateTimeToMicros(value.asInstanceOf[LocalDateTime])
++//    case _: YearMonthIntervalType =>
++//      IntervalUtils.periodToMonths(value.asInstanceOf[Period]).longValue()
++//    case _: DayTimeIntervalType =>
++//      IntervalUtils.durationToMicros(value.asInstanceOf[Duration])
++    case _ => value
++  }
++
++  /**
++   * Get PredicateLeafType which is corresponding to the given DataType.
++   */
++  def getPredicateLeafType(dataType: DataType): PredicateLeaf.Type = dataType match {
++    case BooleanType => PredicateLeaf.Type.BOOLEAN
++    case ByteType | ShortType | IntegerType | LongType => PredicateLeaf.Type.LONG
++    case FloatType | DoubleType => PredicateLeaf.Type.FLOAT
++    case StringType => PredicateLeaf.Type.STRING
++    case DateType => PredicateLeaf.Type.DATE
++    case TimestampType => PredicateLeaf.Type.TIMESTAMP
++    case _: DecimalType => PredicateLeaf.Type.DECIMAL
++    case _ => throw new RuntimeException(s"invalid type exception: $dataType")
++  }
++
+   private def buildSearchArgument(
+       dataTypeMap: Map[String, DataType],
+       expression: Filter,
+@@ -88,6 +131,10 @@ private[orc] object OrcFilters extends Logging {
+       case _ => false
+     }
+ 
++    def getType(attribute: String): PredicateLeaf.Type = {
++      getPredicateLeafType(dataTypeMap(attribute))
++    }
++
+     expression match {
+       case And(left, right) =>
+         // At here, it is not safe to just convert one side if we do not understand the
+@@ -118,36 +165,53 @@ private[orc] object OrcFilters extends Logging {
+           negate <- buildSearchArgument(dataTypeMap, child, builder.startNot())
+         } yield negate.end()
+ 
++
+       // NOTE: For all case branches dealing with leaf predicates below, the additional `startAnd()`
+       // call is mandatory.  ORC `SearchArgument` builder requires that all leaf predicates must be
+       // wrapped by a "parent" predicate (`And`, `Or`, or `Not`).
+ 
++      // https://github.com/apache/spark/blob/master/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/orc/OrcFilters.scala#L22
+       case EqualTo(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startAnd().equals(attribute, value).end())
++        val castedValue = castLiteralValue(value, dataTypeMap(attribute))
++        Some(builder.startAnd().equals(attribute, getType(attribute), castedValue).end())
+ 
+       case EqualNullSafe(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startAnd().nullSafeEquals(attribute, value).end())
++        val castedValue = castLiteralValue(value, dataTypeMap(attribute))
++        Some(builder.startAnd()
++          .nullSafeEquals(attribute, getType(attribute), castedValue).end())
+ 
+       case LessThan(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startAnd().lessThan(attribute, value).end())
++        val castedValue = castLiteralValue(value, dataTypeMap(attribute))
++        Some(builder.startAnd()
++          .lessThan(attribute, getType(attribute), castedValue).end())
+ 
+       case LessThanOrEqual(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startAnd().lessThanEquals(attribute, value).end())
++        val castedValue = castLiteralValue(value, dataTypeMap(attribute))
++        Some(builder.startAnd()
++          .lessThanEquals(attribute, getType(attribute), castedValue).end())
+ 
+       case GreaterThan(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startNot().lessThanEquals(attribute, value).end())
++        val castedValue = castLiteralValue(value, dataTypeMap(attribute))
++        Some(builder.startNot()
++          .lessThanEquals(attribute, getType(attribute), castedValue).end())
+ 
+       case GreaterThanOrEqual(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startNot().lessThan(attribute, value).end())
++        val castedValue = castLiteralValue(value, dataTypeMap(attribute))
++        Some(builder.startNot()
++          .lessThan(attribute, getType(attribute), castedValue).end())
+ 
+       case IsNull(attribute) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startAnd().isNull(attribute).end())
++        Some(builder.startAnd()
++          .isNull(attribute, getType(attribute)).end())
+ 
+       case IsNotNull(attribute) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startNot().isNull(attribute).end())
++        Some(builder.startNot()
++          .isNull(attribute, getType(attribute)).end())
+ 
+       case In(attribute, values) if isSearchableType(dataTypeMap(attribute)) =>
+-        Some(builder.startAnd().in(attribute, values.map(_.asInstanceOf[AnyRef]): _*).end())
++        val castedValues = values.map(v => castLiteralValue(v, dataTypeMap(attribute)))
++        Some(builder.startAnd().in(attribute, getType(attribute),
++          castedValues.map(_.asInstanceOf[AnyRef]): _*).end())
+ 
+       case _ => None
+     }
+-- 
+2.34.1
+

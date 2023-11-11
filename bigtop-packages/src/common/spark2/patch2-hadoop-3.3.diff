@@ -1,0 +1,138 @@
+From 4656426debe9e601ef34c11066e69ef2323dc866 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Sat, 11 Nov 2023 09:25:23 +0100
+Subject: [PATCH] Fix scalastyle checks
+
+---
+ .../spark/sql/catalyst/util/DateTimeUtils.scala       |  5 ++++-
+ .../scala/org/apache/spark/sql/hive/HiveShim.scala    |  6 ++++--
+ .../org/apache/spark/sql/hive/orc/OrcFileFormat.scala | 11 +++++++----
+ .../org/apache/spark/sql/hive/orc/OrcFilters.scala    |  4 +++-
+ 4 files changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala b/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala
+index a4a1a5699bf..7b6b1c0e60b 100644
+--- a/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala
++++ b/sql/catalyst/src/main/scala/org/apache/spark/sql/catalyst/util/DateTimeUtils.scala
+@@ -24,10 +24,13 @@ import java.util.{Calendar, GregorianCalendar, Locale, TimeZone}
+ import java.util.concurrent.ConcurrentHashMap
+ import java.util.function.{Function => JFunction}
+ import javax.xml.bind.DatatypeConverter
++
+ import scala.annotation.tailrec
++
+ import org.apache.commons.lang3.time.FastDateFormat
+ import org.apache.commons.math3.util.MathUtils
+ import sun.util.calendar.ZoneInfo
++
+ import org.apache.spark.sql.types.Decimal
+ import org.apache.spark.unsafe.types.UTF8String
+ 
+@@ -76,7 +79,7 @@ object DateTimeUtils {
+     instantToMicros(localDateTime.toInstant(ZoneOffset.UTC))
+   }
+ 
+-  // https://github.com/apache/spark/blob/master/sql/api/src/main/scala/org/apache/spark/sql/catalyst/util/MathUtils.scala
++  // https://tinyurl.com/4vz225v7
+   private def toIntExact(a: Long): Int = Math.toIntExact(a)
+ 
+   /**
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala
+index 5877f0a994c..42b37d978da 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/HiveShim.scala
+@@ -19,16 +19,17 @@ package org.apache.spark.sql.hive
+ 
+ import java.io.{InputStream, OutputStream}
+ import java.rmi.server.UID
++
+ import scala.collection.JavaConverters._
+ import scala.language.existentials
+ import scala.language.implicitConversions
+ import scala.reflect.ClassTag
++
+ import com.google.common.base.Objects
+ import org.apache.avro.Schema
+ import org.apache.hadoop.conf.Configuration
+ import org.apache.hadoop.fs.Path
+-import org.apache.hadoop.hive.ql.exec.SerializationUtilities
+-import org.apache.hadoop.hive.ql.exec.{UDF, Utilities}
++import org.apache.hadoop.hive.ql.exec.{SerializationUtilities, UDF}
+ import org.apache.hadoop.hive.ql.plan.{FileSinkDesc, TableDesc}
+ import org.apache.hadoop.hive.ql.udf.generic.GenericUDFMacro
+ import org.apache.hadoop.hive.serde2.ColumnProjectionUtils
+@@ -37,6 +38,7 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.HiveDecimalObject
+ import org.apache.hadoop.io.Writable
+ import org.apache.hive.com.esotericsoftware.kryo.Kryo
+ import org.apache.hive.com.esotericsoftware.kryo.io.{Input, Output}
++
+ import org.apache.spark.internal.Logging
+ import org.apache.spark.sql.types.Decimal
+ import org.apache.spark.util.Utils
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala
+index ad41d9f6b87..303fb71e043 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFileFormat.scala
+@@ -17,14 +17,16 @@
+ 
+ package org.apache.spark.sql.hive.orc
+ 
+-import com.esotericsoftware.kryo.Kryo
+-import com.esotericsoftware.kryo.io.Output
+-import org.apache.commons.codec.binary.Base64
+ import java.net.URI
+ import java.nio.charset.StandardCharsets.UTF_8
+ import java.util.Properties
++
+ import scala.collection.JavaConverters._
+ import scala.util.control.NonFatal
++
++import com.esotericsoftware.kryo.Kryo
++import com.esotericsoftware.kryo.io.Output
++import org.apache.commons.codec.binary.Base64
+ import org.apache.hadoop.conf.Configuration
+ import org.apache.hadoop.fs.{FileStatus, Path}
+ import org.apache.hadoop.hive.conf.HiveConf.ConfVars
+@@ -33,10 +35,11 @@ import org.apache.hadoop.hive.ql.io.sarg.SearchArgument
+ import org.apache.hadoop.hive.serde2.objectinspector.{SettableStructObjectInspector, StructObjectInspector}
+ import org.apache.hadoop.hive.serde2.typeinfo.{StructTypeInfo, TypeInfoUtils}
+ import org.apache.hadoop.io.{NullWritable, Writable}
+-import org.apache.hadoop.mapred.{JobConf, RecordWriter, Reporter, OutputFormat => MapRedOutputFormat}
++import org.apache.hadoop.mapred.{JobConf, OutputFormat => MapRedOutputFormat, RecordWriter, Reporter}
+ import org.apache.hadoop.mapreduce._
+ import org.apache.hadoop.mapreduce.lib.input.{FileInputFormat, FileSplit}
+ import org.apache.orc.OrcConf.COMPRESS
++
+ import org.apache.spark.{SPARK_VERSION_SHORT, TaskContext}
+ import org.apache.spark.internal.Logging
+ import org.apache.spark.sql.SPARK_VERSION_METADATA_KEY
+diff --git a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala
+index 947afb2fea2..d2442dea642 100644
+--- a/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala
++++ b/sql/hive/src/main/scala/org/apache/spark/sql/hive/orc/OrcFilters.scala
+@@ -18,11 +18,13 @@
+ package org.apache.spark.sql.hive.orc
+ 
+ import java.time.{Instant, LocalDate}
++
+ import org.apache.hadoop.hive.common.`type`.HiveDecimal
+ import org.apache.hadoop.hive.ql.io.sarg.{PredicateLeaf, SearchArgument}
+ import org.apache.hadoop.hive.ql.io.sarg.SearchArgument.Builder
+ import org.apache.hadoop.hive.ql.io.sarg.SearchArgumentFactory.newBuilder
+ import org.apache.hadoop.hive.serde2.io.HiveDecimalWritable
++
+ import org.apache.spark.internal.Logging
+ import org.apache.spark.sql.catalyst.util.DateTimeUtils.{instantToMicros, localDateToDays, toJavaDate, toJavaTimestamp}
+ import org.apache.spark.sql.execution.datasources.orc.OrcFilters.buildTree
+@@ -170,7 +172,7 @@ private[orc] object OrcFilters extends Logging {
+       // call is mandatory.  ORC `SearchArgument` builder requires that all leaf predicates must be
+       // wrapped by a "parent" predicate (`And`, `Or`, or `Not`).
+ 
+-      // https://github.com/apache/spark/blob/master/sql/core/src/main/scala/org/apache/spark/sql/execution/datasources/orc/OrcFilters.scala#L22
++      // https://tinyurl.com/3xw4t96s
+       case EqualTo(attribute, value) if isSearchableType(dataTypeMap(attribute)) =>
+         val castedValue = castLiteralValue(value, dataTypeMap(attribute))
+         Some(builder.startAnd().equals(attribute, getType(attribute), castedValue).end())
+-- 
+2.34.1
+

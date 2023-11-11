@@ -20,6 +20,7 @@ set -ex
 
 # -Phadoop-2.7
 # -Psparkr \
+# -Phive -Phive-thriftserver \
 
 export MAVEN_OPTS="${MAVEN_OPTS:--Xss256m -Xmx4g -XX:ReservedCodeCacheSize=1g}"
 
@@ -33,8 +34,8 @@ BUILD_OPTS="-Divy.home=${HOME}/.ivy2 -Dsbt.ivy.home=${HOME}/.ivy2 -Duser.home=${
             $SPARK_BUILD_OPTS"
 
 
-echo "Building Spark with options: $BUILD_OPTS"
-# exit 1
+echo "Spark build options: $SPARK_BUILD_OPTS"
+echo "Building Spark with options: $BUILD_OPTS" | xargs
 
 # ./dev/make-distribution.sh --mvn mvn --r $BUILD_OPTS -DskipTests
 ./dev/make-distribution.sh --mvn mvn $BUILD_OPTS -DskipTests
