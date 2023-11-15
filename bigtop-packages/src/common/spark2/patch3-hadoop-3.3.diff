@@ -1,0 +1,64 @@
+From 180d139bd1fe1a355bb8d7e79f39189094e8b5c4 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Tue, 14 Nov 2023 19:13:07 +0100
+Subject: [PATCH] Remove schema from file paths and remove broken jars from
+ distribution
+
+---
+ .../apache/spark/scheduler/SchedulableBuilder.scala    | 10 +++++++---
+ dev/make-distribution.sh                               |  4 ++++
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/core/src/main/scala/org/apache/spark/scheduler/SchedulableBuilder.scala b/core/src/main/scala/org/apache/spark/scheduler/SchedulableBuilder.scala
+index 5f3c280ec31..2d81dbae21b 100644
+--- a/core/src/main/scala/org/apache/spark/scheduler/SchedulableBuilder.scala
++++ b/core/src/main/scala/org/apache/spark/scheduler/SchedulableBuilder.scala
+@@ -18,6 +18,7 @@
+ package org.apache.spark.scheduler
+ 
+ import java.io.{FileInputStream, InputStream}
++import java.net.URI
+ import java.util.{Locale, NoSuchElementException, Properties}
+ 
+ import scala.util.control.NonFatal
+@@ -28,6 +29,7 @@ import org.apache.spark.internal.Logging
+ import org.apache.spark.scheduler.SchedulingMode.SchedulingMode
+ import org.apache.spark.util.Utils
+ 
++
+ /**
+  * An interface to build Schedulable tree
+  * buildPools: build the tree nodes(pools)
+@@ -74,9 +76,11 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
+     var fileData: Option[(InputStream, String)] = None
+     try {
+       fileData = schedulerAllocFile.map { f =>
+-        val fis = new FileInputStream(f)
+-        logInfo(s"Creating Fair Scheduler pools from $f")
+-        Some((fis, f))
++        val uri = new URI(f)
++        val file = uri.getPath
++        val fis = new FileInputStream(file)
++        logInfo(s"Creating Fair Scheduler pools from $file")
++        Some((fis, file))
+       }.getOrElse {
+         val is = Utils.getSparkClassLoader.getResourceAsStream(DEFAULT_SCHEDULER_FILE)
+         if (is != null) {
+diff --git a/dev/make-distribution.sh b/dev/make-distribution.sh
+index 2b02c241f54..9a14f163b0d 100755
+--- a/dev/make-distribution.sh
++++ b/dev/make-distribution.sh
+@@ -182,6 +182,10 @@ echo "Build flags: $@" >> "$DISTDIR/RELEASE"
+ 
+ # Copy jars
+ cp "$SPARK_HOME"/assembly/target/scala*/jars/* "$DISTDIR/jars/"
++# Remove old invalid jars
++rm "$DISTDIR/jars/servlet-api-2.4.jar"
++rm "$DISTDIR/jars/javax.inject-1.jar"
++rm "$DISTDIR/jars/javax.servlet-3.0.0.v201112011016.jar"
+ 
+ # Only create the yarn directory if the yarn artifacts were built.
+ if [ -f "$SPARK_HOME"/common/network-yarn/target/scala*/spark-*-yarn-shuffle.jar ]; then
+-- 
+2.34.1
+
