@@ -1,0 +1,125 @@
+From 1ffbc79efd444e71f22858ff8d5df9955de31cf8 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Wed, 3 Jan 2024 15:06:35 +0100
+Subject: [PATCH] patch-2
+
+---
+ .../metrics2/sink/timeline/HadoopTimelineMetricsSink.java | 2 +-
+ .../impl/pb/ApplicationAttemptFinishDataPBImpl.java       | 8 ++++----
+ .../impl/pb/ApplicationAttemptStartDataPBImpl.java        | 8 ++++----
+ .../records/impl/pb/ApplicationFinishDataPBImpl.java      | 8 ++++----
+ .../records/impl/pb/ApplicationStartDataPBImpl.java       | 8 ++++----
+ .../records/impl/pb/ContainerFinishDataPBImpl.java        | 8 ++++----
+ 6 files changed, 21 insertions(+), 21 deletions(-)
+
+diff --git a/ambari-metrics/ambari-metrics-hadoop-sink/src/main/java/org/apache/hadoop/metrics2/sink/timeline/HadoopTimelineMetricsSink.java b/ambari-metrics/ambari-metrics-hadoop-sink/src/main/java/org/apache/hadoop/metrics2/sink/timeline/HadoopTimelineMetricsSink.java
+index 6021c30dd1..5cbfe45478 100644
+--- a/ambari-metrics/ambari-metrics-hadoop-sink/src/main/java/org/apache/hadoop/metrics2/sink/timeline/HadoopTimelineMetricsSink.java
++++ b/ambari-metrics/ambari-metrics-hadoop-sink/src/main/java/org/apache/hadoop/metrics2/sink/timeline/HadoopTimelineMetricsSink.java
+@@ -19,7 +19,7 @@ package org.apache.hadoop.metrics2.sink.timeline;
+ 
+ import org.apache.commons.configuration2.SubsetConfiguration;
+ import org.apache.commons.configuration2.convert.DefaultListDelimiterHandler;
+-import org.apache.commons.lang.StringUtils;
++import org.apache.commons.lang3.StringUtils;
+ import org.apache.hadoop.classification.InterfaceAudience;
+ import org.apache.hadoop.classification.InterfaceStability;
+ import org.apache.hadoop.metrics2.AbstractMetric;
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptFinishDataPBImpl.java b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptFinishDataPBImpl.java
+index cb0e545cf0..1b883c3386 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptFinishDataPBImpl.java
++++ b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptFinishDataPBImpl.java
+@@ -176,10 +176,10 @@ public class ApplicationAttemptFinishDataPBImpl extends
+     return false;
+   }
+ 
+-  @Override
+-  public String toString() {
+-    return TextFormat.shortDebugString(getProto());
+-  }
++  // @Override
++  // public String toString() {
++  //   return TextFormat.shortDebugString(getProto());
++  // }
+ 
+   private void mergeLocalToBuilder() {
+     if (this.applicationAttemptId != null
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptStartDataPBImpl.java b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptStartDataPBImpl.java
+index 6c76d3cbd9..c1272ab2bb 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptStartDataPBImpl.java
++++ b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationAttemptStartDataPBImpl.java
+@@ -150,10 +150,10 @@ public class ApplicationAttemptStartDataPBImpl extends
+     return false;
+   }
+ 
+-  @Override
+-  public String toString() {
+-    return TextFormat.shortDebugString(getProto());
+-  }
++  // @Override
++  // public String toString() {
++  //   return TextFormat.shortDebugString(getProto());
++  // }
+ 
+   private void mergeLocalToBuilder() {
+     if (this.applicationAttemptId != null
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationFinishDataPBImpl.java b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationFinishDataPBImpl.java
+index ba7e7f0566..141e54c4be 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationFinishDataPBImpl.java
++++ b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationFinishDataPBImpl.java
+@@ -165,10 +165,10 @@ public class ApplicationFinishDataPBImpl extends ApplicationFinishData {
+     return false;
+   }
+ 
+-  @Override
+-  public String toString() {
+-    return TextFormat.shortDebugString(getProto());
+-  }
++  // @Override
++  // public String toString() {
++  //   return TextFormat.shortDebugString(getProto());
++  // }
+ 
+   private void mergeLocalToBuilder() {
+     if (this.applicationId != null
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationStartDataPBImpl.java b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationStartDataPBImpl.java
+index f47ab00c64..011787fda2 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationStartDataPBImpl.java
++++ b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ApplicationStartDataPBImpl.java
+@@ -189,10 +189,10 @@ public class ApplicationStartDataPBImpl extends ApplicationStartData {
+     return false;
+   }
+ 
+-  @Override
+-  public String toString() {
+-    return TextFormat.shortDebugString(getProto());
+-  }
++  // @Override
++  // public String toString() {
++  //   return TextFormat.shortDebugString(getProto());
++  // }
+ 
+   private void mergeLocalToBuilder() {
+     if (this.applicationId != null
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ContainerFinishDataPBImpl.java b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ContainerFinishDataPBImpl.java
+index e9aeb920f9..02c334d6a1 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ContainerFinishDataPBImpl.java
++++ b/ambari-metrics/ambari-metrics-timelineservice/src/main/java/org/apache/ambari/metrics/records/impl/pb/ContainerFinishDataPBImpl.java
+@@ -154,10 +154,10 @@ public class ContainerFinishDataPBImpl extends ContainerFinishData {
+     return false;
+   }
+ 
+-  @Override
+-  public String toString() {
+-    return TextFormat.shortDebugString(getProto());
+-  }
++  // @Override
++  // public String toString() {
++  //   return TextFormat.shortDebugString(getProto());
++  // }
+ 
+   private void mergeLocalToBuilder() {
+     if (this.containerId != null
+-- 
+2.34.1
+
