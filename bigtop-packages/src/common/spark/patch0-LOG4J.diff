@@ -1,0 +1,174 @@
+aa9c6f15929839a1f8ef1a299 Mon Sep 17 00:00:00 2001
+From: Vivek Dhiman <approach2vivek@gmail.com>
+Date: Tue, 16 Jan 2024 14:41:00 +0530
+Subject: [PATCH] Replaced log4j with reload4j
+
+---
+ common/kvstore/pom.xml                |  4 ++--
+ common/network-common/pom.xml         |  4 ++--
+ common/network-shuffle/pom.xml        |  4 ++--
+ core/pom.xml                          |  4 ++--
+ external/kafka-0-10-assembly/pom.xml  |  4 ++--
+ external/kinesis-asl-assembly/pom.xml |  4 ++--
+ launcher/pom.xml                      |  4 ++--
+ pom.xml                               | 17 +++++++++++++----
+ 8 files changed, 27 insertions(+), 18 deletions(-)
+
+diff --git a/common/kvstore/pom.xml b/common/kvstore/pom.xml
+index 3086895f6df..a64fec1a8ef 100644
+--- a/common/kvstore/pom.xml
++++ b/common/kvstore/pom.xml
+@@ -67,8 +67,8 @@
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+diff --git a/common/network-common/pom.xml b/common/network-common/pom.xml
+index 3ed3790e16d..165c60c0cf1 100644
+--- a/common/network-common/pom.xml
++++ b/common/network-common/pom.xml
+@@ -102,8 +102,8 @@
+ 
+     <!-- Test dependencies -->
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+diff --git a/common/network-shuffle/pom.xml b/common/network-shuffle/pom.xml
+index c760e4aa719..196fe22550a 100644
+--- a/common/network-shuffle/pom.xml
++++ b/common/network-shuffle/pom.xml
+@@ -88,8 +88,8 @@
+     </dependency>
+ 
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+diff --git a/core/pom.xml b/core/pom.xml
+index 98c0c1e2154..767809d330c 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -213,8 +213,8 @@
+       <artifactId>jcl-over-slf4j</artifactId>
+     </dependency>
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+     </dependency>
+     <dependency>
+       <groupId>org.slf4j</groupId>
+diff --git a/external/kafka-0-10-assembly/pom.xml b/external/kafka-0-10-assembly/pom.xml
+index 79e9498855c..56af10abb7c 100644
+--- a/external/kafka-0-10-assembly/pom.xml
++++ b/external/kafka-0-10-assembly/pom.xml
+@@ -96,8 +96,8 @@
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+diff --git a/external/kinesis-asl-assembly/pom.xml b/external/kinesis-asl-assembly/pom.xml
+index 4268de74b6d..494a4f48911 100644
+--- a/external/kinesis-asl-assembly/pom.xml
++++ b/external/kinesis-asl-assembly/pom.xml
+@@ -85,8 +85,8 @@
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+diff --git a/launcher/pom.xml b/launcher/pom.xml
+index fdd36d4893d..d9439a979f2 100644
+--- a/launcher/pom.xml
++++ b/launcher/pom.xml
+@@ -37,8 +37,8 @@
+   <dependencies>
+     <!-- NOTE: only test-scope dependencies are allowed in this module. -->
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
+       <scope>test</scope>
+     </dependency>
+     <dependency>
+diff --git a/pom.xml b/pom.xml
+index 986a13cba20..cacf7b915f0 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -119,7 +119,6 @@
+     <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+     <sbt.project.name>spark</sbt.project.name>
+     <slf4j.version>1.7.30</slf4j.version>
+-    <log4j.version>1.2.17</log4j.version>
+     <hadoop.version>3.3.1</hadoop.version>
+     <protobuf.version>2.5.0</protobuf.version>
+     <yarn.version>${hadoop.version}</yarn.version>
+@@ -695,6 +694,12 @@
+         <artifactId>slf4j-log4j12</artifactId>
+         <version>${slf4j.version}</version>
+         <scope>${hadoop.deps.scope}</scope>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.slf4j</groupId>
+@@ -708,9 +713,9 @@
+         <!-- runtime scope is appropriate, but causes SBT build problems -->
+       </dependency>
+       <dependency>
+-        <groupId>log4j</groupId>
+-        <artifactId>log4j</artifactId>
+-        <version>${log4j.version}</version>
++        <groupId>ch.qos.reload4j</groupId>
++        <artifactId>reload4j</artifactId>
++        <version>1.2.25</version>
+         <scope>${hadoop.deps.scope}</scope>
+       </dependency>
+       <dependency>
+@@ -1587,6 +1592,10 @@
+             <groupId>com.github.spotbugs</groupId>
+             <artifactId>spotbugs-annotations</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+-- 
+2.43.0
+
+
