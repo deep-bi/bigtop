@@ -18,7 +18,6 @@ set -ex
 . `dirname $0`/bigtop.bom
 
 export _JAVA_OPTIONS="-Xmx2048m -Djava.awt.headless=true"
-export MAVEN_OPTS="-Dmaven.wagon.http.ssl.insecure=true -Dmaven.wagon.http.ssl.allowall=true -Dmaven.wagon.http.ssl.ignore.validity.dates=true"
 
 . /etc/os-release
 OS="$ID"
