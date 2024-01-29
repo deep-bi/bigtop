@@ -1,34 +1,38 @@
-
-m c025d8681167fbc87fcffd359d044e7c6bb90470 Mon Sep 17 00:00:00 2001
+From 85b3b0aa74821514aee4889448d1892c27df5125 Mon Sep 17 00:00:00 2001
 From: Vivek Dhiman <approach2vivek@gmail.com>
-Date: Thu, 18 Jan 2024 15:39:20 +0530
+Date: Sat, 27 Jan 2024 19:00:56 +0530
 Subject: [PATCH] Added patch file to replace log4j with reload4j
 
 ---
- ambari-agent/pom.xml                          |  4 ++++
- ambari-infra/ambari-infra-manager-it/pom.xml  | 10 ++++++++
- ambari-infra/ambari-infra-solr-client/pom.xml | 14 +++++++----
- ambari-infra/pom.xml                          |  6 +++++
- .../ambari-logsearch-appender/pom.xml         |  6 ++---
- ambari-logsearch/ambari-logsearch-it/pom.xml  |  8 ++++++-
- .../pom.xml                                   |  6 +++++
- .../ambari-logsearch-logfeeder/pom.xml        | 10 ++++++++
- .../ambari-logsearch-server/pom.xml           | 12 ++++++++++
- ambari-logsearch/pom.xml                      |  6 +++++
- .../ambari-metrics-assembly/pom.xml           |  6 +++++
- ambari-metrics/ambari-metrics-common/pom.xml  |  6 +++++
- .../ambari-metrics-flume-sink/pom.xml         |  4 ++++
- .../ambari-metrics-hadoop-sink/pom.xml        | 11 +++++++++
- .../ambari-metrics-host-aggregator/pom.xml    |  6 +++++
- .../ambari-metrics-kafka-sink/pom.xml         |  4 ++++
- .../ambari-metrics-timelineservice/pom.xml    | 10 +++++++-
- ambari-project/pom.xml                        | 24 ++++++++++++++++---
- ambari-server/pom.xml                         | 24 +++++++++++++++++--
- ambari-utility/pom.xml                        |  4 ++--
- 20 files changed, 165 insertions(+), 16 deletions(-)
+ ambari-agent/pom.xml                               |  4 +++
+ ambari-infra/ambari-infra-manager-it/pom.xml       | 10 +++++++
+ ambari-infra/ambari-infra-solr-client/pom.xml      | 14 ++++++---
+ ambari-infra/pom.xml                               |  6 ++++
+ ambari-logsearch/ambari-logsearch-appender/pom.xml |  6 ++--
+ ambari-logsearch/ambari-logsearch-it/pom.xml       |  8 ++++-
+ .../pom.xml                                        |  6 ++++
+ .../ambari-logsearch-logfeeder/pom.xml             | 10 +++++++
+ ambari-logsearch/ambari-logsearch-server/pom.xml   | 12 ++++++++
+ ambari-logsearch/pom.xml                           |  6 ++++
+ ambari-metrics/ambari-metrics-assembly/pom.xml     |  6 ++++
+ ambari-metrics/ambari-metrics-common/pom.xml       |  6 ++++
+ ambari-metrics/ambari-metrics-flume-sink/pom.xml   |  4 +++
+ ambari-metrics/ambari-metrics-hadoop-sink/pom.xml  | 11 +++++++
+ .../ambari-metrics-host-aggregator/pom.xml         |  6 ++++
+ ambari-metrics/ambari-metrics-kafka-sink/pom.xml   |  4 +++
+ .../ambari-metrics-timelineservice/pom.xml         | 10 ++++++-
+ ambari-project/pom.xml                             | 24 +++++++++++++--
+ ambari-server/conf/unix/log4j.properties           | 12 ++++----
+ ambari-server/pom.xml                              | 35 ++++++++++++++++++----
+ .../server/checks/DatabaseConsistencyChecker.java  | 25 ++++++++--------
+ ambari-utility/pom.xml                             |  4 +--
+ 22 files changed, 191 insertions(+), 38 deletions(-)
+ mode change 100644 => 100755 ambari-server/conf/unix/log4j.properties
+ mode change 100644 => 100755 ambari-server/pom.xml
+ mode change 100644 => 100755 ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
 
 diff --git a/ambari-agent/pom.xml b/ambari-agent/pom.xml
-index 3b0bef2d..0c573fa0 100644
+index 3b0bef2..0c573fa 100644
 --- a/ambari-agent/pom.xml
 +++ b/ambari-agent/pom.xml
 @@ -115,6 +115,10 @@
@@ -43,7 +47,7 @@ index 3b0bef2d..0c573fa0 100644
      </dependency>
      <dependency>
 diff --git a/ambari-infra/ambari-infra-manager-it/pom.xml b/ambari-infra/ambari-infra-manager-it/pom.xml
-index 21a61bc0..6ddcb06f 100644
+index 21a61bc..6ddcb06 100644
 --- a/ambari-infra/ambari-infra-manager-it/pom.xml
 +++ b/ambari-infra/ambari-infra-manager-it/pom.xml
 @@ -66,6 +66,12 @@
@@ -71,7 +75,7 @@ index 21a61bc0..6ddcb06f 100644
      </dependency>
      <dependency>
 diff --git a/ambari-infra/ambari-infra-solr-client/pom.xml b/ambari-infra/ambari-infra-solr-client/pom.xml
-index ff94b2a4..276e75ca 100644
+index ff94b2a..276e75c 100644
 --- a/ambari-infra/ambari-infra-solr-client/pom.xml
 +++ b/ambari-infra/ambari-infra-solr-client/pom.xml
 @@ -89,11 +89,17 @@
@@ -103,7 +107,7 @@ index ff94b2a4..276e75ca 100644
 \ No newline at end of file
 +</project>
 diff --git a/ambari-infra/pom.xml b/ambari-infra/pom.xml
-index 13fb6e93..6a2e49ef 100644
+index 13fb6e9..6a2e49e 100644
 --- a/ambari-infra/pom.xml
 +++ b/ambari-infra/pom.xml
 @@ -324,6 +324,12 @@
@@ -120,7 +124,7 @@ index 13fb6e93..6a2e49ef 100644
        <dependency>
          <groupId>commons-io</groupId>
 diff --git a/ambari-logsearch/ambari-logsearch-appender/pom.xml b/ambari-logsearch/ambari-logsearch-appender/pom.xml
-index fc2d03b7..fb62d3d1 100644
+index fc2d03b..fb62d3d 100644
 --- a/ambari-logsearch/ambari-logsearch-appender/pom.xml
 +++ b/ambari-logsearch/ambari-logsearch-appender/pom.xml
 @@ -62,9 +62,9 @@
@@ -137,7 +141,7 @@ index fc2d03b7..fb62d3d1 100644
          <exclusion>
            <groupId>com.sun.jdmk</groupId>
 diff --git a/ambari-logsearch/ambari-logsearch-it/pom.xml b/ambari-logsearch/ambari-logsearch-it/pom.xml
-index d7a06f0e..3d94c2a3 100644
+index d7a06f0..3d94c2a 100644
 --- a/ambari-logsearch/ambari-logsearch-it/pom.xml
 +++ b/ambari-logsearch/ambari-logsearch-it/pom.xml
 @@ -96,6 +96,12 @@
@@ -161,7 +165,7 @@ index d7a06f0e..3d94c2a3 100644
 \ No newline at end of file
 +</project>
 diff --git a/ambari-logsearch/ambari-logsearch-logfeeder-container-registry/pom.xml b/ambari-logsearch/ambari-logsearch-logfeeder-container-registry/pom.xml
-index 65733eac..ed54ed75 100644
+index 65733ea..ed54ed7 100644
 --- a/ambari-logsearch/ambari-logsearch-logfeeder-container-registry/pom.xml
 +++ b/ambari-logsearch/ambari-logsearch-logfeeder-container-registry/pom.xml
 @@ -42,6 +42,12 @@
@@ -178,7 +182,7 @@ index 65733eac..ed54ed75 100644
      <dependency>
        <groupId>com.fasterxml.jackson.core</groupId>
 diff --git a/ambari-logsearch/ambari-logsearch-logfeeder/pom.xml b/ambari-logsearch/ambari-logsearch-logfeeder/pom.xml
-index 164e3cac..a6d4319d 100644
+index 164e3ca..a6d4319 100644
 --- a/ambari-logsearch/ambari-logsearch-logfeeder/pom.xml
 +++ b/ambari-logsearch/ambari-logsearch-logfeeder/pom.xml
 @@ -209,6 +209,10 @@
@@ -206,7 +210,7 @@ index 164e3cac..a6d4319d 100644
      <dependency>
        <groupId>org.springframework.boot</groupId>
 diff --git a/ambari-logsearch/ambari-logsearch-server/pom.xml b/ambari-logsearch/ambari-logsearch-server/pom.xml
-index e265c3d5..00ba51c6 100755
+index e265c3d..00ba51c 100755
 --- a/ambari-logsearch/ambari-logsearch-server/pom.xml
 +++ b/ambari-logsearch/ambari-logsearch-server/pom.xml
 @@ -249,6 +249,12 @@
@@ -236,7 +240,7 @@ index e265c3d5..00ba51c6 100755
      <dependency>
        <groupId>commons-io</groupId>
 diff --git a/ambari-logsearch/pom.xml b/ambari-logsearch/pom.xml
-index da5727c4..c4036b5d 100644
+index da5727c..c4036b5 100644
 --- a/ambari-logsearch/pom.xml
 +++ b/ambari-logsearch/pom.xml
 @@ -347,6 +347,12 @@
@@ -253,7 +257,7 @@ index da5727c4..c4036b5d 100644
        <dependency>
          <groupId>com.google.guava</groupId>
 diff --git a/ambari-metrics/ambari-metrics-assembly/pom.xml b/ambari-metrics/ambari-metrics-assembly/pom.xml
-index 2940d8a8..6504a76b 100644
+index 2940d8a..6504a76 100644
 --- a/ambari-metrics/ambari-metrics-assembly/pom.xml
 +++ b/ambari-metrics/ambari-metrics-assembly/pom.xml
 @@ -1316,6 +1316,12 @@
@@ -270,7 +274,7 @@ index 2940d8a8..6504a76b 100644
      <dependency>
        <groupId>org.apache.ambari</groupId>
 diff --git a/ambari-metrics/ambari-metrics-common/pom.xml b/ambari-metrics/ambari-metrics-common/pom.xml
-index c112daf2..59bd2fda 100644
+index c112daf..59bd2fd 100644
 --- a/ambari-metrics/ambari-metrics-common/pom.xml
 +++ b/ambari-metrics/ambari-metrics-common/pom.xml
 @@ -159,6 +159,12 @@
@@ -287,7 +291,7 @@ index c112daf2..59bd2fda 100644
      <dependency>
        <groupId>org.codehaus.jackson</groupId>
 diff --git a/ambari-metrics/ambari-metrics-flume-sink/pom.xml b/ambari-metrics/ambari-metrics-flume-sink/pom.xml
-index 2ec74b77..430335e7 100644
+index 2ec74b7..430335e 100644
 --- a/ambari-metrics/ambari-metrics-flume-sink/pom.xml
 +++ b/ambari-metrics/ambari-metrics-flume-sink/pom.xml
 @@ -131,6 +131,10 @@ limitations under the License.
@@ -302,7 +306,7 @@ index 2ec74b77..430335e7 100644
      </dependency>
      <dependency>
 diff --git a/ambari-metrics/ambari-metrics-hadoop-sink/pom.xml b/ambari-metrics/ambari-metrics-hadoop-sink/pom.xml
-index 5551b396..809372d4 100644
+index 5551b39..809372d 100644
 --- a/ambari-metrics/ambari-metrics-hadoop-sink/pom.xml
 +++ b/ambari-metrics/ambari-metrics-hadoop-sink/pom.xml
 @@ -142,6 +142,17 @@ limitations under the License.
@@ -324,7 +328,7 @@ index 5551b396..809372d4 100644
      <dependency>
        <groupId>commons-codec</groupId>
 diff --git a/ambari-metrics/ambari-metrics-host-aggregator/pom.xml b/ambari-metrics/ambari-metrics-host-aggregator/pom.xml
-index df8bfdc9..6d29d3f0 100644
+index df8bfdc..6d29d3f 100644
 --- a/ambari-metrics/ambari-metrics-host-aggregator/pom.xml
 +++ b/ambari-metrics/ambari-metrics-host-aggregator/pom.xml
 @@ -75,6 +75,12 @@
@@ -341,7 +345,7 @@ index df8bfdc9..6d29d3f0 100644
          <dependency>
              <groupId>com.sun.jersey.jersey-test-framework</groupId>
 diff --git a/ambari-metrics/ambari-metrics-kafka-sink/pom.xml b/ambari-metrics/ambari-metrics-kafka-sink/pom.xml
-index a3890a76..d5012caf 100644
+index a3890a7..d5012ca 100644
 --- a/ambari-metrics/ambari-metrics-kafka-sink/pom.xml
 +++ b/ambari-metrics/ambari-metrics-kafka-sink/pom.xml
 @@ -165,6 +165,10 @@ limitations under the License.
@@ -356,7 +360,7 @@ index a3890a76..d5012caf 100644
      </dependency>
      <dependency>
 diff --git a/ambari-metrics/ambari-metrics-timelineservice/pom.xml b/ambari-metrics/ambari-metrics-timelineservice/pom.xml
-index 64f62505..aa10ed47 100644
+index 64f6250..aa10ed4 100644
 --- a/ambari-metrics/ambari-metrics-timelineservice/pom.xml
 +++ b/ambari-metrics/ambari-metrics-timelineservice/pom.xml
 @@ -297,7 +297,11 @@
@@ -384,7 +388,7 @@ index 64f62505..aa10ed47 100644
      </dependency>
      <!-- zkclient is helix-core dependency but it need to be 0.9 in order for AMS HA to work on secure cluster-->
 diff --git a/ambari-project/pom.xml b/ambari-project/pom.xml
-index 62efdea5..e77deba8 100644
+index 62efdea..e77deba 100644
 --- a/ambari-project/pom.xml
 +++ b/ambari-project/pom.xml
 @@ -208,6 +208,12 @@
@@ -439,11 +443,51 @@ index 62efdea5..e77deba8 100644
        </dependency>
        <dependency>
          <groupId>org.apache.zookeeper</groupId>
+diff --git a/ambari-server/conf/unix/log4j.properties b/ambari-server/conf/unix/log4j.properties
+old mode 100644
+new mode 100755
+index d224b80..48891c3
+--- a/ambari-server/conf/unix/log4j.properties
++++ b/ambari-server/conf/unix/log4j.properties
+@@ -99,13 +99,11 @@ log4j.logger.org.eclipse.jetty=WARN,file
+ # Audit logging
+ log4j.logger.audit=INFO,audit
+ log4j.additivity.audit=false
+-log4j.appender.audit=org.apache.log4j.rolling.RollingFileAppender
+-log4j.appender.audit.rollingPolicy=org.apache.log4j.rolling.FixedWindowRollingPolicy
+-log4j.appender.audit.rollingPolicy.ActiveFileName=${ambari.log.dir}/${ambari.audit.file}
+-log4j.appender.audit.rollingPolicy.FileNamePattern=${ambari.log.dir}/${ambari.audit.file}-%i.log.gz
+-log4j.appender.audit.rollingPolicy.maxIndex=13
+-log4j.appender.audit.triggeringPolicy=org.apache.log4j.rolling.SizeBasedTriggeringPolicy
+-log4j.appender.audit.triggeringPolicy.maxFileSize=50000000
++log4j.appender.audit=org.apache.log4j.RollingFileAppender
++log4j.appender.audit.File=${ambari.log.dir}/${ambari.audit.file}
++log4j.appender.audit.FileNamePattern=${ambari.log.dir}/${ambari.audit.file}-%i.log.gz
++log4j.appender.audit.MaxFileSize=50000000
++log4j.appender.audit.MaxBackupIndex=13
+ log4j.appender.audit.layout=org.apache.log4j.PatternLayout
+ log4j.appender.audit.layout.ConversionPattern=%m%n
+ 
 diff --git a/ambari-server/pom.xml b/ambari-server/pom.xml
-index d159e2ec..c2771e59 100644
+old mode 100644
+new mode 100755
+index d159e2e..dcb3ad4
 --- a/ambari-server/pom.xml
 +++ b/ambari-server/pom.xml
-@@ -1257,12 +1257,18 @@
+@@ -1247,6 +1247,12 @@
+     <dependency>
+       <groupId>org.slf4j</groupId>
+       <artifactId>slf4j-log4j12</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.slf4j</groupId>
+@@ -1257,12 +1263,18 @@
        <artifactId>jcl-over-slf4j</artifactId>
      </dependency>
      <dependency>
@@ -453,18 +497,28 @@ index d159e2ec..c2771e59 100644
 +      <artifactId>reload4j</artifactId>
      </dependency>
      <dependency>
-       <groupId>log4j</groupId>
-       <artifactId>apache-log4j-extras</artifactId>
-+      <exclusions>
-+        <exclusion>
-+          <groupId>log4j</groupId>
-+          <artifactId>log4j</artifactId>
-+        </exclusion>
-+      </exclusions>
+-      <groupId>log4j</groupId>
+-      <artifactId>apache-log4j-extras</artifactId>
++      <groupId>ch.qos.logback</groupId>
++      <artifactId>logback-core</artifactId>
++      <version>1.2.10</version>
++    </dependency>
++    <dependency>
++      <groupId>ch.qos.logback</groupId>
++      <artifactId>logback-classic</artifactId>
++      <version>1.2.10</version>
      </dependency>
      <dependency>
        <groupId>org.eclipse.persistence</groupId>
-@@ -1631,6 +1637,12 @@
+@@ -1321,7 +1333,6 @@
+       <groupId>org.apache.ant</groupId>
+       <artifactId>ant-launcher</artifactId>
+     </dependency>
+-
+     <dependency>
+       <groupId>org.eclipse.jetty</groupId>
+       <artifactId>jetty-server</artifactId>
+@@ -1631,6 +1642,12 @@
        <groupId>org.snmp4j</groupId>
        <artifactId>snmp4j</artifactId>
        <version>1.10.1</version>
@@ -477,7 +531,7 @@ index d159e2ec..c2771e59 100644
      </dependency>
      <dependency>
        <groupId>com.esotericsoftware.yamlbeans</groupId>
-@@ -1694,6 +1706,10 @@
+@@ -1694,6 +1711,10 @@
            <groupId>org.apache.zookeeper</groupId>
            <artifactId>zookeeper</artifactId>
          </exclusion>
@@ -488,7 +542,7 @@ index d159e2ec..c2771e59 100644
        </exclusions>
      </dependency>
      <dependency>
-@@ -1741,6 +1757,10 @@
+@@ -1741,6 +1762,10 @@
            <groupId>com.jcraft</groupId>
            <artifactId>jsch</artifactId>
          </exclusion>
@@ -499,8 +553,68 @@ index d159e2ec..c2771e59 100644
        </exclusions>
      </dependency>
      <dependency>
+diff --git a/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java b/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
+old mode 100644
+new mode 100755
+index 3e7a4e7..b897c05
+--- a/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
++++ b/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
+@@ -17,7 +17,7 @@
+  */
+ package org.apache.ambari.server.checks;
+ 
+-import java.util.Enumeration;
++import java.util.Iterator;
+ 
+ import org.apache.ambari.server.AmbariException;
+ import org.apache.ambari.server.audit.AuditLoggerModule;
+@@ -25,16 +25,18 @@ import org.apache.ambari.server.controller.ControllerModule;
+ import org.apache.ambari.server.ldap.LdapModule;
+ import org.apache.ambari.server.orm.DBAccessor;
+ import org.apache.ambari.server.utils.EventBusSynchronizer;
+-import org.apache.log4j.FileAppender;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+-import org.slf4j.impl.Log4jLoggerAdapter;
+ 
+ import com.google.inject.Guice;
+ import com.google.inject.Inject;
+ import com.google.inject.Injector;
+ import com.google.inject.persist.PersistService;
+ 
++import ch.qos.logback.classic.spi.ILoggingEvent;
++import ch.qos.logback.core.Appender;
++import ch.qos.logback.core.FileAppender;
++
+ public class DatabaseConsistencyChecker {
+   private static final Logger LOG = LoggerFactory.getLogger
+           (DatabaseConsistencyChecker.class);
+@@ -123,15 +125,14 @@ public class DatabaseConsistencyChecker {
+         DatabaseConsistencyCheckHelper.closeConnection();
+         if (DatabaseConsistencyCheckHelper.getLastCheckResult().isErrorOrWarning()) {
+           String ambariDBConsistencyCheckLog = "ambari-server-check-database.log";
+-          if (LOG instanceof Log4jLoggerAdapter) {
+-            org.apache.log4j.Logger dbConsistencyCheckHelperLogger = org.apache.log4j.Logger.getLogger(DatabaseConsistencyCheckHelper.class);
+-            Enumeration appenders = dbConsistencyCheckHelperLogger.getAllAppenders();
+-            while (appenders.hasMoreElements()) {
+-              Object appender = appenders.nextElement();
+-              if (appender instanceof FileAppender) {
+-                ambariDBConsistencyCheckLog = ((FileAppender) appender).getFile();
+-                break;
+-              }
++          ch.qos.logback.classic.Logger dbConsistencyCheckHelperLogger =
++                  (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(DatabaseConsistencyCheckHelper.class);
++
++          for (Iterator<Appender<ILoggingEvent>> index = dbConsistencyCheckHelperLogger.iteratorForAppenders(); index.hasNext();){
++            Appender<ILoggingEvent> appender = index.next();
++            if (appender instanceof FileAppender) {
++              ambariDBConsistencyCheckLog = ((FileAppender) appender).getFile();
++              break;
+             }
+           }
+           ambariDBConsistencyCheckLog = ambariDBConsistencyCheckLog.replace("//", "/");
 diff --git a/ambari-utility/pom.xml b/ambari-utility/pom.xml
-index 02b84151..a3c03a6c 100644
+index 02b8415..a3c03a6 100644
 --- a/ambari-utility/pom.xml
 +++ b/ambari-utility/pom.xml
 @@ -72,8 +72,8 @@
@@ -515,6 +629,5 @@ index 02b84151..a3c03a6c 100644
      </dependency>
      <dependency>
 -- 
-2.43.0
-
+1.8.3.1
 
