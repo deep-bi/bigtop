@@ -1,1264 +1,1294 @@
-From f4ea361024163069581f94a7a506a17ed4e5edfe Mon Sep 17 00:00:00 2001
-From: Vivek Dhiman <approach2vivek@gmail.com>
-Date: Wed, 6 Mar 2024 16:21:03 +0530
-Subject: [PATCH] Added Redhat8 options
-
----
- .../configs/ODP.json                          |  2 +-
- .../configs/PHD.json                          | 20 +++++++++----------
- .../urlinfo_processor/urlinfo_processor.py    |  3 ++-
- .../AMBARI_INFRA_SOLR/0.1.0/metainfo.xml      |  2 +-
- .../AMBARI_METRICS/0.1.0/metainfo.xml         |  4 ++--
- .../common-services/DRUID/0.10.1/metainfo.xml |  2 +-
- .../HDFS/2.1.0.2.0/metainfo.xml               |  2 +-
- .../HIVE/0.12.0.2.0/metainfo.xml              |  2 +-
- .../common-services/KAFKA/0.8.1/metainfo.xml  |  2 +-
- .../KERBEROS/1.10.3-10/metainfo.xml           |  2 +-
- .../KERBEROS/1.10.3-30/metainfo.xml           |  2 +-
- .../LOGSEARCH/0.5.0/metainfo.xml              |  2 +-
- .../OOZIE/4.0.0.2.0/metainfo.xml              |  2 +-
- .../OOZIE/4.2.0.2.3/metainfo.xml              |  2 +-
- .../common-services/RANGER/0.4.0/metainfo.xml |  2 +-
- .../common-services/RANGER/0.6.0/metainfo.xml |  2 +-
- .../common-services/SPARK/1.2.1/metainfo.xml  |  2 +-
- .../common-services/SPARK2/2.0.0/metainfo.xml |  2 +-
- .../common-services/STORM/0.9.3/metainfo.xml  |  2 +-
- .../SUPERSET/0.15.0/metainfo.xml              |  2 +-
- .../ZOOKEEPER/3.4.6/metainfo.xml              |  2 +-
- .../ZOOKEEPER/3.4.9/metainfo.xml              |  2 +-
- .../stacks/HDP/2.1/services/HIVE/metainfo.xml |  2 +-
- .../HDP/2.1/services/OOZIE/metainfo.xml       |  2 +-
- .../HDP/2.2/services/FALCON/metainfo.xml      |  2 +-
- .../HDP/2.2/services/FLUME/metainfo.xml       |  2 +-
- .../HDP/2.2/services/HBASE/metainfo.xml       |  2 +-
- .../stacks/HDP/2.2/services/HDFS/metainfo.xml |  2 +-
- .../stacks/HDP/2.2/services/HIVE/metainfo.xml |  4 ++--
- .../stacks/HDP/2.2/services/KNOX/metainfo.xml |  2 +-
- .../HDP/2.2/services/OOZIE/metainfo.xml       |  2 +-
- .../stacks/HDP/2.2/services/PIG/metainfo.xml  |  2 +-
- .../HDP/2.2/services/SLIDER/metainfo.xml      |  2 +-
- .../HDP/2.2/services/SQOOP/metainfo.xml       |  2 +-
- .../stacks/HDP/2.2/services/TEZ/metainfo.xml  |  2 +-
- .../stacks/HDP/2.2/services/YARN/metainfo.xml |  4 ++--
- .../stacks/HDP/2.3.ECS/repos/repoinfo.xml     | 14 +++++++++++++
- .../2.3.ECS/services/ZOOKEEPER/metainfo.xml   |  2 +-
- .../stacks/HDP/2.3/repos/repoinfo.xml         | 14 +++++++++++++
- .../HDP/2.3/services/ACCUMULO/metainfo.xml    |  2 +-
- .../HDP/2.3/services/ATLAS/metainfo.xml       |  2 +-
- .../stacks/HDP/2.3/services/HDFS/metainfo.xml |  2 +-
- .../stacks/HDP/2.3/services/HIVE/metainfo.xml |  4 ++--
- .../stacks/HDP/2.3/services/PIG/metainfo.xml  |  2 +-
- .../HDP/2.3/services/RANGER_KMS/metainfo.xml  |  2 +-
- .../stacks/HDP/2.4/repos/repoinfo.xml         | 14 +++++++++++++
- .../stacks/HDP/2.5/repos/repoinfo.xml         | 14 +++++++++++++
- .../HDP/2.5/services/ATLAS/metainfo.xml       |  2 +-
- .../HDP/2.5/services/FALCON/metainfo.xml      |  2 +-
- .../stacks/HDP/2.5/services/HIVE/metainfo.xml |  4 ++--
- .../HDP/2.5/services/SPARK/metainfo.xml       |  2 +-
- .../HDP/2.5/services/ZEPPELIN/metainfo.xml    |  2 +-
- .../stacks/HDP/2.6/repos/repoinfo.xml         | 14 +++++++++++++
- .../HDP/2.6/services/FALCON/metainfo.xml      |  2 +-
- .../HDP/2.6/services/OOZIE/metainfo.xml       |  2 +-
- .../HDP/2.6/services/SPARK2/metainfo.xml      |  2 +-
- .../HDP/2.6/services/ZEPPELIN/metainfo.xml    |  2 +-
- .../stacks/PERF/1.0/repos/repoinfo.xml        | 14 +++++++++++++
- .../main/resources/stacks/PERF/1.0/vdf.xml    | 15 ++++++++++++++
- .../stacks/PERF/2.0/repos/repoinfo.xml        | 14 +++++++++++++
- .../main/resources/stacks/PERF/2.0/vdf.xml    | 15 ++++++++++++++
- .../src/main/resources/version_definition.xsd |  1 +
- .../src/test/python/validation-hosts.json     |  2 +-
- .../HDP/2.0.7/services/OOZIE/metainfo.xml     |  2 +-
- .../common-services/NIFI/1.0.0/metainfo.xml   |  2 +-
- .../stacks/HDF/2.0/repos/repoinfo.xml         | 12 +++++++++++
- .../HDF/2.0/services/ZOOKEEPER/metainfo.xml   |  2 +-
- .../MICROSOFT_R_SERVER/8.0.5/metainfo.xml     |  2 +-
- .../8.0.5/repos/repoinfo.xml                  |  7 +++++++
- .../ODPi/2.0/services/HIVE/metainfo.xml       |  2 +-
- contrib/version-builder/version_builder.py    |  4 ++--
- 71 files changed, 223 insertions(+), 74 deletions(-)
-
-diff --git a/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json b/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json
-index f55b64246f..95b07597d6 100644
---- a/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json
-+++ b/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json
-@@ -105,7 +105,7 @@
-       "version": "0.9",
-       "baseVersion": "2.3",
-       "active": "true",
--      "family": "redhat6,redhat7,suse11",
-+      "family": "redhat6,redhat7,redhat8,suse11",
-       "services": [
-         {
-           "name": "KERBEROS"
-diff --git a/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json b/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json
-index 7590e696d1..09c88a7242 100644
---- a/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json
-+++ b/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json
-@@ -203,7 +203,7 @@
-       "version": "3.3",
-       "baseVersion": "2.3",
-       "active": "true",
--      "family": "redhat6,amazon2015,redhat7,suse11",
-+      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-       "services": [
-         {
-           "name": "KERBEROS"
-@@ -239,7 +239,7 @@
-               ]
-             },
-             {
--              "family": "redhat6,amazon2015,redhat7,suse11",
-+              "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-               "packages": [
-                 "hive_${stack_version}",
-                 "hive_${stack_version}-hcatalog",
-@@ -256,7 +256,7 @@
-               ]
-             },
-             {
--              "family": "redhat7",
-+              "family": "redhat7,redhat8",
-               "packages": [
-                 {
-                   "name": "mysql-community-release",
-@@ -295,7 +295,7 @@
-           "name": "OOZIE",
-           "packages":[
-             {
--              "family": "redhat6,amazon2015,redhat7,suse11",
-+              "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-               "packages": [
-                 "oozie_${stack_version}"
-               ]
-@@ -320,7 +320,7 @@
-           "name": "PIG",
-           "packages":[
-             {
--              "family": "redhat6,amazon2015,redhat7,suse11",
-+              "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-               "packages": [
-                 "pig_${stack_version}"
-               ]
-@@ -334,7 +334,7 @@
-           "name": "RANGER",
-           "packages":[
-             {
--              "family": "redhat6,redhat7,suse11",
-+              "family": "redhat6,redhat7,redhat8,suse11",
-               "packages": [
-                 "ranger_${stack_version}-admin",
-                 "ranger_${stack_version}-usersync"
-@@ -346,7 +346,7 @@
-           "name": "RANGER_KMS",
-           "packages":[
-             {
--              "family": "redhat6,redhat7,suse11",
-+              "family": "redhat6,redhat7,redhat8,suse11",
-               "packages": [
-                 "ranger_${stack_version}-kms"
-               ]
-@@ -359,7 +359,7 @@
-       "version": "3.4",
-       "baseVersion": "2.4",
-       "active": "true",
--      "family": "redhat6,amazon2015,redhat7,suse11",
-+      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-       "services": [
-         {
-           "name": "KERBEROS"
-@@ -412,7 +412,7 @@
-       "version": "3.5",
-       "baseVersion": "2.5",
-       "active": "true",
--      "family": "redhat6,amazon2015,redhat7,suse11",
-+      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-       "services": [
-         {
-           "name": "KERBEROS"
-@@ -465,7 +465,7 @@
-       "version": "3.6",
-       "baseVersion": "2.6",
-       "active": "true",
--      "family": "redhat6,amazon2015,redhat7,suse11",
-+      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
-       "services": [
-         {
-           "name": "KERBEROS"
-diff --git a/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py b/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py
-index 74f7fb9309..1155c1bcc9 100644
---- a/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py
-+++ b/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py
-@@ -30,7 +30,8 @@ import sys
- json_stack_version_re = re.compile("(\S*)-((\d\.*)+)")
- 
- family_map = {"redhat6": "centos6",
--              "redhat7": "centos7"}
-+              "redhat7": "centos7",
-+              "redhat8": "centos7"}
- 
- HELP_STRING = 'Usage: urlinfo_processor.py -u <urlinfo.json path> -s <stack folder>'
- 
-diff --git a/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
-index 568c97b0d2..5196a0ded5 100644
---- a/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
-@@ -146,7 +146,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>ambari-infra-solr-client</name>
-diff --git a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
-index a12618f167..2e8151c26e 100644
---- a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
-@@ -143,7 +143,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>ambari-metrics-collector</name>
-@@ -169,7 +169,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,redhat6,amazonlinux2</osFamily>
-+          <osFamily>redhat7,redhat8,redhat6,amazonlinux2</osFamily>
-           <packages>
-             <package>
-               <name>python-kerberos</name>
-diff --git a/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml b/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
-index 0a354ba82d..b04c2f7802 100644
---- a/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
-@@ -179,7 +179,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>druid_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
-index f26eee9f93..d85f22bff6 100644
---- a/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
-@@ -276,7 +276,7 @@
-         </osSpecific>
-         
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11</osFamily>
-           <packages>
-             <package>
-               <name>hadoop-client</name>
-diff --git a/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
-index b9056cb04d..9a18d3a469 100644
---- a/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
-@@ -298,7 +298,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
-           <packages>
-             <package>
-               <name>mariadb-server</name>
-diff --git a/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml b/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
-index 9dd687efd6..a4917b8e1b 100644
---- a/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
-@@ -88,7 +88,7 @@
-       </configuration-dependencies>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>kafka_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
-index 15bca08702..801851eff0 100644
---- a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
-@@ -81,7 +81,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6</osFamily>
-           <packages>
-             <package>
-               <name>krb5-workstation</name>
-diff --git a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
-index d35254ffe5..0a9fa3f025 100644
---- a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
-@@ -81,7 +81,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6</osFamily>
-           <packages>
-             <package>
-               <name>krb5-workstation</name>
-diff --git a/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml b/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
-index 764cbe334c..dd518f80b5 100644
---- a/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
-@@ -132,7 +132,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>ambari-logsearch-logfeeder</name>
-diff --git a/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
-index 2e936fbae5..719baa360b 100644
---- a/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
-@@ -128,7 +128,7 @@
-         </osSpecific>
- 
-        <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>extjs-2.2-1</name>
-diff --git a/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml b/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
-index 3ef8bde539..0ee6b00c3c 100644
---- a/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
-@@ -128,7 +128,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>oozie_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml b/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
-index 2512418759..9f40eb469c 100644
---- a/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
-@@ -92,7 +92,7 @@
-       </themes>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>ranger_${stack_version}-admin</name>
-diff --git a/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml b/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
-index 5c4e21fe1f..16325598be 100644
---- a/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
-@@ -68,7 +68,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>ranger_${stack_version}-admin</name>
-diff --git a/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml b/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
-index 2ede7bca6b..2754027e79 100644
---- a/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
-@@ -153,7 +153,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>spark_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml b/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
-index 46e5a25fca..ca22980c4e 100755
---- a/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
-@@ -198,7 +198,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>spark2_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml b/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
-index 3eef53b3d5..8aa1622982 100644
---- a/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
-@@ -32,7 +32,7 @@
-       </components>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>storm_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml b/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
-index 0679048cb4..7e5c2be39f 100644
---- a/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
-@@ -50,7 +50,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>superset_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
-index 7a1cbfc236..69aea556dd 100644
---- a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
-@@ -24,7 +24,7 @@
-       <version>3.4.6</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>zookeeper_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
-index e64a83e8c2..332878eb58 100644
---- a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
-+++ b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
-@@ -24,7 +24,7 @@
-       <version>3.4.9</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>zookeeper_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml
-index 0583163d6c..0f348474ce 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml
-@@ -67,7 +67,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
-           <packages>
-             <package>
-               <name>mariadb-server</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
-index 12ae95656a..7ffbac058a 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
-@@ -42,7 +42,7 @@
-         </osSpecific>
- 
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>extjs-2.2-1</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
-index 41aa5ae1de..fb67252259 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
-@@ -24,7 +24,7 @@
-       <version>0.6.0.2.2</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>falcon_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
-index 825b64bfbd..2475b808e0 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
-@@ -26,7 +26,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>flume_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
-index 0c9dff98d1..e0e106aec4 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
-@@ -25,7 +25,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>hbase_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
-index d15ba6dcbd..9f88af6319 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
-@@ -25,7 +25,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11</osFamily>
-           <packages>
-             <package>
-               <name>hadoop_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
-index f3194d179e..05f16aaa86 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
-@@ -58,7 +58,7 @@
-       
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>hive_${stack_version}</name>
-@@ -81,7 +81,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
-           <packages>
-             <package>
-               <name>mariadb-server</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
-index e6ce5a9926..2436372b88 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
-@@ -23,7 +23,7 @@
-       <extends>common-services/KNOX/0.5.0.2.2</extends>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>knox_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
-index 00d780a1b9..c599e2d994 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
-@@ -70,7 +70,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>oozie_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
-index 245a0b6924..90c8237604 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
-@@ -24,7 +24,7 @@
-       <version>0.14.0.2.2</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>pig_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
-index 435d3c2522..3be0e64d44 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
-@@ -23,7 +23,7 @@
-       <extends>common-services/SLIDER/0.60.0.2.2</extends>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>slider_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
-index f0482c2627..d22d74f4f3 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
-@@ -23,7 +23,7 @@
-       <version>1.4.5.2.2</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>sqoop_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
-index c12c26f095..71ef2c6648 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
-@@ -25,7 +25,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>tez_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
-index cdfe15c574..b460eaea0c 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
-@@ -34,7 +34,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>hadoop_${stack_version}-yarn</name>
-@@ -74,7 +74,7 @@
-       <version>2.6.0.2.2</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>hadoop_${stack_version}-mapreduce</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml
-index 329539ea9a..0b26cf4466 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml
-@@ -57,6 +57,20 @@
-       <unique>true</unique>
-     </repo>
-   </os>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.3.0.0</baseurl>
-+      <repoid>HDP-2.3</repoid>
-+      <reponame>HDP</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.20/repos/centos7</baseurl>
-+      <repoid>HDP-UTILS-1.1.0.20</repoid>
-+      <reponame>HDP-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="suse11">
-     <repo>
-       <baseurl>http://public-repo-1.hortonworks.com/HDP/suse11sp3/2.x/updates/2.3.0.0</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
-index 7cd6f8f0bf..e335ea834d 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
-@@ -23,7 +23,7 @@
-       <version>3.4.6.2.3</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11</osFamily>
-           <packages>
-             <package>
-               <name>zookeeper_2_3_*</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml
-index 69d1356d5f..11a796ef0b 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml
-@@ -45,6 +45,20 @@
-       <unique>false</unique>
-     </repo>
-   </os>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.3.0.0</baseurl>
-+      <repoid>HDP-2.3</repoid>
-+      <reponame>HDP</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.20/repos/centos7</baseurl>
-+      <repoid>HDP-UTILS-1.1.0.20</repoid>
-+      <reponame>HDP-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="suse11">
-     <repo>
-       <baseurl>http://public-repo-1.hortonworks.com/HDP/suse11sp3/2.x/updates/2.3.0.0</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
-index a1bdc658bb..fbeb2b157c 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
-@@ -24,7 +24,7 @@
-       <version>1.7.0.2.3</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>accumulo_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
-index cb815b386b..689eaa5aed 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
-@@ -24,7 +24,7 @@
-       <version>0.5.0.2.3</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>atlas-metadata_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
-index 0566c0da70..e3bb69ab99 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
-@@ -57,7 +57,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11</osFamily>
-           <packages>
-             <package>
-               <name>hadoop_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
-index a6055bcde9..c25af2ef01 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
-@@ -24,7 +24,7 @@
-       
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>hive_${stack_version}</name>
-@@ -52,7 +52,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
-           <packages>
-             <package>
-               <name>mariadb-server</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
-index 97f3a3dde4..159c5571a1 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
-@@ -23,7 +23,7 @@
-       <version>0.15.0.2.3</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>pig_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
-index 62ff751a5c..e66787df42 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
-@@ -26,7 +26,7 @@
-       <extends>common-services/RANGER_KMS/0.5.0.2.3</extends>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>ranger_${stack_version}-kms</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml
-index 8210514d73..305ea54a93 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml
-@@ -45,6 +45,20 @@
-       <unique>false</unique>
-     </repo>
-   </os>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.4.0.0</baseurl>
-+      <repoid>HDP-2.4</repoid>
-+      <reponame>HDP</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.20/repos/centos7</baseurl>
-+      <repoid>HDP-UTILS-1.1.0.20</repoid>
-+      <reponame>HDP-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="suse11">
-     <repo>
-       <baseurl>http://public-repo-1.hortonworks.com/HDP/suse11sp3/2.x/updates/2.4.0.0</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml
-index dfa7742845..0bedc7e83f 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml
-@@ -31,6 +31,20 @@
-       <unique>false</unique>
-     </repo>
-   </os>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.5.0.0</baseurl>
-+      <repoid>HDP-2.5</repoid>
-+      <reponame>HDP</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
-+      <repoid>HDP-UTILS-1.1.0.21</repoid>
-+      <reponame>HDP-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="redhat7">
-     <repo>
-       <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.5.0.0</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
-index 11e81cb4f9..2e4ac7ec55 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
-@@ -60,7 +60,7 @@
-       </components>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>atlas-metadata_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
-index bab69b45cf..c3a75c7e12 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
-@@ -24,7 +24,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>falcon_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
-index 3883c15721..a12989388a 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
-@@ -142,7 +142,7 @@
-       </requiredServices>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>hive_${stack_version}</name>
-@@ -176,7 +176,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
-           <packages>
-             <package>
-               <name>mariadb-server</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
-index 7c974ca723..637cb099ed 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
-@@ -84,7 +84,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>spark_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
-index a30355d378..391a3e5e98 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
-@@ -25,7 +25,7 @@
-             <extends>common-services/ZEPPELIN/0.6.0</extends>
-             <osSpecifics>
-                 <osSpecific>
--                    <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+                    <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-                     <packages>
-                         <package>
-                             <name>zeppelin_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml
-index eb0b0efbc4..bcea15d819 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml
-@@ -45,6 +45,20 @@
-       <unique>false</unique>
-     </repo>
-   </os>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.0.3</baseurl>
-+      <repoid>HDP-2.6</repoid>
-+      <reponame>HDP</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
-+      <repoid>HDP-UTILS-1.1.0.21</repoid>
-+      <reponame>HDP-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="redhat7">
-     <repo>
-       <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.0.3</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
-index 2de0a54a0e..633d99682f 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
-@@ -23,7 +23,7 @@
-       <version>0.10.0</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>falcon_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
-index a675a8da92..0f08f703d6 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
-@@ -35,7 +35,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>oozie_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
-index 9e943dbccb..5dd9e25716 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
-@@ -89,7 +89,7 @@
- 
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>spark2_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
-index e7f692271e..98464f17b8 100644
---- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
-+++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
-@@ -25,7 +25,7 @@
-       <extends>common-services/ZEPPELIN/0.7.0</extends>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
-+          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>zeppelin_${stack_version}</name>
-diff --git a/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml
-index 4323b73f35..dafc38fc52 100755
---- a/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml
-@@ -17,6 +17,20 @@
- -->
- <reposinfo>
-   <latest>/var/lib/ambari-server/resources/stacks/PERF/1.0/hdp_urlinfo.json</latest>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://foo-1.0.1.0-1</baseurl>
-+      <repoid>PERF-1.0</repoid>
-+      <reponame>PERF</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://foo2</baseurl>
-+      <repoid>PERF-UTILS-1.0</repoid>
-+      <reponame>PERF-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="redhat7">
-     <repo>
-       <baseurl>http://foo-1.0.1.0-1</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml b/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml
-index 68f3d56687..71251ef4d3 100644
---- a/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml
-+++ b/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml
-@@ -54,6 +54,21 @@
-   </manifest>
-   <available-services/>
-   <repository-info>
-+    <os family="redhat8">
-+      <package-version>2_6_2_0_*</package-version>
-+      <repo>
-+        <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.2.0</baseurl>
-+        <repoid>PERF-1.0</repoid>
-+        <reponame>PERF</reponame>
-+        <unique>true</unique>
-+      </repo>
-+      <repo>
-+        <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
-+        <repoid>PERF-UTILS-1.0</repoid>
-+        <reponame>PERF-UTILS</reponame>
-+        <unique>false</unique>
-+      </repo>
-+    </os>
-     <os family="redhat7">
-       <package-version>2_6_2_0_*</package-version>
-       <repo>
-diff --git a/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml
-index 08df5c7c17..dcf7a81761 100755
---- a/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml
-+++ b/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml
-@@ -17,6 +17,20 @@
- -->
- <reposinfo>
-   <latest>/var/lib/ambari-server/resources/stacks/PERF/2.0/hdp_urlinfo.json</latest>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://foo-2.0.0.0-1</baseurl>
-+      <repoid>PERF-2.0</repoid>
-+      <reponame>PERF</reponame>
-+      <unique>true</unique>
-+    </repo>
-+    <repo>
-+      <baseurl>http://foo2</baseurl>
-+      <repoid>PERF-UTILS-2.0</repoid>
-+      <reponame>PERF-UTILS</reponame>
-+      <unique>false</unique>
-+    </repo>
-+  </os>
-   <os family="redhat7">
-     <repo>
-       <baseurl>http://foo-2.0.0.0-1</baseurl>
-diff --git a/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml b/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml
-index 62d4935c0e..f19af1d99c 100644
---- a/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml
-+++ b/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml
-@@ -54,6 +54,21 @@
-   </manifest>
-   <available-services/>
-   <repository-info>
-+    <os family="redhat8">
-+      <package-version>2_6_2_0_*</package-version>
-+      <repo>
-+        <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.2.0</baseurl>
-+        <repoid>PERF-2.0</repoid>
-+        <reponame>PERF</reponame>
-+        <unique>true</unique>
-+      </repo>
-+      <repo>
-+        <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
-+        <repoid>PERF-UTILS-2.0</repoid>
-+        <reponame>PERF-UTILS</reponame>
-+        <unique>false</unique>
-+      </repo>
-+    </os>
-     <os family="redhat7">
-       <package-version>2_6_2_0_*</package-version>
-       <repo>
-diff --git a/ambari-server/src/main/resources/version_definition.xsd b/ambari-server/src/main/resources/version_definition.xsd
-index fb38370718..9542ef6221 100644
---- a/ambari-server/src/main/resources/version_definition.xsd
-+++ b/ambari-server/src/main/resources/version_definition.xsd
-@@ -52,6 +52,7 @@
-     <xs:restriction base="xs:string">
-       <xs:enumeration value="redhat6" />
-       <xs:enumeration value="redhat7" />
-+      <xs:enumeration value="redhat8" />
-       <xs:enumeration value="redhat-ppc6" />
-       <xs:enumeration value="redhat-ppc7" />
-       <xs:enumeration value="debian6" />
-diff --git a/ambari-server/src/test/python/validation-hosts.json b/ambari-server/src/test/python/validation-hosts.json
-index 93a10a4bf6..ef7d4b1fea 100644
---- a/ambari-server/src/test/python/validation-hosts.json
-+++ b/ambari-server/src/test/python/validation-hosts.json
-@@ -28,7 +28,7 @@
-         "total_mem": 2916032,
-         "host_status": "HEALTHY",
-         "last_registration_time": 1530036912688,
--        "os_family": "redhat7",
-+        "os_family": "redhat",
-         "host_name": "c7401.ambari.apache.org",
-         "ip": "192.168.74.101",
-         "rack_info": "/default-rack",
-diff --git a/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml b/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml
-index 6010659d88..9dde250c35 100644
---- a/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml
-+++ b/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml
-@@ -143,7 +143,7 @@
-           </packages>
-         </osSpecific>
-         <osSpecific>
--          <osFamily>redhat5,redhat6,redhat7,suse11</osFamily>
-+          <osFamily>redhat5,redhat6,redhat7,redhat8,suse11</osFamily>
-           <packages>
-             <package>
-               <name>oozie_2_3_*</name>
-diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
-index ac54975b2d..82c83a4950 100644
---- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
-+++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
-@@ -93,7 +93,7 @@
-             </components>
-             <osSpecifics>
- 	          <osSpecific>
--                 <osFamily>redhat7,amazon2015,redhat6,suse11,suse12</osFamily>
-+                 <osFamily>redhat7,redhat8,amazon2015,redhat6,suse11,suse12</osFamily>
-                  <packages>
-                    <package>
-                      <name>nifi_${stack_version}</name>
-diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml
-index 27cf047919..9d26ff194e 100644
---- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml
-+++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml
-@@ -29,6 +29,18 @@
-       <reponame>HDP-UTILS</reponame>
-     </repo>
-   </os>
-+  <os family="redhat8">
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDF/centos7/2.x/updates/2.0.0.0</baseurl>
-+      <repoid>HDF-2.0</repoid>
-+      <reponame>HDF</reponame>
-+    </repo>
-+    <repo>
-+      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
-+      <repoid>HDP-UTILS-1.1.0.21</repoid>
-+      <reponame>HDP-UTILS</reponame>
-+    </repo>
-+  </os>
-   <os family="redhat7">
-     <repo>
-       <baseurl>http://public-repo-1.hortonworks.com/HDF/centos7/2.x/updates/2.0.0.0</baseurl>
-diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
-index 2db589ae7a..353ab4a5bf 100644
---- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
-+++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
-@@ -24,7 +24,7 @@
-       <extends>common-services/ZOOKEEPER/3.4.6</extends>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>amazon2015,redhat6,redhat7,suse11,suse12</osFamily>
-+          <osFamily>amazon2015,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
-           <packages>
-             <package>
-               <name>zookeeper_${stack_version}</name>
-diff --git a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml
-index 9d4f920f0f..034a43abc8 100644
---- a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml
-+++ b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml
-@@ -25,7 +25,7 @@
-       <version>8.0.5.0</version>
-       <osSpecifics>
-         <osSpecific>
--          <osFamily>redhat6,redhat7,suse11</osFamily>
-+          <osFamily>redhat6,redhat7,redhat8,suse11</osFamily>
-             <packages>
-               <package>
-                 <name>microsoft-r-server-mro-8.0</name>
-diff --git a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml
-index fac533d9cf..f268be9b49 100644
---- a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml
-+++ b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml
-@@ -23,6 +23,13 @@
-             <reponame>MSFT_R</reponame>
-         </repo>
-     </os>
-+    <os family="redhat8">
-+        <repo>
-+            <baseurl>http://PLEASE_ENTER_REPO_URL</baseurl>
-+            <repoid>MSFT_R-8.0</repoid>
-+            <reponame>MSFT_R</reponame>
-+        </repo>
-+    </os>
-     <os family="redhat7">
-         <repo>
-             <baseurl>http://PLEASE_ENTER_REPO_URL</baseurl>
-diff --git a/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml b/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
-index 3fb083be94..0b97f27b0f 100755
---- a/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
-+++ b/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
-@@ -307,7 +307,7 @@
-     <metricsFileName>metrics.json</metricsFileName>
-     <osSpecifics>
-         <osSpecific>
--            <osFamily>redhat7,amazon2015,redhat6,suse11,suse12</osFamily>
-+            <osFamily>redhat7,redhat8,amazon2015,redhat6,suse11,suse12</osFamily>
-             <packages>
-                 <package>
-                     <name>hive</name>
-diff --git a/contrib/version-builder/version_builder.py b/contrib/version-builder/version_builder.py
-index 2abf6170f6..9e294774f4 100644
---- a/contrib/version-builder/version_builder.py
-+++ b/contrib/version-builder/version_builder.py
-@@ -438,14 +438,14 @@ def main(argv):
-       Omitting this implies the entire service should be upgraded")
- 
-   parser.add_option('--os', action='store_true', dest='os', help="Add OS data with options --os-family, --os-package-version")
--  parser.add_option('--os-family', dest='os_family', help="The operating system: i.e redhat7, debian7, ubuntu12, ubuntu14, suse11, suse12")
-+  parser.add_option('--os-family', dest='os_family', help="The operating system: i.e redhat7,redhat8, debian7, ubuntu12, ubuntu14, suse11, suse12")
-   parser.add_option('--os-package-version', dest='os_package_version',
-     help="The package version to use for the OS")
- 
-   parser.add_option('--repo', action='store_true', dest='repo',
-     help="Add repository data with options: --repo-os, --repo-url, --repo-id, --repo-name, --repo-unique")
-   parser.add_option('--repo-os', dest='repo_os',
--    help="The operating system type: i.e. redhat6, redhat7, debian7, debian9, ubuntu12, ubuntu14, ubuntu16, suse11, suse12")
-+    help="The operating system type: i.e. redhat6, redhat7,redhat8, debian7, debian9, ubuntu12, ubuntu14, ubuntu16, suse11, suse12")
-   parser.add_option('--repo-url', dest='repo_url',
-     help="The base url for the repository data")
-   parser.add_option('--repo-unique', dest='unique', type='choice', choices=['true', 'false'],
--- 
-2.44.0
-
+diff --git a/ambari-common/src/main/python/ambari_commons/resources/os_family.json b/ambari-common/src/main/python/ambari_commons/resources/os_family.json
+index 0634988657..13c231c4d2 100644
+--- a/ambari-common/src/main/python/ambari_commons/resources/os_family.json
++++ b/ambari-common/src/main/python/ambari_commons/resources/os_family.json
+@@ -18,7 +18,8 @@
+         ],
+         "versions": [
+           6,
+-          7
++          7,
++          8
+         ]
+       },
+       "redhat-ppc": {
+@@ -29,7 +30,8 @@
+         ],
+         "versions": [
+           6,
+-          7
++          7,
++          8
+         ]
+       },
+       "amazonlinux": {
+diff --git a/patch14-RHEL8.diff b/patch14-RHEL8.diff
+new file mode 100644
+index 0000000000..aff8264c3e
+--- /dev/null
++++ b/patch14-RHEL8.diff
+@@ -0,0 +1,1264 @@
++From f4ea361024163069581f94a7a506a17ed4e5edfe Mon Sep 17 00:00:00 2001
++From: Vivek Dhiman <approach2vivek@gmail.com>
++Date: Wed, 6 Mar 2024 16:21:03 +0530
++Subject: [PATCH] Added Redhat8 options
++
++---
++ .../configs/ODP.json                          |  2 +-
++ .../configs/PHD.json                          | 20 +++++++++----------
++ .../urlinfo_processor/urlinfo_processor.py    |  3 ++-
++ .../AMBARI_INFRA_SOLR/0.1.0/metainfo.xml      |  2 +-
++ .../AMBARI_METRICS/0.1.0/metainfo.xml         |  4 ++--
++ .../common-services/DRUID/0.10.1/metainfo.xml |  2 +-
++ .../HDFS/2.1.0.2.0/metainfo.xml               |  2 +-
++ .../HIVE/0.12.0.2.0/metainfo.xml              |  2 +-
++ .../common-services/KAFKA/0.8.1/metainfo.xml  |  2 +-
++ .../KERBEROS/1.10.3-10/metainfo.xml           |  2 +-
++ .../KERBEROS/1.10.3-30/metainfo.xml           |  2 +-
++ .../LOGSEARCH/0.5.0/metainfo.xml              |  2 +-
++ .../OOZIE/4.0.0.2.0/metainfo.xml              |  2 +-
++ .../OOZIE/4.2.0.2.3/metainfo.xml              |  2 +-
++ .../common-services/RANGER/0.4.0/metainfo.xml |  2 +-
++ .../common-services/RANGER/0.6.0/metainfo.xml |  2 +-
++ .../common-services/SPARK/1.2.1/metainfo.xml  |  2 +-
++ .../common-services/SPARK2/2.0.0/metainfo.xml |  2 +-
++ .../common-services/STORM/0.9.3/metainfo.xml  |  2 +-
++ .../SUPERSET/0.15.0/metainfo.xml              |  2 +-
++ .../ZOOKEEPER/3.4.6/metainfo.xml              |  2 +-
++ .../ZOOKEEPER/3.4.9/metainfo.xml              |  2 +-
++ .../stacks/HDP/2.1/services/HIVE/metainfo.xml |  2 +-
++ .../HDP/2.1/services/OOZIE/metainfo.xml       |  2 +-
++ .../HDP/2.2/services/FALCON/metainfo.xml      |  2 +-
++ .../HDP/2.2/services/FLUME/metainfo.xml       |  2 +-
++ .../HDP/2.2/services/HBASE/metainfo.xml       |  2 +-
++ .../stacks/HDP/2.2/services/HDFS/metainfo.xml |  2 +-
++ .../stacks/HDP/2.2/services/HIVE/metainfo.xml |  4 ++--
++ .../stacks/HDP/2.2/services/KNOX/metainfo.xml |  2 +-
++ .../HDP/2.2/services/OOZIE/metainfo.xml       |  2 +-
++ .../stacks/HDP/2.2/services/PIG/metainfo.xml  |  2 +-
++ .../HDP/2.2/services/SLIDER/metainfo.xml      |  2 +-
++ .../HDP/2.2/services/SQOOP/metainfo.xml       |  2 +-
++ .../stacks/HDP/2.2/services/TEZ/metainfo.xml  |  2 +-
++ .../stacks/HDP/2.2/services/YARN/metainfo.xml |  4 ++--
++ .../stacks/HDP/2.3.ECS/repos/repoinfo.xml     | 14 +++++++++++++
++ .../2.3.ECS/services/ZOOKEEPER/metainfo.xml   |  2 +-
++ .../stacks/HDP/2.3/repos/repoinfo.xml         | 14 +++++++++++++
++ .../HDP/2.3/services/ACCUMULO/metainfo.xml    |  2 +-
++ .../HDP/2.3/services/ATLAS/metainfo.xml       |  2 +-
++ .../stacks/HDP/2.3/services/HDFS/metainfo.xml |  2 +-
++ .../stacks/HDP/2.3/services/HIVE/metainfo.xml |  4 ++--
++ .../stacks/HDP/2.3/services/PIG/metainfo.xml  |  2 +-
++ .../HDP/2.3/services/RANGER_KMS/metainfo.xml  |  2 +-
++ .../stacks/HDP/2.4/repos/repoinfo.xml         | 14 +++++++++++++
++ .../stacks/HDP/2.5/repos/repoinfo.xml         | 14 +++++++++++++
++ .../HDP/2.5/services/ATLAS/metainfo.xml       |  2 +-
++ .../HDP/2.5/services/FALCON/metainfo.xml      |  2 +-
++ .../stacks/HDP/2.5/services/HIVE/metainfo.xml |  4 ++--
++ .../HDP/2.5/services/SPARK/metainfo.xml       |  2 +-
++ .../HDP/2.5/services/ZEPPELIN/metainfo.xml    |  2 +-
++ .../stacks/HDP/2.6/repos/repoinfo.xml         | 14 +++++++++++++
++ .../HDP/2.6/services/FALCON/metainfo.xml      |  2 +-
++ .../HDP/2.6/services/OOZIE/metainfo.xml       |  2 +-
++ .../HDP/2.6/services/SPARK2/metainfo.xml      |  2 +-
++ .../HDP/2.6/services/ZEPPELIN/metainfo.xml    |  2 +-
++ .../stacks/PERF/1.0/repos/repoinfo.xml        | 14 +++++++++++++
++ .../main/resources/stacks/PERF/1.0/vdf.xml    | 15 ++++++++++++++
++ .../stacks/PERF/2.0/repos/repoinfo.xml        | 14 +++++++++++++
++ .../main/resources/stacks/PERF/2.0/vdf.xml    | 15 ++++++++++++++
++ .../src/main/resources/version_definition.xsd |  1 +
++ .../src/test/python/validation-hosts.json     |  2 +-
++ .../HDP/2.0.7/services/OOZIE/metainfo.xml     |  2 +-
++ .../common-services/NIFI/1.0.0/metainfo.xml   |  2 +-
++ .../stacks/HDF/2.0/repos/repoinfo.xml         | 12 +++++++++++
++ .../HDF/2.0/services/ZOOKEEPER/metainfo.xml   |  2 +-
++ .../MICROSOFT_R_SERVER/8.0.5/metainfo.xml     |  2 +-
++ .../8.0.5/repos/repoinfo.xml                  |  7 +++++++
++ .../ODPi/2.0/services/HIVE/metainfo.xml       |  2 +-
++ contrib/version-builder/version_builder.py    |  4 ++--
++ 71 files changed, 223 insertions(+), 74 deletions(-)
++
++diff --git a/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json b/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json
++index f55b64246f..95b07597d6 100644
++--- a/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json
+++++ b/ambari-common/src/main/python/pluggable_stack_definition/configs/ODP.json
++@@ -105,7 +105,7 @@
++       "version": "0.9",
++       "baseVersion": "2.3",
++       "active": "true",
++-      "family": "redhat6,redhat7,suse11",
+++      "family": "redhat6,redhat7,redhat8,suse11",
++       "services": [
++         {
++           "name": "KERBEROS"
++diff --git a/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json b/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json
++index 7590e696d1..09c88a7242 100644
++--- a/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json
+++++ b/ambari-common/src/main/python/pluggable_stack_definition/configs/PHD.json
++@@ -203,7 +203,7 @@
++       "version": "3.3",
++       "baseVersion": "2.3",
++       "active": "true",
++-      "family": "redhat6,amazon2015,redhat7,suse11",
+++      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++       "services": [
++         {
++           "name": "KERBEROS"
++@@ -239,7 +239,7 @@
++               ]
++             },
++             {
++-              "family": "redhat6,amazon2015,redhat7,suse11",
+++              "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++               "packages": [
++                 "hive_${stack_version}",
++                 "hive_${stack_version}-hcatalog",
++@@ -256,7 +256,7 @@
++               ]
++             },
++             {
++-              "family": "redhat7",
+++              "family": "redhat7,redhat8",
++               "packages": [
++                 {
++                   "name": "mysql-community-release",
++@@ -295,7 +295,7 @@
++           "name": "OOZIE",
++           "packages":[
++             {
++-              "family": "redhat6,amazon2015,redhat7,suse11",
+++              "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++               "packages": [
++                 "oozie_${stack_version}"
++               ]
++@@ -320,7 +320,7 @@
++           "name": "PIG",
++           "packages":[
++             {
++-              "family": "redhat6,amazon2015,redhat7,suse11",
+++              "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++               "packages": [
++                 "pig_${stack_version}"
++               ]
++@@ -334,7 +334,7 @@
++           "name": "RANGER",
++           "packages":[
++             {
++-              "family": "redhat6,redhat7,suse11",
+++              "family": "redhat6,redhat7,redhat8,suse11",
++               "packages": [
++                 "ranger_${stack_version}-admin",
++                 "ranger_${stack_version}-usersync"
++@@ -346,7 +346,7 @@
++           "name": "RANGER_KMS",
++           "packages":[
++             {
++-              "family": "redhat6,redhat7,suse11",
+++              "family": "redhat6,redhat7,redhat8,suse11",
++               "packages": [
++                 "ranger_${stack_version}-kms"
++               ]
++@@ -359,7 +359,7 @@
++       "version": "3.4",
++       "baseVersion": "2.4",
++       "active": "true",
++-      "family": "redhat6,amazon2015,redhat7,suse11",
+++      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++       "services": [
++         {
++           "name": "KERBEROS"
++@@ -412,7 +412,7 @@
++       "version": "3.5",
++       "baseVersion": "2.5",
++       "active": "true",
++-      "family": "redhat6,amazon2015,redhat7,suse11",
+++      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++       "services": [
++         {
++           "name": "KERBEROS"
++@@ -465,7 +465,7 @@
++       "version": "3.6",
++       "baseVersion": "2.6",
++       "active": "true",
++-      "family": "redhat6,amazon2015,redhat7,suse11",
+++      "family": "redhat6,amazon2015,redhat7,redhat8,suse11",
++       "services": [
++         {
++           "name": "KERBEROS"
++diff --git a/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py b/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py
++index 74f7fb9309..1155c1bcc9 100644
++--- a/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py
+++++ b/ambari-common/src/main/python/urlinfo_processor/urlinfo_processor.py
++@@ -30,7 +30,8 @@ import sys
++ json_stack_version_re = re.compile("(\S*)-((\d\.*)+)")
++ 
++ family_map = {"redhat6": "centos6",
++-              "redhat7": "centos7"}
+++              "redhat7": "centos7",
+++              "redhat8": "centos7"}
++ 
++ HELP_STRING = 'Usage: urlinfo_processor.py -u <urlinfo.json path> -s <stack folder>'
++ 
++diff --git a/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
++index 568c97b0d2..5196a0ded5 100644
++--- a/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
++@@ -146,7 +146,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>ambari-infra-solr-client</name>
++diff --git a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
++index a12618f167..2e8151c26e 100644
++--- a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
++@@ -143,7 +143,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>ambari-metrics-collector</name>
++@@ -169,7 +169,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,redhat6,amazonlinux2</osFamily>
+++          <osFamily>redhat7,redhat8,redhat6,amazonlinux2</osFamily>
++           <packages>
++             <package>
++               <name>python-kerberos</name>
++diff --git a/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml b/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
++index 0a354ba82d..b04c2f7802 100644
++--- a/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
++@@ -179,7 +179,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>druid_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
++index f26eee9f93..d85f22bff6 100644
++--- a/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
++@@ -276,7 +276,7 @@
++         </osSpecific>
++         
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11</osFamily>
++           <packages>
++             <package>
++               <name>hadoop-client</name>
++diff --git a/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
++index b9056cb04d..9a18d3a469 100644
++--- a/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
++@@ -298,7 +298,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
++           <packages>
++             <package>
++               <name>mariadb-server</name>
++diff --git a/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml b/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
++index 9dd687efd6..a4917b8e1b 100644
++--- a/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
++@@ -88,7 +88,7 @@
++       </configuration-dependencies>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>kafka_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
++index 15bca08702..801851eff0 100644
++--- a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
++@@ -81,7 +81,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6</osFamily>
++           <packages>
++             <package>
++               <name>krb5-workstation</name>
++diff --git a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
++index d35254ffe5..0a9fa3f025 100644
++--- a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
++@@ -81,7 +81,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6</osFamily>
++           <packages>
++             <package>
++               <name>krb5-workstation</name>
++diff --git a/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml b/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
++index 764cbe334c..dd518f80b5 100644
++--- a/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
++@@ -132,7 +132,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>ambari-logsearch-logfeeder</name>
++diff --git a/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
++index 2e936fbae5..719baa360b 100644
++--- a/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
++@@ -128,7 +128,7 @@
++         </osSpecific>
++ 
++        <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>extjs-2.2-1</name>
++diff --git a/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml b/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
++index 3ef8bde539..0ee6b00c3c 100644
++--- a/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
++@@ -128,7 +128,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>oozie_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml b/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
++index 2512418759..9f40eb469c 100644
++--- a/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
++@@ -92,7 +92,7 @@
++       </themes>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>ranger_${stack_version}-admin</name>
++diff --git a/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml b/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
++index 5c4e21fe1f..16325598be 100644
++--- a/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
++@@ -68,7 +68,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>ranger_${stack_version}-admin</name>
++diff --git a/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml b/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
++index 2ede7bca6b..2754027e79 100644
++--- a/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
++@@ -153,7 +153,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>spark_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml b/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
++index 46e5a25fca..ca22980c4e 100755
++--- a/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
++@@ -198,7 +198,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>spark2_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml b/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
++index 3eef53b3d5..8aa1622982 100644
++--- a/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
++@@ -32,7 +32,7 @@
++       </components>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>storm_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml b/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
++index 0679048cb4..7e5c2be39f 100644
++--- a/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
++@@ -50,7 +50,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>superset_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
++index 7a1cbfc236..69aea556dd 100644
++--- a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
++@@ -24,7 +24,7 @@
++       <version>3.4.6</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>zookeeper_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
++index e64a83e8c2..332878eb58 100644
++--- a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
+++++ b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
++@@ -24,7 +24,7 @@
++       <version>3.4.9</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>zookeeper_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml
++index 0583163d6c..0f348474ce 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.1/services/HIVE/metainfo.xml
++@@ -67,7 +67,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
++           <packages>
++             <package>
++               <name>mariadb-server</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
++index 12ae95656a..7ffbac058a 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
++@@ -42,7 +42,7 @@
++         </osSpecific>
++ 
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>extjs-2.2-1</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
++index 41aa5ae1de..fb67252259 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
++@@ -24,7 +24,7 @@
++       <version>0.6.0.2.2</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>falcon_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
++index 825b64bfbd..2475b808e0 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
++@@ -26,7 +26,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>flume_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
++index 0c9dff98d1..e0e106aec4 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
++@@ -25,7 +25,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>hbase_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
++index d15ba6dcbd..9f88af6319 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
++@@ -25,7 +25,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11</osFamily>
++           <packages>
++             <package>
++               <name>hadoop_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
++index f3194d179e..05f16aaa86 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
++@@ -58,7 +58,7 @@
++       
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>hive_${stack_version}</name>
++@@ -81,7 +81,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
++           <packages>
++             <package>
++               <name>mariadb-server</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
++index e6ce5a9926..2436372b88 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
++@@ -23,7 +23,7 @@
++       <extends>common-services/KNOX/0.5.0.2.2</extends>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>knox_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
++index 00d780a1b9..c599e2d994 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
++@@ -70,7 +70,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>oozie_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
++index 245a0b6924..90c8237604 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
++@@ -24,7 +24,7 @@
++       <version>0.14.0.2.2</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>pig_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
++index 435d3c2522..3be0e64d44 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
++@@ -23,7 +23,7 @@
++       <extends>common-services/SLIDER/0.60.0.2.2</extends>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>slider_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
++index f0482c2627..d22d74f4f3 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
++@@ -23,7 +23,7 @@
++       <version>1.4.5.2.2</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>sqoop_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
++index c12c26f095..71ef2c6648 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
++@@ -25,7 +25,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>tez_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
++index cdfe15c574..b460eaea0c 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
++@@ -34,7 +34,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>hadoop_${stack_version}-yarn</name>
++@@ -74,7 +74,7 @@
++       <version>2.6.0.2.2</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>hadoop_${stack_version}-mapreduce</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml
++index 329539ea9a..0b26cf4466 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/repos/repoinfo.xml
++@@ -57,6 +57,20 @@
++       <unique>true</unique>
++     </repo>
++   </os>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.3.0.0</baseurl>
+++      <repoid>HDP-2.3</repoid>
+++      <reponame>HDP</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.20/repos/centos7</baseurl>
+++      <repoid>HDP-UTILS-1.1.0.20</repoid>
+++      <reponame>HDP-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="suse11">
++     <repo>
++       <baseurl>http://public-repo-1.hortonworks.com/HDP/suse11sp3/2.x/updates/2.3.0.0</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
++index 7cd6f8f0bf..e335ea834d 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
++@@ -23,7 +23,7 @@
++       <version>3.4.6.2.3</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11</osFamily>
++           <packages>
++             <package>
++               <name>zookeeper_2_3_*</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml
++index 69d1356d5f..11a796ef0b 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/repos/repoinfo.xml
++@@ -45,6 +45,20 @@
++       <unique>false</unique>
++     </repo>
++   </os>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.3.0.0</baseurl>
+++      <repoid>HDP-2.3</repoid>
+++      <reponame>HDP</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.20/repos/centos7</baseurl>
+++      <repoid>HDP-UTILS-1.1.0.20</repoid>
+++      <reponame>HDP-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="suse11">
++     <repo>
++       <baseurl>http://public-repo-1.hortonworks.com/HDP/suse11sp3/2.x/updates/2.3.0.0</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
++index a1bdc658bb..fbeb2b157c 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
++@@ -24,7 +24,7 @@
++       <version>1.7.0.2.3</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>accumulo_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
++index cb815b386b..689eaa5aed 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
++@@ -24,7 +24,7 @@
++       <version>0.5.0.2.3</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>atlas-metadata_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
++index 0566c0da70..e3bb69ab99 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
++@@ -57,7 +57,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11</osFamily>
++           <packages>
++             <package>
++               <name>hadoop_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
++index a6055bcde9..c25af2ef01 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
++@@ -24,7 +24,7 @@
++       
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>hive_${stack_version}</name>
++@@ -52,7 +52,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
++           <packages>
++             <package>
++               <name>mariadb-server</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
++index 97f3a3dde4..159c5571a1 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
++@@ -23,7 +23,7 @@
++       <version>0.15.0.2.3</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>pig_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
++index 62ff751a5c..e66787df42 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
++@@ -26,7 +26,7 @@
++       <extends>common-services/RANGER_KMS/0.5.0.2.3</extends>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>ranger_${stack_version}-kms</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml
++index 8210514d73..305ea54a93 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.4/repos/repoinfo.xml
++@@ -45,6 +45,20 @@
++       <unique>false</unique>
++     </repo>
++   </os>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.4.0.0</baseurl>
+++      <repoid>HDP-2.4</repoid>
+++      <reponame>HDP</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.20/repos/centos7</baseurl>
+++      <repoid>HDP-UTILS-1.1.0.20</repoid>
+++      <reponame>HDP-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="suse11">
++     <repo>
++       <baseurl>http://public-repo-1.hortonworks.com/HDP/suse11sp3/2.x/updates/2.4.0.0</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml
++index dfa7742845..0bedc7e83f 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/repos/repoinfo.xml
++@@ -31,6 +31,20 @@
++       <unique>false</unique>
++     </repo>
++   </os>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.5.0.0</baseurl>
+++      <repoid>HDP-2.5</repoid>
+++      <reponame>HDP</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
+++      <repoid>HDP-UTILS-1.1.0.21</repoid>
+++      <reponame>HDP-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="redhat7">
++     <repo>
++       <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.5.0.0</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
++index 11e81cb4f9..2e4ac7ec55 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
++@@ -60,7 +60,7 @@
++       </components>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>atlas-metadata_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
++index bab69b45cf..c3a75c7e12 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
++@@ -24,7 +24,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>falcon_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
++index 3883c15721..a12989388a 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
++@@ -142,7 +142,7 @@
++       </requiredServices>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>hive_${stack_version}</name>
++@@ -176,7 +176,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2</osFamily>
++           <packages>
++             <package>
++               <name>mariadb-server</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
++index 7c974ca723..637cb099ed 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
++@@ -84,7 +84,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>spark_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
++index a30355d378..391a3e5e98 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
++@@ -25,7 +25,7 @@
++             <extends>common-services/ZEPPELIN/0.6.0</extends>
++             <osSpecifics>
++                 <osSpecific>
++-                    <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++                    <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++                     <packages>
++                         <package>
++                             <name>zeppelin_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml
++index eb0b0efbc4..bcea15d819 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/repos/repoinfo.xml
++@@ -45,6 +45,20 @@
++       <unique>false</unique>
++     </repo>
++   </os>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.0.3</baseurl>
+++      <repoid>HDP-2.6</repoid>
+++      <reponame>HDP</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
+++      <repoid>HDP-UTILS-1.1.0.21</repoid>
+++      <reponame>HDP-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="redhat7">
++     <repo>
++       <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.0.3</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
++index 2de0a54a0e..633d99682f 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
++@@ -23,7 +23,7 @@
++       <version>0.10.0</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>falcon_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
++index a675a8da92..0f08f703d6 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
++@@ -35,7 +35,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>redhat5,amazonlinux2,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>oozie_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
++index 9e943dbccb..5dd9e25716 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
++@@ -89,7 +89,7 @@
++ 
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>spark2_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
++index e7f692271e..98464f17b8 100644
++--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
+++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
++@@ -25,7 +25,7 @@
++       <extends>common-services/ZEPPELIN/0.7.0</extends>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat7,amazonlinux2,redhat6,suse11,suse12</osFamily>
+++          <osFamily>redhat7,redhat8,amazonlinux2,redhat6,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>zeppelin_${stack_version}</name>
++diff --git a/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml
++index 4323b73f35..dafc38fc52 100755
++--- a/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/PERF/1.0/repos/repoinfo.xml
++@@ -17,6 +17,20 @@
++ -->
++ <reposinfo>
++   <latest>/var/lib/ambari-server/resources/stacks/PERF/1.0/hdp_urlinfo.json</latest>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://foo-1.0.1.0-1</baseurl>
+++      <repoid>PERF-1.0</repoid>
+++      <reponame>PERF</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://foo2</baseurl>
+++      <repoid>PERF-UTILS-1.0</repoid>
+++      <reponame>PERF-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="redhat7">
++     <repo>
++       <baseurl>http://foo-1.0.1.0-1</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml b/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml
++index 68f3d56687..71251ef4d3 100644
++--- a/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml
+++++ b/ambari-server/src/main/resources/stacks/PERF/1.0/vdf.xml
++@@ -54,6 +54,21 @@
++   </manifest>
++   <available-services/>
++   <repository-info>
+++    <os family="redhat8">
+++      <package-version>2_6_2_0_*</package-version>
+++      <repo>
+++        <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.2.0</baseurl>
+++        <repoid>PERF-1.0</repoid>
+++        <reponame>PERF</reponame>
+++        <unique>true</unique>
+++      </repo>
+++      <repo>
+++        <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
+++        <repoid>PERF-UTILS-1.0</repoid>
+++        <reponame>PERF-UTILS</reponame>
+++        <unique>false</unique>
+++      </repo>
+++    </os>
++     <os family="redhat7">
++       <package-version>2_6_2_0_*</package-version>
++       <repo>
++diff --git a/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml b/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml
++index 08df5c7c17..dcf7a81761 100755
++--- a/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml
+++++ b/ambari-server/src/main/resources/stacks/PERF/2.0/repos/repoinfo.xml
++@@ -17,6 +17,20 @@
++ -->
++ <reposinfo>
++   <latest>/var/lib/ambari-server/resources/stacks/PERF/2.0/hdp_urlinfo.json</latest>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://foo-2.0.0.0-1</baseurl>
+++      <repoid>PERF-2.0</repoid>
+++      <reponame>PERF</reponame>
+++      <unique>true</unique>
+++    </repo>
+++    <repo>
+++      <baseurl>http://foo2</baseurl>
+++      <repoid>PERF-UTILS-2.0</repoid>
+++      <reponame>PERF-UTILS</reponame>
+++      <unique>false</unique>
+++    </repo>
+++  </os>
++   <os family="redhat7">
++     <repo>
++       <baseurl>http://foo-2.0.0.0-1</baseurl>
++diff --git a/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml b/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml
++index 62d4935c0e..f19af1d99c 100644
++--- a/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml
+++++ b/ambari-server/src/main/resources/stacks/PERF/2.0/vdf.xml
++@@ -54,6 +54,21 @@
++   </manifest>
++   <available-services/>
++   <repository-info>
+++    <os family="redhat8">
+++      <package-version>2_6_2_0_*</package-version>
+++      <repo>
+++        <baseurl>http://public-repo-1.hortonworks.com/HDP/centos7/2.x/updates/2.6.2.0</baseurl>
+++        <repoid>PERF-2.0</repoid>
+++        <reponame>PERF</reponame>
+++        <unique>true</unique>
+++      </repo>
+++      <repo>
+++        <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
+++        <repoid>PERF-UTILS-2.0</repoid>
+++        <reponame>PERF-UTILS</reponame>
+++        <unique>false</unique>
+++      </repo>
+++    </os>
++     <os family="redhat7">
++       <package-version>2_6_2_0_*</package-version>
++       <repo>
++diff --git a/ambari-server/src/main/resources/version_definition.xsd b/ambari-server/src/main/resources/version_definition.xsd
++index fb38370718..9542ef6221 100644
++--- a/ambari-server/src/main/resources/version_definition.xsd
+++++ b/ambari-server/src/main/resources/version_definition.xsd
++@@ -52,6 +52,7 @@
++     <xs:restriction base="xs:string">
++       <xs:enumeration value="redhat6" />
++       <xs:enumeration value="redhat7" />
+++      <xs:enumeration value="redhat8" />
++       <xs:enumeration value="redhat-ppc6" />
++       <xs:enumeration value="redhat-ppc7" />
++       <xs:enumeration value="debian6" />
++diff --git a/ambari-server/src/test/python/validation-hosts.json b/ambari-server/src/test/python/validation-hosts.json
++index 93a10a4bf6..ef7d4b1fea 100644
++--- a/ambari-server/src/test/python/validation-hosts.json
+++++ b/ambari-server/src/test/python/validation-hosts.json
++@@ -28,7 +28,7 @@
++         "total_mem": 2916032,
++         "host_status": "HEALTHY",
++         "last_registration_time": 1530036912688,
++-        "os_family": "redhat7",
+++        "os_family": "redhat",
++         "host_name": "c7401.ambari.apache.org",
++         "ip": "192.168.74.101",
++         "rack_info": "/default-rack",
++diff --git a/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml b/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml
++index 6010659d88..9dde250c35 100644
++--- a/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml
+++++ b/ambari-server/src/test/resources/stacks/HDP/2.0.7/services/OOZIE/metainfo.xml
++@@ -143,7 +143,7 @@
++           </packages>
++         </osSpecific>
++         <osSpecific>
++-          <osFamily>redhat5,redhat6,redhat7,suse11</osFamily>
+++          <osFamily>redhat5,redhat6,redhat7,redhat8,suse11</osFamily>
++           <packages>
++             <package>
++               <name>oozie_2_3_*</name>
++diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
++index ac54975b2d..82c83a4950 100644
++--- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
+++++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
++@@ -93,7 +93,7 @@
++             </components>
++             <osSpecifics>
++ 	          <osSpecific>
++-                 <osFamily>redhat7,amazon2015,redhat6,suse11,suse12</osFamily>
+++                 <osFamily>redhat7,redhat8,amazon2015,redhat6,suse11,suse12</osFamily>
++                  <packages>
++                    <package>
++                      <name>nifi_${stack_version}</name>
++diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml
++index 27cf047919..9d26ff194e 100644
++--- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml
+++++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/repos/repoinfo.xml
++@@ -29,6 +29,18 @@
++       <reponame>HDP-UTILS</reponame>
++     </repo>
++   </os>
+++  <os family="redhat8">
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDF/centos7/2.x/updates/2.0.0.0</baseurl>
+++      <repoid>HDF-2.0</repoid>
+++      <reponame>HDF</reponame>
+++    </repo>
+++    <repo>
+++      <baseurl>http://public-repo-1.hortonworks.com/HDP-UTILS-1.1.0.21/repos/centos7</baseurl>
+++      <repoid>HDP-UTILS-1.1.0.21</repoid>
+++      <reponame>HDP-UTILS</reponame>
+++    </repo>
+++  </os>
++   <os family="redhat7">
++     <repo>
++       <baseurl>http://public-repo-1.hortonworks.com/HDF/centos7/2.x/updates/2.0.0.0</baseurl>
++diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
++index 2db589ae7a..353ab4a5bf 100644
++--- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
+++++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
++@@ -24,7 +24,7 @@
++       <extends>common-services/ZOOKEEPER/3.4.6</extends>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>amazon2015,redhat6,redhat7,suse11,suse12</osFamily>
+++          <osFamily>amazon2015,redhat6,redhat7,redhat8,suse11,suse12</osFamily>
++           <packages>
++             <package>
++               <name>zookeeper_${stack_version}</name>
++diff --git a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml
++index 9d4f920f0f..034a43abc8 100644
++--- a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml
+++++ b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/metainfo.xml
++@@ -25,7 +25,7 @@
++       <version>8.0.5.0</version>
++       <osSpecifics>
++         <osSpecific>
++-          <osFamily>redhat6,redhat7,suse11</osFamily>
+++          <osFamily>redhat6,redhat7,redhat8,suse11</osFamily>
++             <packages>
++               <package>
++                 <name>microsoft-r-server-mro-8.0</name>
++diff --git a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml
++index fac533d9cf..f268be9b49 100644
++--- a/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml
+++++ b/contrib/management-packs/microsoft-r_mpack/src/main/resources/custom-services/MICROSOFT_R_SERVER/8.0.5/repos/repoinfo.xml
++@@ -23,6 +23,13 @@
++             <reponame>MSFT_R</reponame>
++         </repo>
++     </os>
+++    <os family="redhat8">
+++        <repo>
+++            <baseurl>http://PLEASE_ENTER_REPO_URL</baseurl>
+++            <repoid>MSFT_R-8.0</repoid>
+++            <reponame>MSFT_R</reponame>
+++        </repo>
+++    </os>
++     <os family="redhat7">
++         <repo>
++             <baseurl>http://PLEASE_ENTER_REPO_URL</baseurl>
++diff --git a/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml b/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
++index 3fb083be94..0b97f27b0f 100755
++--- a/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
+++++ b/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
++@@ -307,7 +307,7 @@
++     <metricsFileName>metrics.json</metricsFileName>
++     <osSpecifics>
++         <osSpecific>
++-            <osFamily>redhat7,amazon2015,redhat6,suse11,suse12</osFamily>
+++            <osFamily>redhat7,redhat8,amazon2015,redhat6,suse11,suse12</osFamily>
++             <packages>
++                 <package>
++                     <name>hive</name>
++diff --git a/contrib/version-builder/version_builder.py b/contrib/version-builder/version_builder.py
++index 2abf6170f6..9e294774f4 100644
++--- a/contrib/version-builder/version_builder.py
+++++ b/contrib/version-builder/version_builder.py
++@@ -438,14 +438,14 @@ def main(argv):
++       Omitting this implies the entire service should be upgraded")
++ 
++   parser.add_option('--os', action='store_true', dest='os', help="Add OS data with options --os-family, --os-package-version")
++-  parser.add_option('--os-family', dest='os_family', help="The operating system: i.e redhat7, debian7, ubuntu12, ubuntu14, suse11, suse12")
+++  parser.add_option('--os-family', dest='os_family', help="The operating system: i.e redhat7,redhat8, debian7, ubuntu12, ubuntu14, suse11, suse12")
++   parser.add_option('--os-package-version', dest='os_package_version',
++     help="The package version to use for the OS")
++ 
++   parser.add_option('--repo', action='store_true', dest='repo',
++     help="Add repository data with options: --repo-os, --repo-url, --repo-id, --repo-name, --repo-unique")
++   parser.add_option('--repo-os', dest='repo_os',
++-    help="The operating system type: i.e. redhat6, redhat7, debian7, debian9, ubuntu12, ubuntu14, ubuntu16, suse11, suse12")
+++    help="The operating system type: i.e. redhat6, redhat7,redhat8, debian7, debian9, ubuntu12, ubuntu14, ubuntu16, suse11, suse12")
++   parser.add_option('--repo-url', dest='repo_url',
++     help="The base url for the repository data")
++   parser.add_option('--repo-unique', dest='unique', type='choice', choices=['true', 'false'],
++-- 
++2.44.0
++
