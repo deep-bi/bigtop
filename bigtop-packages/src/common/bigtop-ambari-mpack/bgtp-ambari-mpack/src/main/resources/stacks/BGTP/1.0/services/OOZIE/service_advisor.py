@@ -123,8 +123,8 @@ class OozieServiceAdvisor(service_advisor.ServiceAdvisor):
     Entry point.
     Must be overridden in child class.
     """
-    self.logger.info("Class: %s, Method: %s. Recommending Service Configurations." %
-                (self.__class__.__name__, inspect.stack()[0][3]))
+    #self.logger.info("Class: %s, Method: %s. Recommending Service Configurations." %
+    #            (self.__class__.__name__, inspect.stack()[0][3]))
 
     recommender = OozieRecommender()
     recommender.recommendOozieConfigurationsFromHDP30(configurations, clusterData, services, hosts)
