@@ -26,7 +26,7 @@ import socket
 import fnmatch
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-STACKS_DIR = os.path.join(SCRIPT_DIR, "../../../../")
+STACKS_DIR = os.path.join(SCRIPT_DIR, "../../../../../stacks/")
 PARENT_FILE = os.path.join(STACKS_DIR, "service_advisor.py")
 
 try:
@@ -123,8 +123,8 @@ class OozieServiceAdvisor(service_advisor.ServiceAdvisor):
     Entry point.
     Must be overridden in child class.
     """
-    self.logger.info("Class: %s, Method: %s. Recommending Service Configurations." %
-                (self.__class__.__name__, inspect.stack()[0][3]))
+    #self.logger.info("Class: %s, Method: %s. Recommending Service Configurations." %
+    #            (self.__class__.__name__, inspect.stack()[0][3]))
 
     recommender = OozieRecommender()
     recommender.recommendOozieConfigurationsFromHDP30(configurations, clusterData, services, hosts)
