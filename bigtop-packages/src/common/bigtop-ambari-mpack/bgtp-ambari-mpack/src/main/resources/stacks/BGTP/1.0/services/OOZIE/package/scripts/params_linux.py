@@ -94,8 +94,9 @@ hadoop_lib_home = stack_select.get_hadoop_dir("lib")
 spark_conf_dir = format("{stack_root}/current/spark-client/conf")
 
 #hadoop params
+stack_version = None
+
 if stack_version_formatted and check_stack_feature(StackFeature.ROLLING_UPGRADE,stack_version_formatted):
-  stack_version = None
   upgrade_stack = stack_select._get_upgrade_stack()
   if upgrade_stack is not None and len(upgrade_stack) == 2 and upgrade_stack[1] is not None:
     stack_version = upgrade_stack[1]
