@@ -1,0 +1,32 @@
+From 838e8337d0c95f451d81d45fd2f68bad90a42a02 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Wed, 24 Apr 2024 11:03:28 +0200
+Subject: [PATCH] Resolve NPE
+
+---
+ .../admin/highAvailability/nameNode/step7_controller.js     | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/ambari-web/app/controllers/main/admin/highAvailability/nameNode/step7_controller.js b/ambari-web/app/controllers/main/admin/highAvailability/nameNode/step7_controller.js
+index 722668cf05..a29c700f1d 100644
+--- a/ambari-web/app/controllers/main/admin/highAvailability/nameNode/step7_controller.js
++++ b/ambari-web/app/controllers/main/admin/highAvailability/nameNode/step7_controller.js
+@@ -32,11 +32,13 @@ App.HighAvailabilityWizardStep7Controller = App.HighAvailabilityProgressPageCont
+       tasksToRemove.push('startAmbariInfra');
+     }
+ 
+-    if (App.ClientComponent.getModelByComponentName('RANGER_ADMIN').get('installedCount') === 0) {
++    let rangerAdmin = App.ClientComponent.getModelByComponentName('RANGER_ADMIN');
++    if (rangerAdmin && rangerAdmin.get('installedCount') === 0) {
+       tasksToRemove.push('startRanger');
+     }
+ 
+-    if (App.ClientComponent.getModelByComponentName('MYSQL_SERVER').get('installedCount') === 0) {
++    let mysqlServer = App.ClientComponent.getModelByComponentName('MYSQL_SERVER');
++    if (mysqlServer && mysqlServer.get('installedCount') === 0) {
+       tasksToRemove.push('startMysqlServer');
+     }
+ 
+-- 
+2.34.1
+
