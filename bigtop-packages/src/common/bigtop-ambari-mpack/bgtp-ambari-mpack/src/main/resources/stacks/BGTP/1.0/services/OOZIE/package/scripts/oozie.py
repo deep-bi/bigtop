@@ -183,6 +183,11 @@ def oozie(is_server=False, upgrade_type=None):
            group = params.user_group
     )
 
+  # DEVS-677 oozie-server dir chown to oozie:oozie
+  Execute(format("{sudo} chown -R {oozie_user}:{user_group} {oozie_lib_dir}"))
+  Execute(format("{sudo} chown -R {oozie_user}:{user_group} {oozie_home}"))
+  Execute(format("{sudo} chown -R {oozie_user}:{user_group} {oozie_log_dir}"))
+
   if params.jdbc_driver_name == "com.mysql.jdbc.Driver" or \
      params.jdbc_driver_name == "com.microsoft.sqlserver.jdbc.SQLServerDriver" or \
      params.jdbc_driver_name == "org.postgresql.Driver" or \
