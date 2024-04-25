@@ -175,7 +175,7 @@ if [ -d "/usr/lib/bigtop-tomcat" ]; then
 fi
 
 #Set JAVA HOME
-export JAVA_HOME={{java_home}}
+export JAVA_HOME={{java64_home}}
 
 export JRE_HOME=${JAVA_HOME}
 

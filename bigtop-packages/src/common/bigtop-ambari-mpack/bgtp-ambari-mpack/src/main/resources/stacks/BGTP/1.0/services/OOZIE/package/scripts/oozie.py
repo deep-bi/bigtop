@@ -23,7 +23,7 @@ import re
 
 # Resource Management Imports
 from resource_management.core.resources.service import ServiceConfig
-from resource_management.core.resources.system import Directory, Execute, File
+from resource_management.core.resources.system import Directory, Execute, File, Link
 from resource_management.core.source import DownloadSource
 from resource_management.core.source import InlineTemplate
 from resource_management.core.source import Template
@@ -114,6 +114,9 @@ def oozie(is_server=False, upgrade_type=None):
     params.HdfsResource(None, action="execute")
 
     generate_logfeeder_input_config('oozie', Template("input.config-oozie.json.j2", extra_imports=[default]))
+    Link("/usr/bgtp/current/oozie-server", to="/usr/lib/oozie")
+    Execute(format("{sudo} chown -R {oozie_user}:{user_group} /usr/lib/oozie"))
+
   Directory(params.conf_dir,
              create_parents = True,
              owner = params.oozie_user,
@@ -257,7 +260,6 @@ def is_oozie5_installed():
 
 def oozie_server_specific(upgrade_type):
   import params
-
   no_op_test = as_user(format("ls {pid_file} >/dev/null 2>&1 && ps -p `cat {pid_file}` >/dev/null 2>&1"), user=params.oozie_user)
 
   File(params.pid_file,

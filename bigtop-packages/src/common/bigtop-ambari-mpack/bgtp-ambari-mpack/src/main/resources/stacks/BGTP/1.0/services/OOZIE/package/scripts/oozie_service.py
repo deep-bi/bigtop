@@ -75,7 +75,7 @@ def oozie_service(action = 'start', upgrade_type=None):
 
   if action == 'start':
     #start_cmd = format("cd {oozie_tmp_dir} && {oozie_home}/bin/oozie-start.sh")
-    start_cmd  = format("cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh start")
+    start_cmd  = format("{oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh start")
     path_to_jdbc = params.target
 
     if params.jdbc_driver_name == "com.mysql.jdbc.Driver" or \
@@ -116,7 +116,7 @@ def oozie_service(action = 'start', upgrade_type=None):
       if params.sysprep_skip_oozie_schema_create:
         Logger.info("Skipping creation of oozie schema as host is sys prepped")
       else:
-        Execute( format("cd {oozie_tmp_dir} && {oozie_home}/bin/ooziedb.sh create -sqlfile oozie.sql -run"),
+        Execute( format("{oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/ooziedb.sh create -run"), # -sqlfile oozie.sql remove, because it renders sql, not executes it
                  user = params.oozie_user, not_if = no_op_test,
                  ignore_failures = True
         )
@@ -183,7 +183,7 @@ def oozie_service(action = 'start', upgrade_type=None):
               create_parents = True,
     )
 
-    stop_cmd  = format("cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh stop 60 -force")
+    stop_cmd  = format("{oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh stop 60 -force")
 
     try:
       # stop oozie
