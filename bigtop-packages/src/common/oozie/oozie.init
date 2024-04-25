@@ -52,6 +52,10 @@ start_oozie() {
   install -d -o oozie -g oozie /var/run/oozie
   install -d -o oozie -g oozie /var/log/oozie
   install -d -o oozie -g oozie /var/tmp/oozie
+
+  chown -R oozie:oozie /var/lib/oozie
+  chown -R oozie:oozie /usr/lib/oozie
+
   runuser --shell=/bin/bash -l oozie -c "env JAVA_HOME=$JAVA_HOME /usr/lib/oozie/bin/oozied.sh start"
 }
 
