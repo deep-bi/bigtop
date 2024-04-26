@@ -75,7 +75,7 @@ def oozie_service(action = 'start', upgrade_type=None):
 
   if action == 'start':
     #start_cmd = format("cd {oozie_tmp_dir} && {oozie_home}/bin/oozie-start.sh")
-    start_cmd  = format("{oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh start")
+    start_cmd  = format("source {oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh start")
     path_to_jdbc = params.target
 
     if params.jdbc_driver_name == "com.mysql.jdbc.Driver" or \
@@ -92,7 +92,7 @@ def oozie_service(action = 'start', upgrade_type=None):
                 " in oozie lib dir. So, db connection check can fail. Please run 'ambari-server setup --jdbc-db={db_name} --jdbc-driver={path_to_jdbc} on server host.'"
           Logger.error(error_message)
 
-      db_connection_check_command = format("{java_home}/bin/java -cp {check_db_connection_jar}:{path_to_jdbc} org.apache.ambari.server.DBConnectionVerification '{oozie_jdbc_connection_url}' {oozie_metastore_user_name} {oozie_metastore_user_passwd!p} {jdbc_driver_name}")
+      db_connection_check_command = format("{java64_home}/bin/java -cp {check_db_connection_jar}:{path_to_jdbc} org.apache.ambari.server.DBConnectionVerification '{oozie_jdbc_connection_url}' {oozie_metastore_user_name} {oozie_metastore_user_passwd!p} {jdbc_driver_name}")
     else:
       db_connection_check_command = None
 
@@ -116,7 +116,7 @@ def oozie_service(action = 'start', upgrade_type=None):
       if params.sysprep_skip_oozie_schema_create:
         Logger.info("Skipping creation of oozie schema as host is sys prepped")
       else:
-        Execute( format("{oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/ooziedb.sh create -run"), # -sqlfile oozie.sql remove, because it renders sql, not executes it
+        Execute( format("source {oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/ooziedb.sh create -run"), # -sqlfile oozie.sql remove, because it renders sql, not executes it
                  user = params.oozie_user, not_if = no_op_test,
                  ignore_failures = True
         )
@@ -183,7 +183,7 @@ def oozie_service(action = 'start', upgrade_type=None):
               create_parents = True,
     )
 
-    stop_cmd  = format("{oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh stop 60 -force")
+    stop_cmd  = format("source {oozie_home}/conf/oozie-env.sh && cd {oozie_tmp_dir} && {oozie_home}/bin/oozied.sh stop 60 -force")
 
     try:
       # stop oozie
