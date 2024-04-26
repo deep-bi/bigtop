@@ -116,6 +116,9 @@ def oozie(is_server=False, upgrade_type=None):
     generate_logfeeder_input_config('oozie', Template("input.config-oozie.json.j2", extra_imports=[default]))
     Link("/usr/bgtp/current/oozie-server", to="/usr/lib/oozie")
     Execute(format("{sudo} chown -R {oozie_user}:{user_group} /usr/lib/oozie"))
+  else:
+    Link("/usr/bgtp/current/oozie-client", to="/usr/lib/oozie")
+    Execute(format("{sudo} chown -R {oozie_user}:{user_group} /usr/lib/oozie"))
 
   Directory(params.conf_dir,
              create_parents = True,
