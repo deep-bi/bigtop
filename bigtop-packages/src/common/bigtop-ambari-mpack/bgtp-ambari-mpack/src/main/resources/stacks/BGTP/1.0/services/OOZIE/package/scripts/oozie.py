@@ -104,6 +104,12 @@ def oozie(is_server=False, upgrade_type=None):
 def oozie(is_server=False, upgrade_type=None):
   import params
 
+  Directory("/usr/bgtp/current",
+            create_parents = True,
+            owner = params.oozie_user,
+            group = params.user_group
+  )
+
   if is_server:
     params.HdfsResource(params.oozie_hdfs_user_dir,
                          type="directory",
