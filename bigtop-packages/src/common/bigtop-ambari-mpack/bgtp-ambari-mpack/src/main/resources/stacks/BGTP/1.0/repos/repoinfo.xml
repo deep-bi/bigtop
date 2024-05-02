@@ -16,7 +16,7 @@
    limitations under the License.
 -->
 <reposinfo>
-  <os family="redhat8">
+  <os family="redhat7">
     <repo>
       <baseurl>http://repos.bigtop.apache.org/releases/3.2.1/centos/7/$basearch</baseurl>
       <repoid>BGTP-1.0</repoid>
