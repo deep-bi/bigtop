@@ -1,0 +1,76 @@
+From ae19e5dcab762c466a4223bc038bb6287c487d27 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Thu, 9 May 2024 14:16:53 +0200
+Subject: [PATCH] Remove Logback dependency from Ambari
+
+---
+ ambari-server/pom.xml                           | 10 ----------
+ .../checks/DatabaseConsistencyChecker.java      | 17 -----------------
+ 2 files changed, 27 deletions(-)
+
+diff --git a/ambari-server/pom.xml b/ambari-server/pom.xml
+index dcb3ad478a..c366c7092b 100755
+--- a/ambari-server/pom.xml
++++ b/ambari-server/pom.xml
+@@ -1266,16 +1266,6 @@
+       <groupId>ch.qos.reload4j</groupId>
+       <artifactId>reload4j</artifactId>
+     </dependency>
+-    <dependency>
+-      <groupId>ch.qos.logback</groupId>
+-      <artifactId>logback-core</artifactId>
+-      <version>1.2.10</version>
+-    </dependency>
+-    <dependency>
+-      <groupId>ch.qos.logback</groupId>
+-      <artifactId>logback-classic</artifactId>
+-      <version>1.2.10</version>
+-    </dependency>
+     <dependency>
+       <groupId>org.eclipse.persistence</groupId>
+       <artifactId>eclipselink</artifactId>
+diff --git a/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java b/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
+index b897c05c54..3aed041ac9 100755
+--- a/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
++++ b/ambari-server/src/main/java/org/apache/ambari/server/checks/DatabaseConsistencyChecker.java
+@@ -17,8 +17,6 @@
+  */
+ package org.apache.ambari.server.checks;
+ 
+-import java.util.Iterator;
+-
+ import org.apache.ambari.server.AmbariException;
+ import org.apache.ambari.server.audit.AuditLoggerModule;
+ import org.apache.ambari.server.controller.ControllerModule;
+@@ -33,10 +31,6 @@ import com.google.inject.Inject;
+ import com.google.inject.Injector;
+ import com.google.inject.persist.PersistService;
+ 
+-import ch.qos.logback.classic.spi.ILoggingEvent;
+-import ch.qos.logback.core.Appender;
+-import ch.qos.logback.core.FileAppender;
+-
+ public class DatabaseConsistencyChecker {
+   private static final Logger LOG = LoggerFactory.getLogger
+           (DatabaseConsistencyChecker.class);
+@@ -125,17 +119,6 @@ public class DatabaseConsistencyChecker {
+         DatabaseConsistencyCheckHelper.closeConnection();
+         if (DatabaseConsistencyCheckHelper.getLastCheckResult().isErrorOrWarning()) {
+           String ambariDBConsistencyCheckLog = "ambari-server-check-database.log";
+-          ch.qos.logback.classic.Logger dbConsistencyCheckHelperLogger =
+-                  (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(DatabaseConsistencyCheckHelper.class);
+-
+-          for (Iterator<Appender<ILoggingEvent>> index = dbConsistencyCheckHelperLogger.iteratorForAppenders(); index.hasNext();){
+-            Appender<ILoggingEvent> appender = index.next();
+-            if (appender instanceof FileAppender) {
+-              ambariDBConsistencyCheckLog = ((FileAppender) appender).getFile();
+-              break;
+-            }
+-          }
+-          ambariDBConsistencyCheckLog = ambariDBConsistencyCheckLog.replace("//", "/");
+ 
+           if (DatabaseConsistencyCheckHelper.getLastCheckResult().isError()) {
+             System.out.print(String.format("DB configs consistency check failed. Run \"ambari-server start --skip-database-check\" to skip. " +
+-- 
+2.34.1
+
