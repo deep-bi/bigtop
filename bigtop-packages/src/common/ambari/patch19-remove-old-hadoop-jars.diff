@@ -1,0 +1,89 @@
+From 40f2541c4288d59c1eb4d95866f9bb32e924bfea Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Mon, 17 Jun 2024 16:06:36 +0200
+Subject: [PATCH] Remove old Hadoop versions from build
+
+---
+ .../ambari-metrics-timelineservice/pom.xml    | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/pom.xml b/ambari-metrics/ambari-metrics-timelineservice/pom.xml
+index 13984e2b2d..275cd69236 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/pom.xml
++++ b/ambari-metrics/ambari-metrics-timelineservice/pom.xml
+@@ -362,6 +362,26 @@
+           <groupId>org.apache.hadoop</groupId>
+           <artifactId>hadoop-annotations</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-auth</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-mapreduce-client-core</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-hdfs-client</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-hdfs</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-distcp</artifactId>
++        </exclusion>
+         <exclusion>
+             <groupId>com.fasterxml.jackson.core</groupId>
+             <artifactId>jackson-databind</artifactId>
+@@ -824,6 +844,22 @@
+           <groupId>org.glassfish</groupId>
+           <artifactId>javax.el</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-client</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-mapreduce-client-common</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>*</artifactId>
++        </exclusion>
+       </exclusions>
+       <classifier>tests</classifier>
+     </dependency>
+@@ -854,6 +890,22 @@
+           <groupId>log4j</groupId>
+           <artifactId>log4j</artifactId>
+         </exclusion>
++        <exclusion>
++            <groupId>org.apache.hadoop</groupId>
++            <artifactId>hadoop-client</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-mapreduce-client-jobclient</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-mapreduce-client-common</artifactId>
++        </exclusion>
++        <exclusion>
++          <groupId>org.apache.hadoop</groupId>
++          <artifactId>hadoop-hdfs</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+-- 
+2.34.1
+
