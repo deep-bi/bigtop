@@ -1,0 +1,29 @@
+From 5a273e91c35435cac8cd4da2685930f5f89481b0 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Wed, 19 Jun 2024 13:56:47 +0200
+Subject: [PATCH] ambari-metrics/ambari-metrics-timelineservice/pom.xml
+
+---
+ ambari-metrics/ambari-metrics-timelineservice/pom.xml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/ambari-metrics/ambari-metrics-timelineservice/pom.xml b/ambari-metrics/ambari-metrics-timelineservice/pom.xml
+index 275cd69236..2b3f15caaa 100644
+--- a/ambari-metrics/ambari-metrics-timelineservice/pom.xml
++++ b/ambari-metrics/ambari-metrics-timelineservice/pom.xml
+@@ -438,6 +438,12 @@
+       <artifactId>servlet-api</artifactId>
+       <version>2.5</version>
+     </dependency>
++    <dependency>
++      <groupId>javax.ws.rs</groupId>
++      <artifactId>javax.ws.rs-api</artifactId>
++      <version>2.1.1</version>
++    </dependency>
++
+     <!-- 'mvn dependency:analyze' fails to detect use of this dependency -->
+     <dependency>
+       <groupId>org.apache.hadoop</groupId>
+-- 
+2.34.1
+

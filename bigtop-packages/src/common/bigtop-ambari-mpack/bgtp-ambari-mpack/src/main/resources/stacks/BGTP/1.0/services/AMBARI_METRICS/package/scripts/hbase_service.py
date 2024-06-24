@@ -76,3 +76,5 @@ def hbase_service(
       )
       Execute(format("{sudo} cp /usr/lib/ams-hbase/lib/hbase-*.jar /usr/lib/ams-hbase/lib/hadoop-*.jar /usr/lib/ambari-metrics-collector")
       )
+      Execute(format("{sudo} cp /usr/lib/ambari-metrics-collector/snappy-0.3.jar /usr/lib/ams-hbase/lib")
+      )
