@@ -1,0 +1,68 @@
+From 2d1e2988fdac98dc14107843e961b0156b0e2040 Mon Sep 17 00:00:00 2001
+From: Bartosz Mikulski <bartmiki97@gmail.com>
+Date: Wed, 26 Jun 2024 16:54:47 +0200
+Subject: [PATCH] Copy instead of link
+
+---
+ .../main/python/resource_management/core/sudo.py  | 15 +++++++++++----
+ .../src/main/python/ambari_server/setupMpacks.py  |  4 ++--
+ 2 files changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/ambari-common/src/main/python/resource_management/core/sudo.py b/ambari-common/src/main/python/resource_management/core/sudo.py
+index f103c8daa7..b56e71c558 100644
+--- a/ambari-common/src/main/python/resource_management/core/sudo.py
++++ b/ambari-common/src/main/python/resource_management/core/sudo.py
+@@ -101,9 +101,16 @@ if os.geteuid() == 0:
+           full_file_path = os.path.join(root, file_name)
+           chmod(full_file_path, attr_to_bitmask(files_attrib, initial_bitmask=os.stat(full_file_path).st_mode))
+ 
+-  def copy(src, dst):
+-    shutil.copy(src, dst)
+-    
++  def copy(src, dst, cleanup=False):
++    if os.path.isfile(src):
++      if os.path.exists(dst) and cleanup:
++        os.remove(dst)
++      shutil.copy(src, dst)
++    else:
++      if os.path.exists(dst) and cleanup:
++        shutil.rmtree(dst)
++      shutil.copytree(src, dst)
++
+   def makedirs(path, mode):
+     try:
+       os.makedirs(path, mode)
+@@ -125,7 +132,7 @@ if os.geteuid() == 0:
+   
+   def makedir(path, mode):
+     os.mkdir(path)
+-    
++
+   def symlink(source, link_name):
+     os.symlink(source, link_name)
+     
+diff --git a/ambari-server/src/main/python/ambari_server/setupMpacks.py b/ambari-server/src/main/python/ambari_server/setupMpacks.py
+index 9bb6b77933..3a3c18f940 100755
+--- a/ambari-server/src/main/python/ambari_server/setupMpacks.py
++++ b/ambari-server/src/main/python/ambari_server/setupMpacks.py
+@@ -247,7 +247,7 @@ def create_symlink_using_path(src_path, dest_link, force=False):
+   if force and os.path.islink(dest_link):
+     sudo.unlink(dest_link)
+ 
+-  sudo.symlink(src_path, dest_link)
++  sudo.copy(src_path, dest_link, cleanup=True)
+   print_info_msg("Symlink: " + dest_link)
+ 
+ def remove_symlinks(stack_location, extension_location, service_definitions_location, dashboard_location, staged_mpack_dir):
+@@ -554,7 +554,7 @@ def process_stack_addon_service_definitions_artifact(artifact, artifact_source_d
+                 sudo.makedir(dest_stack_services_path, 0755)
+               if options.force and os.path.islink(dest_link):
+                 sudo.unlink(dest_link)
+-              sudo.symlink(source_service_version_path, dest_link)
++              sudo.copy(source_service_version_path, dest_link, cleanup=True)
+               create_dashboard_symlinks(source_service_version_path, service_name, dashboard_location, options)
+ 
+ def search_mpacks(mpack_name, max_mpack_version=None):
+-- 
+2.34.1
+
