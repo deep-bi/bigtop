@@ -31,7 +31,7 @@ mvn clean package -DskipTests -Drat.skip
 # Ambari DO NOT support debian deployment in current version (2.7.5);
 # So just only add x86 RPMs support for Bigtop 3.2+ Mpack (Centos-7).
 if [ $HOSTTYPE = "x86_64" ] ; then
-if [ "${OS}" = "centos" ]; then
+if [ "${OS}" = "centos" ] || [ "${OS}" = "rocky" ]; then
   mkdir -p ${RPM_DIR}/${ARCH}
   cd ambari-metrics
   mvn clean package -Dbuild-rpm -DskipTests

@@ -89,8 +89,8 @@ class ApplyPatches(Command):
     
     def configure_subparser(self, parser):
         parser.add_argument('package', choices=PACKAGES.keys())
-        parser.add_argument('repository', type=Path)
-        parser.add_argument('--dry-run', action='store_true')
+        parser.add_argument('repository', type=Path, help='Path to the repository to apply patches to')
+        parser.add_argument('--dry-run', action='store_true', help='Print commands instead of executing them')
 
 
 class UploadRPMs(Command):
@@ -104,9 +104,11 @@ class UploadRPMs(Command):
         target_path = base_path / target
 
         sources = [str(rpm) for rpm in self.sources_dir.rglob('*.rpm')]
+        mkdir_cmd = ['ssh', '-p', str(args.port), f'{args.user}@{args.server}', f'mkdir -p {target_path}']
         scp_cmd = ['scp', '-P', str(args.port)] + sources + [f'{args.user}@{args.server}:{target_path}']
         create_repo_cmd = ['ssh', '-p', str(args.port), f'{args.user}@{args.server}', f"'cd {target_path} ; createrepo .'"]
         if not args.dry_run:
+            subprocess.run(' '.join(mkdir_cmd), text=True, shell=True)            
             if sources:
                 print(f'Uploading RPMs to {args.user}@{args.server}:{target_path}...')
                 subprocess.run(scp_cmd)
@@ -116,6 +118,7 @@ class UploadRPMs(Command):
             subprocess.run(' '.join(create_repo_cmd), shell=True, text=True)
         else:
             print('Dry run, not executing command.')
+            print(' '.join(mkdir_cmd))
             if sources:
                 print(' '.join(scp_cmd))
             print(' '.join(create_repo_cmd))
