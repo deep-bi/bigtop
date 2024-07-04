@@ -1,0 +1,56 @@
+diff --git a/ambari-metrics/ambari-metrics-assembly/pom.xml b/ambari-metrics/ambari-metrics-assembly/pom.xml
+index 6504a76b0b..336a9c4ebd 100644
+--- a/ambari-metrics/ambari-metrics-assembly/pom.xml
++++ b/ambari-metrics/ambari-metrics-assembly/pom.xml
+@@ -41,8 +41,8 @@
+     <storm-sink.dir>${project.basedir}/../ambari-metrics-storm-sink</storm-sink.dir>
+     <flume-sink.dir>${project.basedir}/../ambari-metrics-flume-sink</flume-sink.dir>
+     <kafka-sink.dir>${project.basedir}/../ambari-metrics-kafka-sink</kafka-sink.dir>
+-    <python.ver>python &gt;= 2.6</python.ver>
+-    <python.devel>python-devel</python.devel>
++    <python.ver>python2 &gt;= 2.6</python.ver>
++    <python.devel>python2-devel</python.devel>
+     <deb.publisher>Apache</deb.publisher>
+     <deb.section>universe/admin</deb.section>
+     <deb.architecture>i386 amd64</deb.architecture>
+diff --git a/ambari-metrics/pom.xml b/ambari-metrics/pom.xml
+index 0255709040..c0934309da 100644
+--- a/ambari-metrics/pom.xml
++++ b/ambari-metrics/pom.xml
+@@ -36,7 +36,7 @@
+   </modules>
+   <properties>
+     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+-    <python.ver>python &gt;= 2.6</python.ver>
++    <python.ver>python2 &gt;= 2.6</python.ver>
+     <deb.python.ver>python (&gt;= 2.6)</deb.python.ver>
+     <!--TODO change to HDP URL-->
+     <hbase.tar>http://repo.bigtop.apache.org.s3.amazonaws.com/bigtop-stack-binary/3.2.0/centos-7/x86_64/hbase-2.4.13-bin.tar.gz</hbase.tar>
+diff --git a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
+index 2e8151c26e..82f95651f0 100644
+--- a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
+@@ -169,13 +169,21 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>redhat7,redhat8,redhat6,amazonlinux2</osFamily>
++          <osFamily>redhat7,redhat6,amazonlinux2</osFamily>
+           <packages>
+             <package>
+               <name>python-kerberos</name>
+             </package>
+           </packages>
+         </osSpecific>
++        <osSpecific>
++          <osFamily>redhat8</osFamily>
++          <packages>
++            <package>
++              <name>python2-kerberos</name>
++            </package>
++          </packages>
++        </osSpecific>
+         <osSpecific>
+           <osFamily>debian7,ubuntu12,ubuntu14</osFamily>
+           <packages>
+
