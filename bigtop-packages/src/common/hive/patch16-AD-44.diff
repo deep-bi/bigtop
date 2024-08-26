@@ -1,0 +1,117 @@
+From 4068476350e7e2411ccc3680e256278339c7455a Mon Sep 17 00:00:00 2001
+From: sviatahorau <mikhail.sviatahorau@deep.bi>
+Date: Mon, 26 Aug 2024 10:55:27 +0200
+Subject: [PATCH] [AD-44] added filter to restrict specified http methods
+
+---
+ .../hive/hcatalog/templeton/AppConfig.java    |  1 +
+ .../apache/hive/hcatalog/templeton/Main.java  | 51 ++++++++++++++++++-
+ 2 files changed, 51 insertions(+), 1 deletion(-)
+
+diff --git a/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/AppConfig.java b/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/AppConfig.java
+index 1fd9e47dde..647e2681aa 100644
+--- a/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/AppConfig.java
++++ b/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/AppConfig.java
+@@ -205,6 +205,7 @@ public enum JobsListOrder {
+ 
+   public static final String XSRF_FILTER_ENABLED = "templeton.xsrf.filter.enabled";
+   public static final String FRAME_OPTIONS_FILETER = "templeton.frame.options.filter";
++  public static final String RESTRICTED_HTTP_METHODS = "templeton.restricted.http.methods";
+ 
+   private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
+ 
+diff --git a/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/Main.java b/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/Main.java
+index 441038bdd0..e5c616a2ed 100644
+--- a/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/Main.java
++++ b/hcatalog/webhcat/svr/src/main/java/org/apache/hive/hcatalog/templeton/Main.java
+@@ -18,6 +18,7 @@
+  */
+ package org.apache.hive.hcatalog.templeton;
+ 
++import com.google.common.collect.Sets;
+ import com.sun.jersey.api.core.PackagesResourceConfig;
+ import com.sun.jersey.spi.container.servlet.ServletContainer;
+ 
+@@ -25,8 +26,10 @@
+ import java.io.FileInputStream;
+ import java.io.IOException;
+ import java.util.ArrayList;
++import java.util.Collections;
+ import java.util.EnumSet;
+ import java.util.HashMap;
++import java.util.Set;
+ 
+ import org.apache.hadoop.security.authentication.server.AuthenticationFilter;
+ import org.apache.hadoop.security.authentication.server.KerberosAuthenticationHandler;
+@@ -62,7 +65,6 @@
+ import javax.servlet.ServletException;
+ import javax.servlet.ServletRequest;
+ import javax.servlet.ServletResponse;
+-import javax.servlet.annotation.WebFilter;
+ import javax.servlet.http.HttpServletRequest;
+ import javax.servlet.http.HttpServletResponse;
+ 
+@@ -226,6 +228,7 @@ public Server runServer(int port)
+     }
+ 
+     root.addFilter(makeFrameOptionFilter(), "/" + SERVLET_PATH + "/*", dispatches);
++    root.addFilter(makeMethodFilter(), "/" + SERVLET_PATH + "/*", dispatches);
+ 
+     // Connect Jersey
+     ServletHolder h = new ServletHolder(new ServletContainer(makeJerseyConfig()));
+@@ -292,6 +295,52 @@ public FilterHolder makeFrameOptionFilter() {
+     frameOptionFilter.setInitParameter(AppConfig.FRAME_OPTIONS_FILETER, conf.get(AppConfig.FRAME_OPTIONS_FILETER));
+     return frameOptionFilter;
+   }
++  public FilterHolder makeMethodFilter() {
++    FilterHolder methodFilter = new FilterHolder(RestrictedMethodFilter.class);
++    methodFilter.setInitParameter(AppConfig.RESTRICTED_HTTP_METHODS, conf.get(AppConfig.RESTRICTED_HTTP_METHODS));
++    return methodFilter;
++  }
++
++  public static class RestrictedMethodFilter implements Filter{
++
++    private Set<String> toRestrict;
++    @Override
++    public void init(FilterConfig filterConfig)
++    {
++      String methodsFromConfig = filterConfig.getInitParameter(AppConfig.RESTRICTED_HTTP_METHODS);
++
++      if (methodsFromConfig == null) {
++        toRestrict = Collections.emptySet();
++      }
++      else {
++        toRestrict = getRestrictedMethodsFromString(methodsFromConfig);
++      }
++
++    }
++
++    @Override
++    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
++        throws IOException, ServletException
++    {
++      HttpServletRequest httpRequest = (HttpServletRequest) request;
++      HttpServletResponse httpResponse = (HttpServletResponse) response;
++      if (toRestrict.contains(httpRequest.getMethod())) {
++        httpResponse.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
++        return;
++      }
++      chain.doFilter(request, response);
++    }
++
++    @Override
++    public void destroy()
++    {
++      // do nothing
++    }
++
++    private Set<String> getRestrictedMethodsFromString(final String string){
++      return Sets.newHashSet(string.split(","));
++    }
++  }
+ 
+   public static class XFrameOptionsFilter implements Filter {
+     private final static String defaultMode = "DENY";
+-- 
+2.34.1
+
