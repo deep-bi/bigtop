@@ -1,0 +1,341 @@
+From 72affb8206cb808e764bae7b070f69c4160b67da Mon Sep 17 00:00:00 2001
+From: sviatahorau <mikhail.sviatahorau@deep.bi>
+Date: Thu, 5 Sep 2024 11:21:52 +0200
+Subject: [PATCH] Exclude log4j
+
+---
+ core/pom.xml                     | 23 ++++++++++--
+ examples/pom.xml                 |  4 +++
+ pom.xml                          | 61 ++++++++++++++++++++++++++++++--
+ server/pom.xml                   |  4 +++
+ sharelib/distcp/pom.xml          |  7 ++++
+ sharelib/hive/pom.xml            |  4 +++
+ sharelib/pig/pom.xml             |  4 +++
+ sharelib/spark/pom.xml           |  4 +++
+ zookeeper-security-tests/pom.xml | 12 +++++++
+ 9 files changed, 118 insertions(+), 5 deletions(-)
+
+diff --git a/core/pom.xml b/core/pom.xml
+index f582ed16a..849c1b38c 100644
+--- a/core/pom.xml
++++ b/core/pom.xml
+@@ -256,8 +256,9 @@
+         </dependency>
+ 
+         <dependency>
+-            <groupId>log4j</groupId>
+-            <artifactId>log4j</artifactId>
++            <groupId>ch.qos.reload4j</groupId>
++            <artifactId>reload4j</artifactId>
++            <version>${reload4j.version}</version>
+             <scope>compile</scope>
+         </dependency>
+ 
+@@ -265,6 +266,12 @@
+             <groupId>log4j</groupId>
+             <artifactId>apache-log4j-extras</artifactId>
+             <scope>compile</scope>
++            <exclusions>
++              <exclusion>
++                <groupId>log4j</groupId>
++                <artifactId>log4j</artifactId>
++              </exclusion>
++            </exclusions>
+         </dependency>
+ 
+         <dependency>
+@@ -490,6 +497,12 @@
+             <groupId>org.apache.hive</groupId>
+             <artifactId>hive-jdbc</artifactId>
+             <scope>compile</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+         <dependency>
+             <groupId>net.jcip</groupId>
+@@ -522,6 +535,12 @@
+             <artifactId>hive-service</artifactId>
+             <version>${hive.version}</version>
+             <scope>test</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+ 
+     </dependencies>
+diff --git a/examples/pom.xml b/examples/pom.xml
+index 4e10e63b6..8b09f4a77 100644
+--- a/examples/pom.xml
++++ b/examples/pom.xml
+@@ -152,6 +152,10 @@
+                     <groupId>org.slf4j</groupId>
+                     <artifactId>jcl-over-slf4j</artifactId>
+                 </exclusion>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
+             </exclusions>
+         </dependency>
+     </dependencies>
+diff --git a/pom.xml b/pom.xml
+index 110daeb21..ba1b1ee93 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -117,6 +117,7 @@
+          <curator.version>2.5.0</curator.version>
+          <jackson.version>2.6.5</jackson.version>
+          <log4j.version>1.2.17</log4j.version>
++         <reload4j.version>1.2.25</reload4j.version>
+          <activemq.version>5.15.9</activemq.version>
+          <commons.lang3.version>3.3.2</commons.lang3.version>
+          <httpcore.version>4.3.3</httpcore.version>
+@@ -396,12 +397,24 @@
+                 <groupId>org.apache.hadoop</groupId>
+                 <artifactId>hadoop-client</artifactId>
+                 <version>${hadoop.version}</version>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+             <dependency>
+                 <groupId>org.apache.hadoop</groupId>
+                 <artifactId>hadoop-hdfs</artifactId>
+                 <version>${hadoop.version}</version>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+             <dependency>
+@@ -409,6 +422,12 @@
+                 <artifactId>hadoop-minicluster</artifactId>
+                 <version>${hadoop.version}</version>
+                 <scope>test</scope>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+             <dependency>
+@@ -572,6 +591,10 @@
+                         <groupId>org.apache.logging.log4j</groupId>
+                         <artifactId>log4j</artifactId>
+                     </exclusion>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
+                     <exclusion>
+                         <groupId>org.apache.logging.log4j</groupId>
+                         <artifactId>log4j-1.2-api</artifactId>
+@@ -915,6 +938,12 @@
+                 <groupId>org.apache.hadoop</groupId>
+                 <artifactId>hadoop-yarn-common</artifactId>
+                 <version>${hadoop.version}</version>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+             <dependency>
+@@ -1277,6 +1306,12 @@
+                 <groupId>org.slf4j</groupId>
+                 <artifactId>slf4j-log4j12</artifactId>
+                 <version>1.6.6</version>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+            <dependency>
+@@ -1314,13 +1349,17 @@
+                         <groupId>javax.servlet</groupId>
+                         <artifactId>servlet-api</artifactId>
+                     </exclusion>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
+                 </exclusions>
+             </dependency>
+ 
+             <dependency>
+-                <groupId>log4j</groupId>
+-                <artifactId>log4j</artifactId>
+-                <version>${log4j.version}</version>
++                <groupId>ch.qos.reload4j</groupId>
++                <artifactId>reload4j</artifactId>
++                <version>${reload4j.version}</version>
+                 <exclusions>
+                     <exclusion>
+                         <groupId>com.sun.jdmk</groupId>
+@@ -1349,6 +1388,12 @@
+                 <groupId>log4j</groupId>
+                 <artifactId>apache-log4j-extras</artifactId>
+                 <version>${log4j.version}</version>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+             <dependency>
+@@ -1534,6 +1579,12 @@
+                 <groupId>org.apache.curator</groupId>
+                 <artifactId>curator-client</artifactId>
+                 <version>${curator.version}</version>
++                <exclusions>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
++                </exclusions>
+             </dependency>
+ 
+             <dependency>
+@@ -1552,6 +1603,10 @@
+                         <groupId>org.apache.logging.log4j</groupId>
+                         <artifactId>log4j</artifactId>
+                     </exclusion>
++                    <exclusion>
++                        <groupId>log4j</groupId>
++                        <artifactId>log4j</artifactId>
++                    </exclusion>
+                     <exclusion>
+                         <groupId>org.apache.logging.log4j</groupId>
+                         <artifactId>log4j-1.2-api</artifactId>
+diff --git a/server/pom.xml b/server/pom.xml
+index 5c2ba556d..5403b3880 100644
+--- a/server/pom.xml
++++ b/server/pom.xml
+@@ -93,6 +93,10 @@
+                     <groupId>javax.servlet.jsp</groupId>
+                     <artifactId>jsp-api</artifactId>
+                 </exclusion>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
+             </exclusions>
+         </dependency>
+         <dependency>
+diff --git a/sharelib/distcp/pom.xml b/sharelib/distcp/pom.xml
+index 1069be899..8b4b3f42f 100644
+--- a/sharelib/distcp/pom.xml
++++ b/sharelib/distcp/pom.xml
+@@ -66,6 +66,13 @@
+             <artifactId>oozie-sharelib-oozie</artifactId>
+             <scope>provided</scope>
+         </dependency>
++
++        <dependency>
++            <groupId>ch.qos.reload4j</groupId>
++            <artifactId>reload4j</artifactId>
++            <version>${reload4j.version}</version>
++            <scope>compile</scope>
++        </dependency>
+     </dependencies>
+ 
+     <build>
+diff --git a/sharelib/hive/pom.xml b/sharelib/hive/pom.xml
+index 408fb565d..c299ce5a0 100644
+--- a/sharelib/hive/pom.xml
++++ b/sharelib/hive/pom.xml
+@@ -162,6 +162,10 @@
+                     <groupId>org.apache.logging.log4j</groupId>
+                     <artifactId>log4j-slf4j-impl</artifactId>
+                 </exclusion>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
+             </exclusions>
+         </dependency>
+ 
+diff --git a/sharelib/pig/pom.xml b/sharelib/pig/pom.xml
+index 01f0ff0a1..c9544e638 100644
+--- a/sharelib/pig/pom.xml
++++ b/sharelib/pig/pom.xml
+@@ -155,6 +155,10 @@
+                     <groupId>org.apache.logging.log4j</groupId>
+                     <artifactId>log4j-slf4j-impl</artifactId>
+                 </exclusion>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
+             </exclusions>
+         </dependency>
+         <dependency>
+diff --git a/sharelib/spark/pom.xml b/sharelib/spark/pom.xml
+index 9735e5365..d6e8cc4a1 100644
+--- a/sharelib/spark/pom.xml
++++ b/sharelib/spark/pom.xml
+@@ -117,6 +117,10 @@
+                     <groupId>org.spark-project.hive</groupId>
+                     <artifactId>hive-shims</artifactId>
+                 </exclusion>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
+             </exclusions>
+         </dependency>
+         <dependency>
+diff --git a/zookeeper-security-tests/pom.xml b/zookeeper-security-tests/pom.xml
+index eb48bafb9..ff2dfd9df 100644
+--- a/zookeeper-security-tests/pom.xml
++++ b/zookeeper-security-tests/pom.xml
+@@ -40,11 +40,23 @@
+             <groupId>org.apache.curator</groupId>
+             <artifactId>curator-test</artifactId>
+             <scope>test</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+         <dependency>
+             <groupId>org.apache.hadoop</groupId>
+             <artifactId>hadoop-minikdc</artifactId>
+             <scope>test</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+         <dependency>
+             <groupId>org.apache.oozie</groupId>
+-- 
+2.34.1
+
