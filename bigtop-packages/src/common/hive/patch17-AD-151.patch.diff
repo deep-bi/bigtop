@@ -1,0 +1,832 @@
+From b69c6e625efe9bb96d4c1843d9faac7a622afaa3 Mon Sep 17 00:00:00 2001
+From: sviatahorau <mikhail.sviatahorau@deep.bi>
+Date: Wed, 4 Sep 2024 11:04:40 +0200
+Subject: [PATCH] log4j exclusion
+
+---
+ accumulo-handler/pom.xml              | 16 +++++++
+ hbase-handler/pom.xml                 | 32 +++++++++++++
+ hcatalog/core/pom.xml                 | 20 ++++++++
+ hcatalog/hcatalog-pig-adapter/pom.xml | 16 +++++++
+ hcatalog/webhcat/svr/pom.xml          |  4 ++
+ llap-client/pom.xml                   |  4 ++
+ llap-common/pom.xml                   |  4 ++
+ llap-ext-client/pom.xml               |  4 ++
+ llap-server/pom.xml                   | 30 ++++++++++++
+ llap-tez/pom.xml                      |  4 ++
+ metastore/pom.xml                     |  8 ++++
+ packaging/src/main/assembly/bin.xml   |  1 -
+ pom.xml                               | 66 +++++++++++++++++++++++++--
+ ql/pom.xml                            | 30 ++++++++++++
+ serde/pom.xml                         | 10 ++++
+ shims/0.23/pom.xml                    | 16 +++++++
+ shims/common/pom.xml                  |  4 ++
+ shims/scheduler/pom.xml               |  4 ++
+ spark-client/pom.xml                  |  4 ++
+ standalone-metastore/pom.xml          | 18 ++++++++
+ upgrade-acid/pom.xml                  |  1 -
+ 21 files changed, 289 insertions(+), 7 deletions(-)
+
+diff --git a/accumulo-handler/pom.xml b/accumulo-handler/pom.xml
+index 52f91ce1b5..0c1ced7bde 100644
+--- a/accumulo-handler/pom.xml
++++ b/accumulo-handler/pom.xml
+@@ -44,15 +44,31 @@
+             <groupId>commons-collections</groupId>
+             <artifactId>commons-collections</artifactId>
+           </exclusion>
++              <exclusion>
++                <groupId>log4j</groupId>
++                <artifactId>log4j</artifactId>
++              </exclusion>
+            </exclusions>
+    </dependency>
+     <dependency>
+       <groupId>org.apache.accumulo</groupId>
+       <artifactId>accumulo-fate</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.accumulo</groupId>
+       <artifactId>accumulo-start</artifactId>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.accumulo</groupId>
+diff --git a/hbase-handler/pom.xml b/hbase-handler/pom.xml
+index e5a8f0b46e..7f350bcd6c 100644
+--- a/hbase-handler/pom.xml
++++ b/hbase-handler/pom.xml
+@@ -59,6 +59,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -90,6 +94,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -126,6 +134,12 @@
+       <version>${hadoop.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hbase</groupId>
+@@ -139,6 +153,12 @@
+       <version>${hbase.version}</version>
+       <type>test-jar</type>
+       <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hbase</groupId>
+@@ -155,6 +175,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -172,6 +196,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -208,6 +236,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+       </exclusions>
+    </dependency>
+     <dependency>
+diff --git a/hcatalog/core/pom.xml b/hcatalog/core/pom.xml
+index fe4e152d36..388c993878 100644
+--- a/hcatalog/core/pom.xml
++++ b/hcatalog/core/pom.xml
+@@ -139,6 +139,12 @@
+       <groupId>org.apache.hadoop</groupId>
+       <artifactId>hadoop-hdfs</artifactId>
+       <version>${hadoop.version}</version>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <!-- test -->
+     <dependency>
+@@ -168,6 +174,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -176,6 +186,12 @@
+       <version>${hadoop.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hadoop</groupId>
+@@ -237,6 +253,10 @@
+           <groupId>org.slf4j</groupId>
+           <artifactId>slf4j-log4j12</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+diff --git a/hcatalog/hcatalog-pig-adapter/pom.xml b/hcatalog/hcatalog-pig-adapter/pom.xml
+index 68e5cda58d..dd946473dd 100644
+--- a/hcatalog/hcatalog-pig-adapter/pom.xml
++++ b/hcatalog/hcatalog-pig-adapter/pom.xml
+@@ -98,6 +98,12 @@
+       <artifactId>hadoop-hdfs</artifactId>
+       <version>${hadoop.version}</version>
+       <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+     <!--this should be automatically brought in by Pig, it's not in Pig 0.12 due to a bug
+@@ -135,6 +141,12 @@
+       <version>${hadoop.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hadoop</groupId>
+@@ -168,6 +180,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+    </dependency>
+     <dependency>
+diff --git a/hcatalog/webhcat/svr/pom.xml b/hcatalog/webhcat/svr/pom.xml
+index fa2bea488b..e800f8721c 100644
+--- a/hcatalog/webhcat/svr/pom.xml
++++ b/hcatalog/webhcat/svr/pom.xml
+@@ -160,6 +160,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+       </exclusions>
+    </dependency>
+     <dependency>
+diff --git a/llap-client/pom.xml b/llap-client/pom.xml
+index 87975c4010..ae560a200c 100644
+--- a/llap-client/pom.xml
++++ b/llap-client/pom.xml
+@@ -128,6 +128,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+diff --git a/llap-common/pom.xml b/llap-common/pom.xml
+index 7f1c856288..174c1d1775 100644
+--- a/llap-common/pom.xml
++++ b/llap-common/pom.xml
+@@ -147,6 +147,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+diff --git a/llap-ext-client/pom.xml b/llap-ext-client/pom.xml
+index eb5350b5f4..0130828290 100644
+--- a/llap-ext-client/pom.xml
++++ b/llap-ext-client/pom.xml
+@@ -146,6 +146,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+   </dependencies>
+diff --git a/llap-server/pom.xml b/llap-server/pom.xml
+index 4926989957..162b9486d3 100644
+--- a/llap-server/pom.xml
++++ b/llap-server/pom.xml
+@@ -134,6 +134,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -270,6 +274,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -282,6 +290,10 @@
+           <groupId>io.netty</groupId>
+           <artifactId>netty-all</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -301,6 +313,10 @@
+           <groupId>io.netty</groupId>
+           <artifactId>netty-all</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -345,6 +361,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -360,12 +380,22 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hbase</groupId>
+       <artifactId>hbase-common</artifactId>
+       <version>${hbase.version}</version>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hbase</groupId>
+diff --git a/llap-tez/pom.xml b/llap-tez/pom.xml
+index 6a6bc80656..1efb4617d2 100644
+--- a/llap-tez/pom.xml
++++ b/llap-tez/pom.xml
+@@ -209,6 +209,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+   </dependencies>
+diff --git a/metastore/pom.xml b/metastore/pom.xml
+index fda68c7caa..213a4af0d2 100644
+--- a/metastore/pom.xml
++++ b/metastore/pom.xml
+@@ -73,6 +73,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++         <exclusion>
++           <groupId>log4j</groupId>
++           <artifactId>log4j</artifactId>
++         </exclusion>
+       </exclusions>
+    </dependency>
+     <dependency>
+@@ -135,6 +139,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+diff --git a/packaging/src/main/assembly/bin.xml b/packaging/src/main/assembly/bin.xml
+index 6b2d678777..2ca201db57 100644
+--- a/packaging/src/main/assembly/bin.xml
++++ b/packaging/src/main/assembly/bin.xml
+@@ -42,7 +42,6 @@
+         <exclude>org.apache.hadoop:*</exclude>
+         <exclude>org.apache.hive.hcatalog:*</exclude>
+         <exclude>org.slf4j:*</exclude>
+-        <exclude>log4j:*</exclude>
+         <exclude>junit:*</exclude>
+         <exclude>co.cask.tephra:*</exclude>
+         <exclude>commons-configuration:commons-configuration</exclude>
+diff --git a/pom.xml b/pom.xml
+index c6a4617bd3..dbb6ec2a38 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -565,6 +565,10 @@
+             <groupId>org.apache.httpcomponents</groupId>
+             <artifactId>httpclient</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+          <exclusion>
+             <groupId>org.jboss.netty</groupId>
+             <artifactId>netty</artifactId>
+@@ -777,12 +781,22 @@
+             <groupId>org.apache.curator</groupId>
+             <artifactId>curator-recipes</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-hdfs</artifactId>
+         <version>${hadoop.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+@@ -831,6 +845,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+@@ -847,16 +865,34 @@
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-yarn-client</artifactId>
+         <version>${hadoop.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-yarn-common</artifactId>
+         <version>${hadoop.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-yarn-registry</artifactId>
+         <version>${hadoop.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+@@ -872,6 +908,12 @@
+         <groupId>org.apache.hbase</groupId>
+         <artifactId>hbase-common</artifactId>
+         <version>${hbase.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hbase</groupId>
+@@ -949,17 +991,27 @@
+         <groupId>org.apache.hbase</groupId>
+         <artifactId>hbase-server</artifactId>
+         <version>${hbase.version}</version>
+-	<exclusions>
+-            <exclusion>
+-        	<groupId>org.glassfish</groupId>
+-		<artifactId>javax.el</artifactId>
+-            </exclusion>
++        <exclusions>
++          <exclusion>
++            <groupId>org.glassfish</groupId>
++            <artifactId>javax.el</artifactId>
++          </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hbase</groupId>
+         <artifactId>hbase-mapreduce</artifactId>
+         <version>${hbase.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+@@ -980,6 +1032,10 @@
+             <groupId>org.apache.hadoop</groupId>
+             <artifactId>hadoop-core</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+diff --git a/ql/pom.xml b/ql/pom.xml
+index 90360f36d3..7bf7004999 100644
+--- a/ql/pom.xml
++++ b/ql/pom.xml
+@@ -248,6 +248,10 @@
+           <groupId>javax.servlet</groupId>
+           <artifactId>servlet-api</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+       <optional>true</optional>
+     </dependency>
+@@ -266,6 +270,10 @@
+           <groupId>javax.servlet</groupId>
+           <artifactId>servlet-api</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+       <optional>true</optional>
+     </dependency>
+@@ -274,11 +282,23 @@
+       <artifactId>hadoop-yarn-client</artifactId>
+       <version>${hadoop.version}</version>
+       <optional>true</optional>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.orc</groupId>
+       <artifactId>orc-tools</artifactId>
+       <version>${orc.version}</version>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+ 
+     <dependency>
+@@ -295,6 +315,12 @@
+       <groupId>org.apache.zookeeper</groupId>
+       <artifactId>zookeeper</artifactId>
+       <version>${zookeeper.version}</version>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.curator</groupId>
+@@ -726,6 +752,10 @@
+          <groupId>org.glassfish.jersey.core</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+      </exclusions>
+    </dependency>
+     <dependency>
+diff --git a/serde/pom.xml b/serde/pom.xml
+index c2f9de16fe..709ecb26c8 100644
+--- a/serde/pom.xml
++++ b/serde/pom.xml
+@@ -168,6 +168,10 @@
+             <groupId>commmons-logging</groupId>
+             <artifactId>commons-logging</artifactId>
+           </exclusion>
++             <exclusion>
++               <groupId>log4j</groupId>
++               <artifactId>log4j</artifactId>
++             </exclusion>
+         </exclusions>
+    </dependency>
+     <dependency>
+@@ -188,6 +192,12 @@
+       <version>${hadoop.version}</version>
+       <classifier>tests</classifier>
+       <scope>test</scope>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+   </dependencies>
+ 
+diff --git a/shims/0.23/pom.xml b/shims/0.23/pom.xml
+index c125a30e8f..ba2957de5c 100644
+--- a/shims/0.23/pom.xml
++++ b/shims/0.23/pom.xml
+@@ -73,6 +73,12 @@
+       <artifactId>hadoop-hdfs</artifactId>
+       <version>${hadoop.version}</version>
+       <optional>true</optional>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hadoop</groupId>
+@@ -80,6 +86,12 @@
+       <version>${hadoop.version}</version>
+       <type>test-jar</type>
+       <optional>true</optional>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+     <dependency>
+       <groupId>org.apache.hadoop</groupId>
+@@ -189,6 +201,10 @@
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
++       <exclusion>
++         <groupId>log4j</groupId>
++         <artifactId>log4j</artifactId>
++       </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+diff --git a/shims/common/pom.xml b/shims/common/pom.xml
+index 1dd52f3b62..ec3ad57e5f 100644
+--- a/shims/common/pom.xml
++++ b/shims/common/pom.xml
+@@ -84,6 +84,10 @@
+           <groupId>org.apache.hadoop</groupId>
+           <artifactId>hadoop-core</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+diff --git a/shims/scheduler/pom.xml b/shims/scheduler/pom.xml
+index 040aa0ac1e..94c47bc30e 100644
+--- a/shims/scheduler/pom.xml
++++ b/shims/scheduler/pom.xml
+@@ -81,6 +81,10 @@
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
++       <exclusion>
++         <groupId>log4j</groupId>
++         <artifactId>log4j</artifactId>
++       </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+diff --git a/spark-client/pom.xml b/spark-client/pom.xml
+index 2a559402ad..66fef08540 100644
+--- a/spark-client/pom.xml
++++ b/spark-client/pom.xml
+@@ -97,6 +97,10 @@
+           <groupId>com.fasterxml.jackson.module</groupId>
+           <artifactId>jackson-module-scala_${scala.binary.version}</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+    </dependency>
+     <dependency>
+diff --git a/standalone-metastore/pom.xml b/standalone-metastore/pom.xml
+index 37cda1a5c0..45595aad8e 100644
+--- a/standalone-metastore/pom.xml
++++ b/standalone-metastore/pom.xml
+@@ -214,6 +214,10 @@
+           <groupId>org.apache.curator</groupId>
+           <artifactId>curator-recipes</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -236,6 +240,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <dependency>
+@@ -268,6 +276,10 @@
+           <groupId>commmons-logging</groupId>
+           <artifactId>commons-logging</artifactId>
+         </exclusion>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
+       </exclusions>
+     </dependency>
+     <!-- This is our one and only Hive dependency.-->
+@@ -346,6 +358,12 @@
+       <groupId>org.apache.curator</groupId>
+       <artifactId>curator-framework</artifactId>
+       <version>${curator.version}</version>
++      <exclusions>
++        <exclusion>
++          <groupId>log4j</groupId>
++          <artifactId>log4j</artifactId>
++        </exclusion>
++      </exclusions>
+     </dependency>
+ 
+     <!-- test scope dependencies -->
+diff --git a/upgrade-acid/pom.xml b/upgrade-acid/pom.xml
+index 5730b5b2b7..d642436b46 100644
+--- a/upgrade-acid/pom.xml
++++ b/upgrade-acid/pom.xml
+@@ -128,7 +128,6 @@ java.io.IOException: Cannot initialize Cluster. Please check your configuration
+         </dependency>
+     </dependencies>
+ 
+-
+     <build>
+         <resources>
+             <resource>
+-- 
+2.34.1
+
