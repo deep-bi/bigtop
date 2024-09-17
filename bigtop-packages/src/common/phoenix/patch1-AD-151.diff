@@ -1,0 +1,241 @@
+From af7ca8a1e0f6358e66871120c6ed3a3cff54a95b Mon Sep 17 00:00:00 2001
+From: sviatahorau <mikhail.sviatahorau@deep.bi>
+Date: Mon, 16 Sep 2024 12:30:12 +0200
+Subject: [PATCH] log4j excluded
+
+---
+ phoenix-client-parent/phoenix-client/pom.xml |  5 +-
+ phoenix-server/pom.xml                       |  1 -
+ phoenix-tracing-webapp/pom.xml               |  5 +-
+ pom.xml                                      | 76 ++++++++++++++++++--
+ 4 files changed, 76 insertions(+), 11 deletions(-)
+
+diff --git a/phoenix-client-parent/phoenix-client/pom.xml b/phoenix-client-parent/phoenix-client/pom.xml
+index 0f99cf33d..d038018b5 100644
+--- a/phoenix-client-parent/phoenix-client/pom.xml
++++ b/phoenix-client-parent/phoenix-client/pom.xml
+@@ -81,8 +81,9 @@
+       <scope>runtime</scope>
+     </dependency>
+     <dependency>
+-      <groupId>log4j</groupId>
+-      <artifactId>log4j</artifactId>
++      <groupId>ch.qos.reload4j</groupId>
++      <artifactId>reload4j</artifactId>
++      <version>${reload4j.version}</version>
+       <scope>runtime</scope>
+     </dependency>
+     <dependency>
+diff --git a/phoenix-server/pom.xml b/phoenix-server/pom.xml
+index 30941234d..d36793ef0 100644
+--- a/phoenix-server/pom.xml
++++ b/phoenix-server/pom.xml
+@@ -117,7 +117,6 @@
+                         <exclude>org.eclipse.jetty:*</exclude>
+                         <exclude>org.apache.phoenix:phoenix-server</exclude>
+                         <exclude>sqlline:sqlline</exclude>
+-                        <exclude>log4j:log4j</exclude>
+                         <exclude>org.slf4j:slf4j-api</exclude>
+                         <exclude>org.slf4j:slf4j-log4j12</exclude>
+                     </excludes>
+diff --git a/phoenix-tracing-webapp/pom.xml b/phoenix-tracing-webapp/pom.xml
+index 080e40de1..b5e90db10 100755
+--- a/phoenix-tracing-webapp/pom.xml
++++ b/phoenix-tracing-webapp/pom.xml
+@@ -64,8 +64,9 @@
+         <artifactId>slf4j-api</artifactId>
+       </dependency>
+       <dependency>
+-        <groupId>log4j</groupId>
+-        <artifactId>log4j</artifactId>
++        <groupId>ch.qos.reload4j</groupId>
++        <artifactId>reload4j</artifactId>
++        <version>${reload4j.version}</version>
+         <scope>compile</scope>
+       </dependency>
+       <dependency>
+diff --git a/pom.xml b/pom.xml
+index 2783cc707..dea0372b7 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -104,7 +104,7 @@
+     <!-- Dependency versions -->
+     <jackson.version>2.10.3</jackson.version>
+     <antlr.version>3.5.2</antlr.version>
+-    <log4j.version>1.2.17</log4j.version>
++    <reload4j.version>1.2.25</reload4j.version>
+     <disruptor.version>3.3.6</disruptor.version>
+     <slf4j.version>1.7.25</slf4j.version>
+     <!-- com.google repo will be used except on Aarch64 platform. -->
+@@ -731,12 +731,22 @@
+             <groupId>org.apache.htrace</groupId>
+             <artifactId>htrace-core4</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+         <artifactId>hadoop-mapreduce-client-core</artifactId>
+         <version>${hadoop.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hadoop</groupId>
+@@ -781,6 +791,10 @@
+             <groupId>org.ow2.asm</groupId>
+             <artifactId>asm</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+         <version>${hadoop.version}</version>
+       </dependency>
+@@ -829,6 +843,10 @@
+             <groupId>org.apache.htrace</groupId>
+             <artifactId>htrace-core4</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+ 
+@@ -866,6 +884,12 @@
+         <groupId>org.apache.hbase</groupId>
+         <artifactId>hbase-common</artifactId>
+         <version>${hbase.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hbase</groupId>
+@@ -896,12 +920,22 @@
+             <groupId>xom</groupId>
+             <artifactId>xom</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hbase</groupId>
+         <artifactId>hbase-mapreduce</artifactId>
+         <version>${hbase.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.hbase</groupId>
+@@ -917,6 +951,12 @@
+         <groupId>org.apache.hbase</groupId>
+         <artifactId>hbase-zookeeper</artifactId>
+         <version>${hbase.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+ 
+       <dependency>
+@@ -1134,6 +1174,10 @@
+             <groupId>commons-daemon</groupId>
+             <artifactId>commons-daemon</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+@@ -1145,6 +1189,10 @@
+             <groupId>org.testng</groupId>
+             <artifactId>testng</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+@@ -1181,6 +1229,10 @@
+             <groupId>commons-daemon</groupId>
+             <artifactId>commons-daemon</artifactId>
+           </exclusion>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
+         </exclusions>
+       </dependency>
+       <dependency>
+@@ -1303,6 +1355,12 @@
+         <groupId>org.apache.zookeeper</groupId>
+         <artifactId>zookeeper</artifactId>
+         <version>${zookeeper.version}</version>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>org.apache.zookeeper</groupId>
+@@ -1467,17 +1525,23 @@
+       </dependency>
+ 
+        <!-- Runtime dependencies -->
+-       <dependency>
+-         <groupId>log4j</groupId>
+-         <artifactId>log4j</artifactId>
+-         <version>${log4j.version}</version>
+-         <scope>runtime</scope>
++      <dependency>
++        <groupId>ch.qos.reload4j</groupId>
++        <artifactId>reload4j</artifactId>
++        <version>${reload4j.version}</version>
++        <scope>runtime</scope>
+       </dependency>
+       <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-log4j12</artifactId>
+         <version>${slf4j.version}</version>
+         <scope>runtime</scope>
++        <exclusions>
++          <exclusion>
++            <groupId>log4j</groupId>
++            <artifactId>log4j</artifactId>
++          </exclusion>
++        </exclusions>
+       </dependency>
+       <dependency>
+         <groupId>sqlline</groupId>
+-- 
+2.34.1
+

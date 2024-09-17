@@ -1,0 +1,66 @@
+From 157d9480b1683bbb3618ea19f56f21cfa8f5592d Mon Sep 17 00:00:00 2001
+From: sviatahorau <mikhail.sviatahorau@deep.bi>
+Date: Fri, 13 Sep 2024 13:47:07 +0200
+Subject: [PATCH] log4j exclusion
+
+---
+ upgrade-acid/pom.xml | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/upgrade-acid/pom.xml b/upgrade-acid/pom.xml
+index d642436b46..8750f1c34c 100644
+--- a/upgrade-acid/pom.xml
++++ b/upgrade-acid/pom.xml
+@@ -74,6 +74,12 @@
+             <artifactId>hive-metastore</artifactId>
+             <version>2.3.3</version>
+             <scope>provided</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+         <dependency>
+             <groupId>org.apache.hive</groupId>
+@@ -85,6 +91,10 @@
+                     <groupId>org.pentaho</groupId>
+                     <artifactId>pentaho-aggdesigner-algorithm</artifactId>
+                 </exclusion>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
+             </exclusions>
+         </dependency>
+         <dependency>
+@@ -92,6 +102,12 @@
+             <artifactId>hadoop-common</artifactId>
+             <version>2.7.2</version>
+             <scope>provided</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+         <dependency>
+             <!-- w/o this we get this, even though mapreduce.framework.name=mapred.job.tracker=local
+@@ -119,6 +135,12 @@ java.io.IOException: Cannot initialize Cluster. Please check your configuration
+             <artifactId>hadoop-mapreduce-client-common</artifactId>
+             <version>2.7.2</version>
+             <scope>provided</scope>
++            <exclusions>
++                <exclusion>
++                    <groupId>log4j</groupId>
++                    <artifactId>log4j</artifactId>
++                </exclusion>
++            </exclusions>
+         </dependency>
+         <dependency>
+             <groupId>org.apache.orc</groupId>
+-- 
+2.34.1
+
