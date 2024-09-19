@@ -55,7 +55,7 @@ index 441038bdd0..e5c616a2ed 100644
      }
  
      root.addFilter(makeFrameOptionFilter(), "/" + SERVLET_PATH + "/*", dispatches);
-+    root.addFilter(makeMethodFilter(), "/" + SERVLET_PATH + "/*", dispatches);
++    root.addFilter(makeMethodFilter(), "/*", dispatches);
  
      // Connect Jersey
      ServletHolder h = new ServletHolder(new ServletContainer(makeJerseyConfig()));
