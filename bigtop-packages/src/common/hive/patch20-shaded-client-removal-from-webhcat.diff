@@ -1,0 +1,25 @@
+From c8396b3459cd97241253197efe8e1b02480172a8 Mon Sep 17 00:00:00 2001
+From: sviatahorau <mikhail.sviatahorau@deep.bi>
+Date: Thu, 17 Oct 2024 09:58:07 +0200
+Subject: [PATCH] removed shaded client binary from webhcat classpath
+
+---
+ hcatalog/webhcat/svr/src/main/bin/webhcat_server.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hcatalog/webhcat/svr/src/main/bin/webhcat_server.sh b/hcatalog/webhcat/svr/src/main/bin/webhcat_server.sh
+index ec7c492b7e..a2c78c8f1f 100644
+--- a/hcatalog/webhcat/svr/src/main/bin/webhcat_server.sh
++++ b/hcatalog/webhcat/svr/src/main/bin/webhcat_server.sh
+@@ -103,7 +103,7 @@ function find_classpath() {
+ 
+         # Append hcat classpath
+         local hcat_classpath
+-        hcat_classpath=`$base_dir/bin/hcat -classpath`
++        hcat_classpath=`$base_dir/bin/hcat -classpath | sed -e 's|:/usr/lib/hbase/lib/shaded-clients/||g'`
+         if [[ "$?" != "0" ]]; then
+                 die "Unable to get the hcatalog classpath"
+         fi
+-- 
+2.34.1
+
