@@ -30,4 +30,11 @@
       <reponame>BGTP</reponame>
     </repo>
   </os>
+  <os family="ubuntu22">
+    <repo>
+      <baseurl>https://user:password@jammyrepo.deep.bi/</baseurl>
+      <repoid>BGTP-1.0</repoid>
+      <reponame>BGTP</reponame>
+    </repo>
+  </os>
 </reposinfo>

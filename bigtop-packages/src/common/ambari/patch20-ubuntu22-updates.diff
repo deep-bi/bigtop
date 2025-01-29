@@ -1,0 +1,813 @@
+From 0c26c75c92063b824213e16b361626c1de2cc35e Mon Sep 17 00:00:00 2001
+From: Vivek Dhiman <approach2vivek@gmail.com>
+Date: Tue, 29 Jan 2025 13:02:36 +0530
+Subject: [PATCH] Updated metainfo for ubuntu22
+
+---
+ .../src/main/python/ambari_commons/resources/os_family.json | 6 ++++--
+ .../common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml    | 2 +-
+ .../common-services/AMBARI_METRICS/0.1.0/metainfo.xml       | 2 +-
+ .../resources/common-services/DRUID/0.10.1/metainfo.xml     | 2 +-
+ .../resources/common-services/GANGLIA/3.5.0/metainfo.xml    | 2 +-
+ .../resources/common-services/HDFS/2.1.0.2.0/metainfo.xml   | 2 +-
+ .../resources/common-services/HIVE/0.12.0.2.0/metainfo.xml  | 2 +-
+ .../main/resources/common-services/KAFKA/0.8.1/metainfo.xml | 2 +-
+ .../common-services/KERBEROS/1.10.3-10/metainfo.xml         | 2 +-
+ .../common-services/KERBEROS/1.10.3-30/metainfo.xml         | 2 +-
+ .../resources/common-services/LOGSEARCH/0.5.0/metainfo.xml  | 2 +-
+ .../resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml  | 2 +-
+ .../resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml  | 2 +-
+ .../resources/common-services/RANGER/0.4.0/metainfo.xml     | 2 +-
+ .../resources/common-services/RANGER/0.6.0/metainfo.xml     | 2 +-
+ .../main/resources/common-services/SPARK/1.2.1/metainfo.xml | 2 +-
+ .../resources/common-services/SPARK2/2.0.0/metainfo.xml     | 2 +-
+ .../main/resources/common-services/STORM/0.9.3/metainfo.xml | 2 +-
+ .../resources/common-services/SUPERSET/0.15.0/metainfo.xml  | 2 +-
+ .../resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml  | 2 +-
+ .../resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml  | 2 +-
+ .../resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.2/services/FALCON/metainfo.xml   | 2 +-
+ .../resources/stacks/HDP/2.2/services/FLUME/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.2/services/HBASE/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.2/services/HDFS/metainfo.xml     | 2 +-
+ .../resources/stacks/HDP/2.2/services/HIVE/metainfo.xml     | 4 ++--
+ .../resources/stacks/HDP/2.2/services/KNOX/metainfo.xml     | 2 +-
+ .../resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml    | 2 +-
+ .../main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml | 2 +-
+ .../resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml   | 2 +-
+ .../resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml    | 2 +-
+ .../main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml | 2 +-
+ .../resources/stacks/HDP/2.2/services/YARN/metainfo.xml     | 4 ++--
+ .../stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml      | 2 +-
+ .../resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml | 2 +-
+ .../resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.3/services/HDFS/metainfo.xml     | 2 +-
+ .../resources/stacks/HDP/2.3/services/HIVE/metainfo.xml     | 4 ++--
+ .../main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml | 2 +-
+ .../stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml         | 2 +-
+ .../resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.5/services/FALCON/metainfo.xml   | 2 +-
+ .../resources/stacks/HDP/2.5/services/HIVE/metainfo.xml     | 4 ++--
+ .../resources/stacks/HDP/2.5/services/SPARK/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml | 2 +-
+ .../resources/stacks/HDP/2.6/services/FALCON/metainfo.xml   | 2 +-
+ .../resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml    | 2 +-
+ .../resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml   | 2 +-
+ .../resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml | 2 +-
+ ambari-server/src/main/resources/version_definition.xsd     | 1 +
+ .../main/resources/common-services/NIFI/1.0.0/metainfo.xml  | 2 +-
+ .../stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml          | 2 +-
+ .../resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml    | 2 +-
+ 54 files changed, 61 insertions(+), 58 deletions(-)
+
+diff --git a/ambari-common/src/main/python/ambari_commons/resources/os_family.json b/ambari-common/src/main/python/ambari_commons/resources/os_family.json
+index 4c01e31a..003b29d2 100644
+--- a/ambari-common/src/main/python/ambari_commons/resources/os_family.json
++++ b/ambari-common/src/main/python/ambari_commons/resources/os_family.json
+@@ -72,7 +72,8 @@
+           12,
+           14,
+           16,
+-          18
++          18,
++          22
+         ]
+       },
+       "ubuntu-ppc": {
+@@ -84,7 +85,8 @@
+           12,
+           14,
+           16,
+-          18
++          18,
++          22
+         ]
+       },
+       "suse": {
+diff --git a/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
+index 5196a0de..b298e776 100644
+--- a/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/AMBARI_INFRA_SOLR/0.1.0/metainfo.xml
+@@ -160,7 +160,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,debian9,ubuntu12,ubuntu14,ubuntu16,ubuntu18</osFamily>
++          <osFamily>debian7,debian9,ubuntu12,ubuntu14,ubuntu16,ubuntu18,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>ambari-infra-solr-client</name>
+diff --git a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
+index 2e8151c2..362037b0 100644
+--- a/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/AMBARI_METRICS/0.1.0/metainfo.xml
+@@ -177,7 +177,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>ambari-metrics-assembly</name>
+diff --git a/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml b/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
+index b04c2f78..57682951 100644
+--- a/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/DRUID/0.10.1/metainfo.xml
+@@ -187,7 +187,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>druid-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/GANGLIA/3.5.0/metainfo.xml b/ambari-server/src/main/resources/common-services/GANGLIA/3.5.0/metainfo.xml
+index 249cd9ee..f7f51507 100644
+--- a/ambari-server/src/main/resources/common-services/GANGLIA/3.5.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/GANGLIA/3.5.0/metainfo.xml
+@@ -81,7 +81,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>python-rrdtool</name>
+diff --git a/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
+index d85f22bf..e83c6698 100644
+--- a/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/HDFS/2.1.0.2.0/metainfo.xml
+@@ -315,7 +315,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hadoop-client</name>
+diff --git a/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
+index 9a18d3a4..71d9d242 100644
+--- a/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/HIVE/0.12.0.2.0/metainfo.xml
+@@ -288,7 +288,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>mysql-server</name>
+diff --git a/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml b/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
+index a4917b8e..f5b40a98 100644
+--- a/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/KAFKA/0.8.1/metainfo.xml
+@@ -96,7 +96,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>kafka-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
+index 801851ef..999ae464 100644
+--- a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-10/metainfo.xml
+@@ -91,7 +91,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>krb5-user</name>
+diff --git a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
+index 0a9fa3f0..415bc7e6 100644
+--- a/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/KERBEROS/1.10.3-30/metainfo.xml
+@@ -91,7 +91,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>krb5-user</name>
+diff --git a/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml b/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
+index dd518f80..cfbd2577 100644
+--- a/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/LOGSEARCH/0.5.0/metainfo.xml
+@@ -150,7 +150,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,debian9,ubuntu12,ubuntu14,ubuntu16,ubuntu18</osFamily>
++          <osFamily>debian7,debian9,ubuntu12,ubuntu14,ubuntu16,ubuntu18,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>ambari-logsearch-logfeeder</name>
+diff --git a/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml b/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
+index 719baa36..123ca978 100644
+--- a/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/OOZIE/4.0.0.2.0/metainfo.xml
+@@ -137,7 +137,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>extjs</name>
+diff --git a/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml b/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
+index 0ee6b00c..a154b3c2 100644
+--- a/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/OOZIE/4.2.0.2.3/metainfo.xml
+@@ -139,7 +139,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>oozie-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml b/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
+index 9f40eb46..21488c6a 100644
+--- a/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/RANGER/0.4.0/metainfo.xml
+@@ -103,7 +103,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>ranger-${stack_version}-admin</name>
+diff --git a/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml b/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
+index 16325598..edd0c88c 100644
+--- a/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/RANGER/0.6.0/metainfo.xml
+@@ -87,7 +87,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>ranger-${stack_version}-admin</name>
+diff --git a/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml b/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
+index 2754027e..41969b2e 100644
+--- a/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/SPARK/1.2.1/metainfo.xml
+@@ -164,7 +164,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>spark-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml b/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
+index ca22980c..62b08739 100755
+--- a/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/SPARK2/2.0.0/metainfo.xml
+@@ -209,7 +209,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>spark2-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml b/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
+index 8aa16229..d5db5b9d 100644
+--- a/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/STORM/0.9.3/metainfo.xml
+@@ -40,7 +40,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>storm-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml b/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
+index 7e5c2be3..ad101522 100644
+--- a/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/SUPERSET/0.15.0/metainfo.xml
+@@ -58,7 +58,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>superset-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
+index 69aea556..ef9a29e4 100644
+--- a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.6/metainfo.xml
+@@ -35,7 +35,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>zookeeper-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
+index 332878eb..9c878693 100644
+--- a/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
++++ b/ambari-server/src/main/resources/common-services/ZOOKEEPER/3.4.9/metainfo.xml
+@@ -35,7 +35,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>zookeeper-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
+index 7ffbac05..3d8b68e7 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.1/services/OOZIE/metainfo.xml
+@@ -51,7 +51,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>extjs</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
+index fb672522..01b3bb64 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FALCON/metainfo.xml
+@@ -36,7 +36,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>falcon-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
+index 2475b808..997ddfad 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/FLUME/metainfo.xml
+@@ -34,7 +34,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>flume-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
+index e0e106ae..f86c3956 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HBASE/metainfo.xml
+@@ -37,7 +37,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hbase-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
+index 9f88af63..39541b5a 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HDFS/metainfo.xml
+@@ -70,7 +70,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hadoop-${stack_version}-client</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
+index 05f16aaa..64e7cacb 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/HIVE/metainfo.xml
+@@ -91,7 +91,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hive-${stack_version}</name>
+@@ -105,7 +105,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>mysql-server</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
+index 2436372b..afca2bb2 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/KNOX/metainfo.xml
+@@ -31,7 +31,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>knox-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
+index c599e2d9..acc30ae8 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/OOZIE/metainfo.xml
+@@ -81,7 +81,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>oozie-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
+index 90c82376..61a77c57 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/PIG/metainfo.xml
+@@ -32,7 +32,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>pig-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
+index 3be0e64d..304462fb 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SLIDER/metainfo.xml
+@@ -34,7 +34,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>slider-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
+index d22d74f4..ead47c22 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/SQOOP/metainfo.xml
+@@ -31,7 +31,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>sqoop-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
+index 71ef2c66..aa614fcb 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/TEZ/metainfo.xml
+@@ -33,7 +33,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>tez-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
+index b460eaea..85b4ada0 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.2/services/YARN/metainfo.xml
+@@ -48,7 +48,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hadoop-${stack_version}-yarn</name>
+@@ -82,7 +82,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hadoop-${stack_version}-mapreduce</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
+index e335ea83..b7e71a49 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3.ECS/services/ZOOKEEPER/metainfo.xml
+@@ -34,7 +34,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>zookeeper-2-3-.*</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
+index fbeb2b15..a0192614 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ACCUMULO/metainfo.xml
+@@ -32,7 +32,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>accumulo-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
+index 689eaa5a..6c65ba1d 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/ATLAS/metainfo.xml
+@@ -32,7 +32,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>atlas-metadata-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
+index e3bb69ab..136f93dd 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HDFS/metainfo.xml
+@@ -102,7 +102,7 @@
+         </osSpecific>
+ 
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hadoop-${stack_version}-client</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
+index c25af2ef..0f7d49fe 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/HIVE/metainfo.xml
+@@ -62,7 +62,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hive-${stack_version}</name>
+@@ -80,7 +80,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>mysql-server</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
+index 159c5571..90d82a32 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/PIG/metainfo.xml
+@@ -34,7 +34,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>pig-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
+index e66787df..73363805 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.3/services/RANGER_KMS/metainfo.xml
+@@ -34,7 +34,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>ranger-${stack_version}-kms</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
+index 2e4ac7ec..e19232d4 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ATLAS/metainfo.xml
+@@ -75,7 +75,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>atlas-metadata-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
+index c3a75c7e..d2d34a9f 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/FALCON/metainfo.xml
+@@ -36,7 +36,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>falcon-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
+index a1298938..2a68a896 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/HIVE/metainfo.xml
+@@ -186,7 +186,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>hive-${stack_version}</name>
+@@ -210,7 +210,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>amazonlinux2,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>mysql-server</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
+index 637cb099..1d44650b 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/SPARK/metainfo.xml
+@@ -98,7 +98,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>spark-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
+index 391a3e5e..b1797c8e 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.5/services/ZEPPELIN/metainfo.xml
+@@ -33,7 +33,7 @@
+                     </packages>
+                 </osSpecific>
+                 <osSpecific>
+-                    <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++                    <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+                     <packages>
+                         <package>
+                             <name>zeppelin-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
+index 633d9968..56f4ec2e 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/FALCON/metainfo.xml
+@@ -35,7 +35,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>falcon-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
+index 0f08f703..ea8d4342 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/OOZIE/metainfo.xml
+@@ -46,7 +46,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>oozie-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
+index 5dd9e257..15db3185 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/SPARK2/metainfo.xml
+@@ -103,7 +103,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>spark2-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml b/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
+index 98464f17..7f2ee2b3 100644
+--- a/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
++++ b/ambari-server/src/main/resources/stacks/HDP/2.6/services/ZEPPELIN/metainfo.xml
+@@ -33,7 +33,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>zeppelin-${stack_version}</name>
+diff --git a/ambari-server/src/main/resources/version_definition.xsd b/ambari-server/src/main/resources/version_definition.xsd
+index 9542ef62..7b489df4 100644
+--- a/ambari-server/src/main/resources/version_definition.xsd
++++ b/ambari-server/src/main/resources/version_definition.xsd
+@@ -62,6 +62,7 @@
+       <xs:enumeration value="ubuntu14" />
+       <xs:enumeration value="ubuntu16" />
+       <xs:enumeration value="ubuntu18" />
++      <xs:enumeration value="ubuntu22" />
+       <xs:enumeration value="suse11" />
+       <xs:enumeration value="suse12" />
+       <xs:enumeration value="amazonlinux2" />
+diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
+index 82c83a49..ab4497fb 100644
+--- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
++++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/common-services/NIFI/1.0.0/metainfo.xml
+@@ -101,7 +101,7 @@
+                  </packages>
+ 	          </osSpecific>
+ 	          <osSpecific>
+-	            <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++	            <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+ 	             <packages>
+ 	              <package>
+ 	                 <name>nifi-${stack_version}</name>
+diff --git a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
+index 353ab4a5..0d4095b7 100644
+--- a/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
++++ b/contrib/management-packs/hdf-ambari-mpack/src/main/resources/stacks/HDF/2.0/services/ZOOKEEPER/metainfo.xml
+@@ -35,7 +35,7 @@
+           </packages>
+         </osSpecific>
+         <osSpecific>
+-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+           <packages>
+             <package>
+               <name>zookeeper-${stack_version}</name>
+diff --git a/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml b/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
+index 0b97f27b..a2d623d8 100755
+--- a/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
++++ b/contrib/management-packs/odpi-ambari-mpack/src/main/resources/stacks/ODPi/2.0/services/HIVE/metainfo.xml
+@@ -334,7 +334,7 @@
+             </packages>
+         </osSpecific>
+         <osSpecific>
+-            <osFamily>amazon2015,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
++            <osFamily>amazon2015,redhat6,debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+             <packages>
+                 <package>
+                     <name>mysql-server</name>
+-- 
+2.48.1
+
