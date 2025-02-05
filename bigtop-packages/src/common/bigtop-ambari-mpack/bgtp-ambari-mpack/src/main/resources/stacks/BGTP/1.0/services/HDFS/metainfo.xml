@@ -315,13 +315,37 @@
         </osSpecific>
 
         <osSpecific>
-          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16,ubuntu22</osFamily>
+          <osFamily>debian7,ubuntu12,ubuntu14,ubuntu16</osFamily>
           <packages>
             <package>
               <name>hadoop-client</name>
             </package>
             <package>
               <name>libsnappy1</name>
+            </package>
+            <package>
+              <name>libsnappy-dev</name>
+            </package>
+            <package>
+              <name>hadoop-hdfs</name>
+            </package>
+            <package>
+              <name>libhdfs0</name>
+            </package>
+            <package>
+              <name>libhdfs0-dev</name>
+            </package>
+          </packages>
+        </osSpecific>
+
+        <osSpecific>
+          <osFamily>ubuntu22</osFamily>
+          <packages>
+            <package>
+              <name>hadoop-client</name>
+            </package>
+            <package>
+              <name>libsnappy1v5</name>
             </package>
             <package>
               <name>libsnappy-dev</name>
