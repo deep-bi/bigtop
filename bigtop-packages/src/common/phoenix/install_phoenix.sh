@@ -129,3 +129,5 @@ ln -s `cd $PREFIX/$LIB_DIR ; ls phoenix-client*.jar` $PREFIX/$LIB_DIR/phoenix-cl
 
 # phoenix-server for placing on the HBase regionserver classpath
 ln -s `cd $PREFIX/$LIB_DIR ; ls phoenix-server*.jar` $PREFIX/$LIB_DIR/phoenix-server.jar
+
+ln -s $PREFIX/$LIB_DIR/phoenix-server.jar $HBASE_HOME/lib/phoenix-server.jar
