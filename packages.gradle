@@ -618,7 +618,7 @@ def genTasks = { target ->
     def specTmpFileName = "${PKG_BUILD_DIR}/rpm/SPECS/tmp_${NAME}.spec"
     def specFile = new File(specFileName)
     def specWriter = new File(specTmpFileName).newWriter()
-    def patches = new File("${PKG_BUILD_DIR}/rpm/SOURCES").list({ d, f -> f ==~ /patch.*diff/}).sort()
+    def patches = new File("${PKG_BUILD_DIR}/rpm/SOURCES").list({ d, f -> f ==~ /patch.*diff/}).toSorted { a, b -> (a =~ /\d+/)[0]?.toInteger() <=> (b =~ /\d+/)[0]?.toInteger() }
     specFile.eachLine { line ->
       if (line.startsWith("#BIGTOP_PATCH_FILES")) {
         def patchNum = 0
