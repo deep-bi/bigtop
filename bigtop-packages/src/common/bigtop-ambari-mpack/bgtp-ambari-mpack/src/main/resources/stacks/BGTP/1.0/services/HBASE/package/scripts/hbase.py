@@ -243,6 +243,14 @@ def hbase(name=None):
             retry_on_repo_unavailability=params.agent_stack_retry_on_unavailability,
             retry_count=params.agent_stack_retry_count)
 
+    # add hardcoded symlink with phoenix-server.jar
+    Execute(("ln",  "-s",
+             "/lib/phoenix/phoenix-server-hbase-2.4-5.1.2.jar",
+             "/usr/lib/hbase/lib/phoenix-server.jar"),
+            not_if="test -L /usr/lib/hbase/lib/phoenix-server.jar",
+            only_if="test -f /lib/phoenix/phoenix-server-hbase-2.4-5.1.2.jar",
+            sudo=True)
+
 def hbase_TemplateConfig(name, tag=None):
   import params
 
