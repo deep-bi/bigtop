@@ -28,4 +28,4 @@ mvn clean package -DskipTests -Drat.skip
 
 cd ambari-metrics
 mvn clean package -Dbuild-deb -DskipTests
-(cd contrib/management-packs/odpi-ambari-mpack ; mvn clean package -DskipTests -Drat.skip)
+#(cd contrib/management-packs/odpi-ambari-mpack ; mvn clean package -DskipTests -Drat.skip)
