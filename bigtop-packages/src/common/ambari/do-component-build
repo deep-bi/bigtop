@@ -22,10 +22,12 @@ export _JAVA_OPTIONS="-Xmx2048m -Djava.awt.headless=true"
 . /etc/os-release
 OS="$ID"
 ARCH=`uname -m`
+
 RPM_DIR=../../../../../output/ambari
 
 mvn clean package -DskipTests -Drat.skip
 
 cd ambari-metrics
 mvn clean package -Dbuild-deb -DskipTests
-#(cd contrib/management-packs/odpi-ambari-mpack ; mvn clean package -DskipTests -Drat.skip)
+cd -
+(cd contrib/management-packs/odpi-ambari-mpack ; mvn clean package -DskipTests -Drat.skip)
