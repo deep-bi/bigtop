@@ -121,7 +121,7 @@ falcon_home = format("{stack_root}/current/falcon-client")
 if stack_version is not None:
   falcon_home = '{0}/{1}/falcon'.format(stack_root, stack_version)
 
-conf_dir = format("{stack_root}/current/{oozie_root}/conf")
+conf_dir = format("/etc/oozie/conf")
 hive_conf_dir = format("{conf_dir}/action-conf/hive")
 
 execute_path = oozie_bin_dir + os.pathsep + hadoop_bin_dir
