@@ -200,6 +200,7 @@ export OOZIE_LOG={{oozie_log_dir}}
 # Oozie pid directory
 #
 export CATALINA_PID={{pid_file}}
+export JETTY_PID_FILE={{pid_file}}
 
 #Location of the data for oozie
 export OOZIE_DATA={{oozie_data_dir}}
