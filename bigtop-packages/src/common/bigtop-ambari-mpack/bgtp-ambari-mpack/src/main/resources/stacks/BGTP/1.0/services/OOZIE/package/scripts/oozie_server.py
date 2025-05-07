@@ -68,7 +68,9 @@ class OozieServer(Script):
 
     env.set_params(params)
     oozie(is_server=True)
-
+    cmd = format("/usr/bin/update-alternatives --install /etc/oozie/conf oozie-conf /usr/bgtp/current/oozie-server/conf 100")
+    Execute(cmd, user=params.oozie_user, ignore_failures=True)
+    
   def start(self, env, upgrade_type=None):
     import params
     env.set_params(params)
