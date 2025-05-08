@@ -299,6 +299,9 @@ def oozie_server_specific(upgrade_type):
     sudo = True,
   )
 
+  UpdateAlternatives = (format('{sudo} /usr/bin/update-alternatives --install /etc/oozie/conf oozie-conf /usr/bgtp/current/oozie-server/conf 100'))
+  Execute(UpdateAlternatives, ignore_failures=True)
+  
   configure_cmds = []
   # Default to /usr/share/$TARGETSTACK-oozie/ext-2.2.zip as the first path
   source_ext_zip_paths = get_oozie_ext_zip_source_paths(upgrade_type, params)
