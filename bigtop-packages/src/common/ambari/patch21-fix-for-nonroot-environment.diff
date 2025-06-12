@@ -1,0 +1,47 @@
+From 64a2c9d04899136810dc2ea40e279b57eff93b12 Mon Sep 17 00:00:00 2001
+From: Vivek Dhiman <approach2vivek@gmail.com>
+Date: Wed, 11 Jun 2025 19:57:17 +0530
+Subject: [PATCH] Fixed get_user_call_output.py for nonroot environment
+
+---
+ .../libraries/functions/get_user_call_output.py  | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/ambari-common/src/main/python/resource_management/libraries/functions/get_user_call_output.py b/ambari-common/src/main/python/resource_management/libraries/functions/get_user_call_output.py
+index 7b7acae0..83d8eaf9 100644
+--- a/ambari-common/src/main/python/resource_management/libraries/functions/get_user_call_output.py
++++ b/ambari-common/src/main/python/resource_management/libraries/functions/get_user_call_output.py
+@@ -29,17 +29,27 @@ from resource_management.core.exceptions import ExecutionFailed
+ 
+ def get_user_call_output(command, user, quiet=False, is_checked_call=True, **call_kwargs):
+   """
+-  This function eliminates only output of command inside the su, ignoring the su ouput itself.
++  This function eliminates only output of command inside the su, ignoring the su output itself.
+   This is useful since some users have motd messages setup by default on su -l. 
+   
+   @return: code, stdout, stderr
+   """
++
++  # Ensure custom temp directory exists
++  temp_dir = "/tmp/temp"
++  if not os.path.isdir(temp_dir):
++    try:
++      os.makedirs(temp_dir, 0o777)
++    except Exception as e:
++      Logger.warning("Could not create temp dir {0}: {1}".format(temp_dir, e))
++      raise
++
+   command_string = shell.string_cmd_from_args_list(command) if isinstance(command, (list, tuple)) else command
+   out_files = []
+   
+   try:
+-    out_files.append(tempfile.NamedTemporaryFile())
+-    out_files.append(tempfile.NamedTemporaryFile())
++    out_files.append(tempfile.NamedTemporaryFile(dir=temp_dir))
++    out_files.append(tempfile.NamedTemporaryFile(dir=temp_dir))
+     
+     # other user should be able to write to it
+     for f in out_files:
+-- 
+2.49.0
+
